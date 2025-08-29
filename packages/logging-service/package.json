@@ -1,6 +1,6 @@
 {
 	"name": "@twin.org/logging-service",
-	"version": "0.0.2-next.1",
+	"version": "0.0.2-next.2",
 	"description": "Logging contract implementation and REST endpoint definitions",
 	"repository": {
 		"type": "git",
@@ -36,7 +36,7 @@
 		"@twin.org/core": "next",
 		"@twin.org/entity": "next",
 		"@twin.org/nameof": "next",
-		"@twin.org/logging-models": "0.0.2-next.1",
+		"@twin.org/logging-models": "0.0.2-next.2",
 		"@twin.org/web": "next"
 	},
 	"devDependencies": {
