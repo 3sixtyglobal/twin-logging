@@ -128,7 +128,6 @@ export class ConsoleLoggingConnector implements ILoggingConnector {
 	 * @internal
 	 */
 	private stringToColor(str: string): string {
-		// eslint-disable-next-line no-bitwise
 		const stringUniqueHash = [...str].reduce(
 			// eslint-disable-next-line no-bitwise
 			(acc, char) => char.charCodeAt(0) + ((acc << 5) - acc),
