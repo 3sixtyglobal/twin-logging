@@ -71,5 +71,20 @@
 		"dist/types",
 		"locales",
 		"docs"
+	],
+	"keywords": [
+		"twin",
+		"trade",
+		"iota",
+		"framework",
+		"blockchain",
+		"logging",
+		"entity",
+		"storage",
+		"persistence",
+		"database",
+		"connector",
+		"adapter",
+		"integration"
 	]
 }

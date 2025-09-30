@@ -66,5 +66,16 @@
 		"dist/types",
 		"locales",
 		"docs"
+	],
+	"keywords": [
+		"twin",
+		"trade",
+		"iota",
+		"framework",
+		"blockchain",
+		"logging",
+		"models",
+		"types",
+		"schemas"
 	]
 }
