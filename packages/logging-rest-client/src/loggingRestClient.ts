@@ -23,7 +23,7 @@ export class LoggingRestClient extends BaseRestClient implements ILoggingCompone
 	public static readonly CLASS_NAME: string = nameof<LoggingRestClient>();
 
 	/**
-	 * Create a new instance of LoggingRestClient
+	 * Create a new instance of LoggingRestClient.
 	 * @param config The configuration for the client.
 	 */
 	constructor(config: IBaseRestClientConfig) {
