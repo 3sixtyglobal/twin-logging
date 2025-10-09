@@ -24,7 +24,7 @@ export class EntityStorageLoggingConnector implements ILoggingConnector {
 	/**
 	 * Runtime name for the class.
 	 */
-	public readonly CLASS_NAME: string = nameof<EntityStorageLoggingConnector>();
+	public static readonly CLASS_NAME: string = nameof<EntityStorageLoggingConnector>();
 
 	/**
 	 * The log levels to capture, will default to all.
@@ -55,7 +55,7 @@ export class EntityStorageLoggingConnector implements ILoggingConnector {
 	 * @returns Nothing.
 	 */
 	public async log(logEntry: ILogEntry): Promise<void> {
-		Guards.object<ILogEntry>(this.CLASS_NAME, nameof(logEntry), logEntry);
+		Guards.object<ILogEntry>(EntityStorageLoggingConnector.CLASS_NAME, nameof(logEntry), logEntry);
 
 		if (this._levels.includes(logEntry.level)) {
 			const id = Converter.bytesToHex(RandomHelper.generate(32));
@@ -79,8 +79,8 @@ export class EntityStorageLoggingConnector implements ILoggingConnector {
 	 * @param conditions The conditions to match for the entities.
 	 * @param sortProperties The optional sort order.
 	 * @param properties The optional keys to return, defaults to all.
-	 * @param cursor The cursor to request the next page of entities.
-	 * @param pageSize The maximum number of entities in a page.
+	 * @param cursor The cursor to request the next chunk of entities.
+	 * @param limit Limit the number of entities to return.
 	 * @returns All the entities for the storage matching the conditions,
 	 * and a cursor which can be used to request more entities.
 	 */
@@ -92,7 +92,7 @@ export class EntityStorageLoggingConnector implements ILoggingConnector {
 		}[],
 		properties?: (keyof ILogEntry)[],
 		cursor?: string,
-		pageSize?: number
+		limit?: number
 	): Promise<{
 		/**
 		 * The entities, which can be partial if a limited keys list was provided.
@@ -108,7 +108,7 @@ export class EntityStorageLoggingConnector implements ILoggingConnector {
 			sortProperties,
 			properties,
 			cursor,
-			pageSize
+			limit
 		);
 
 		const mappedEntities: Partial<ILogEntry>[] = [];

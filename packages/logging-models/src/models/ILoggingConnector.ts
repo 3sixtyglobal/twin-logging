@@ -20,8 +20,8 @@ export interface ILoggingConnector extends IComponent {
 	 * @param conditions The conditions to match for the entities.
 	 * @param sortProperties The optional sort order.
 	 * @param properties The optional keys to return, defaults to all.
-	 * @param cursor The cursor to request the next page of entities.
-	 * @param pageSize The maximum number of entities in a page.
+	 * @param cursor The cursor to request the next chunk of entities.
+	 * @param limit Limit the number of entities to return.
 	 * @returns All the entities for the storage matching the conditions,
 	 * and a cursor which can be used to request more entities.
 	 */
@@ -33,7 +33,7 @@ export interface ILoggingConnector extends IComponent {
 		}[],
 		properties?: (keyof ILogEntry)[],
 		cursor?: string,
-		pageSize?: number
+		limit?: number
 	): Promise<{
 		/**
 		 * The entities, which can be partial if a limited keys list was provided.

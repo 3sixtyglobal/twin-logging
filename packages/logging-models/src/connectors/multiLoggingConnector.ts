@@ -21,7 +21,7 @@ export class MultiLoggingConnector implements ILoggingConnector {
 	/**
 	 * Runtime name for the class.
 	 */
-	public readonly CLASS_NAME: string = nameof<MultiLoggingConnector>();
+	public static readonly CLASS_NAME: string = nameof<MultiLoggingConnector>();
 
 	/**
 	 * The connectors to send the log entries to.
@@ -40,9 +40,9 @@ export class MultiLoggingConnector implements ILoggingConnector {
 	 * @param options The options for the connector.
 	 */
 	constructor(options: IMultiLoggingConnectorConstructorOptions) {
-		Guards.object(this.CLASS_NAME, nameof(options), options);
+		Guards.object(MultiLoggingConnector.CLASS_NAME, nameof(options), options);
 		Guards.arrayValue(
-			this.CLASS_NAME,
+			MultiLoggingConnector.CLASS_NAME,
 			nameof(options.loggingConnectorTypes),
 			options.loggingConnectorTypes
 		);
@@ -58,7 +58,7 @@ export class MultiLoggingConnector implements ILoggingConnector {
 	 * @returns Nothing.
 	 */
 	public async log(logEntry: ILogEntry): Promise<void> {
-		Guards.object<ILogEntry>(this.CLASS_NAME, nameof(logEntry), logEntry);
+		Guards.object<ILogEntry>(MultiLoggingConnector.CLASS_NAME, nameof(logEntry), logEntry);
 
 		if (this._levels.includes(logEntry.level)) {
 			logEntry.ts ??= Date.now();
@@ -74,8 +74,8 @@ export class MultiLoggingConnector implements ILoggingConnector {
 	 * @param conditions The conditions to match for the entities.
 	 * @param sortProperties The optional sort order.
 	 * @param properties The optional keys to return, defaults to all.
-	 * @param cursor The cursor to request the next page of entities.
-	 * @param pageSize The maximum number of entities in a page.
+	 * @param cursor The cursor to request the next chunk of entities.
+	 * @param limit Limit the number of entities to return.
 	 * @returns All the entities for the storage matching the conditions,
 	 * and a cursor which can be used to request more entities.
 	 */
@@ -87,7 +87,7 @@ export class MultiLoggingConnector implements ILoggingConnector {
 		}[],
 		properties?: (keyof ILogEntry)[],
 		cursor?: string,
-		pageSize?: number
+		limit?: number
 	): Promise<{
 		/**
 		 * The entities, which can be partial if a limited keys list was provided.
@@ -103,7 +103,7 @@ export class MultiLoggingConnector implements ILoggingConnector {
 		for (const loggingConnector of this._loggingConnectors) {
 			// eslint-disable-next-line @typescript-eslint/unbound-method
 			if (Is.function(loggingConnector.query)) {
-				return loggingConnector.query(conditions, sortProperties, properties, cursor, pageSize);
+				return loggingConnector.query(conditions, sortProperties, properties, cursor, limit);
 			}
 		}
 

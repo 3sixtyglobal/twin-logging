@@ -6,6 +6,14 @@ Interface describing a logging connector.
 
 - `IComponent`
 
+## Indexable
+
+\[`key`: `string`\]: `any`
+
+All methods are optional, so we introduce an index signature to allow
+any additional properties or methods, which removes the TypeScript error where
+the class has no properties in common with the type.
+
 ## Methods
 
 ### log()
@@ -32,7 +40,7 @@ Nothing.
 
 ### query()?
 
-> `optional` **query**(`conditions?`, `sortProperties?`, `properties?`, `cursor?`, `pageSize?`): `Promise`\<\{ `entities`: `Partial`\<[`ILogEntry`](ILogEntry.md)\>[]; `cursor?`: `string`; \}\>
+> `optional` **query**(`conditions?`, `sortProperties?`, `properties?`, `cursor?`, `limit?`): `Promise`\<\{ `entities`: `Partial`\<[`ILogEntry`](ILogEntry.md)\>[]; `cursor?`: `string`; \}\>
 
 Query the log entries.
 
@@ -60,13 +68,13 @@ The optional keys to return, defaults to all.
 
 `string`
 
-The cursor to request the next page of entities.
+The cursor to request the next chunk of entities.
 
-##### pageSize?
+##### limit?
 
 `number`
 
-The maximum number of entities in a page.
+Limit the number of entities to return.
 
 #### Returns
 

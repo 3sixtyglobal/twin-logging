@@ -180,7 +180,7 @@ export async function loggingList(
 		Coerce.number(request?.query?.timeStart),
 		Coerce.number(request?.query?.timeEnd),
 		request?.query?.cursor,
-		Coerce.number(request?.query?.pageSize)
+		Coerce.number(request?.query?.limit)
 	);
 	return {
 		body: itemsAndCursor

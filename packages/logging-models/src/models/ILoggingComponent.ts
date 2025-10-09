@@ -21,8 +21,8 @@ export interface ILoggingComponent extends IComponent {
 	 * @param source The source of the log entries.
 	 * @param timeStart The inclusive time as the start of the log entries.
 	 * @param timeEnd The inclusive time as the end of the log entries.
-	 * @param cursor The cursor to request the next page of entities.
-	 * @param pageSize The maximum number of entities in a page.
+	 * @param cursor The cursor to request the next chunk of entities.
+	 * @param limit Limit the number of entities to return.
 	 * @returns All the entities for the storage matching the conditions,
 	 * and a cursor which can be used to request more entities.
 	 */
@@ -32,7 +32,7 @@ export interface ILoggingComponent extends IComponent {
 		timeStart?: number,
 		timeEnd?: number,
 		cursor?: string,
-		pageSize?: number
+		limit?: number
 	): Promise<{
 		/**
 		 * The entities, which can be partial if a limited keys list was provided.

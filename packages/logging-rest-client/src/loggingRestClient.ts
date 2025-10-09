@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0.
 import { BaseRestClient } from "@twin.org/api-core";
 import type { IBaseRestClientConfig, IOkResponse } from "@twin.org/api-models";
-import { Guards } from "@twin.org/core";
+import { Coerce, Guards } from "@twin.org/core";
 import type {
 	ILogEntry,
 	ILoggingComponent,
@@ -16,24 +16,18 @@ import { nameof } from "@twin.org/nameof";
 /**
  * Client for performing logging through to REST endpoints.
  */
-export class LoggingClient extends BaseRestClient implements ILoggingComponent {
-	/**
-	 * Runtime name for the class.
-	 * @internal
-	 */
-	private static readonly _CLASS_NAME: string = nameof<LoggingClient>();
-
+export class LoggingRestClient extends BaseRestClient implements ILoggingComponent {
 	/**
 	 * Runtime name for the class.
 	 */
-	public readonly CLASS_NAME: string = LoggingClient._CLASS_NAME;
+	public static readonly CLASS_NAME: string = nameof<LoggingRestClient>();
 
 	/**
 	 * Create a new instance of LoggingClient.
 	 * @param config The configuration for the client.
 	 */
 	constructor(config: IBaseRestClientConfig) {
-		super(LoggingClient._CLASS_NAME, config, "logging");
+		super(LoggingRestClient.CLASS_NAME, config, "logging");
 	}
 
 	/**
@@ -42,7 +36,7 @@ export class LoggingClient extends BaseRestClient implements ILoggingComponent {
 	 * @returns Nothing.
 	 */
 	public async log(logEntry: ILogEntry): Promise<void> {
-		Guards.object<ILogEntry>(this.CLASS_NAME, nameof(logEntry), logEntry);
+		Guards.object<ILogEntry>(LoggingRestClient.CLASS_NAME, nameof(logEntry), logEntry);
 
 		await this.fetch<ILoggingCreateRequest, IOkResponse>("/", "POST", {
 			body: logEntry
@@ -55,8 +49,8 @@ export class LoggingClient extends BaseRestClient implements ILoggingComponent {
 	 * @param source The source of the log entries.
 	 * @param timeStart The inclusive time as the start of the log entries.
 	 * @param timeEnd The inclusive time as the end of the log entries.
-	 * @param cursor The cursor to request the next page of entities.
-	 * @param pageSize The maximum number of entities in a page.
+	 * @param cursor The cursor to request the next chunk of entities.
+	 * @param limit Limit the number of entities to return.
 	 * @returns All the entities for the storage matching the conditions,
 	 * and a cursor which can be used to request more entities.
 	 */
@@ -66,7 +60,7 @@ export class LoggingClient extends BaseRestClient implements ILoggingComponent {
 		timeStart?: number,
 		timeEnd?: number,
 		cursor?: string,
-		pageSize?: number
+		limit?: number
 	): Promise<{
 		/**
 		 * The entities, which can be partial if a limited keys list was provided.
@@ -84,7 +78,7 @@ export class LoggingClient extends BaseRestClient implements ILoggingComponent {
 				timeStart,
 				timeEnd,
 				cursor,
-				pageSize
+				limit: Coerce.string(limit)
 			}
 		});
 

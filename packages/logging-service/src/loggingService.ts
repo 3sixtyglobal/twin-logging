@@ -24,7 +24,7 @@ export class LoggingService implements ILoggingComponent {
 	/**
 	 * Runtime name for the class.
 	 */
-	public readonly CLASS_NAME: string = nameof<LoggingService>();
+	public static readonly CLASS_NAME: string = nameof<LoggingService>();
 
 	/**
 	 * Logging connector used by the service.
@@ -48,7 +48,7 @@ export class LoggingService implements ILoggingComponent {
 	 * @returns Nothing.
 	 */
 	public async log(logEntry: ILogEntry): Promise<void> {
-		Guards.object<ILogEntry>(this.CLASS_NAME, nameof(logEntry), logEntry);
+		Guards.object<ILogEntry>(LoggingService.CLASS_NAME, nameof(logEntry), logEntry);
 
 		await this._loggingConnector.log(logEntry);
 	}
@@ -59,8 +59,8 @@ export class LoggingService implements ILoggingComponent {
 	 * @param source The source of the log entries.
 	 * @param timeStart The inclusive time as the start of the log entries.
 	 * @param timeEnd The inclusive time as the end of the log entries.
-	 * @param cursor The cursor to request the next page of entities.
-	 * @param pageSize The maximum number of entities in a page.
+	 * @param cursor The cursor to request the next chunk of entities.
+	 * @param limit Limit the number of entities to return.
 	 * @returns All the entities for the storage matching the conditions,
 	 * and a cursor which can be used to request more entities.
 	 */
@@ -70,7 +70,7 @@ export class LoggingService implements ILoggingComponent {
 		timeStart?: number,
 		timeEnd?: number,
 		cursor?: string,
-		pageSize?: number
+		limit?: number
 	): Promise<{
 		/**
 		 * The entities, which can be partial if a limited keys list was provided.
@@ -124,7 +124,7 @@ export class LoggingService implements ILoggingComponent {
 				[{ property: "ts", sortDirection: SortDirection.Descending }],
 				undefined,
 				cursor,
-				pageSize
+				limit
 			);
 
 			return { entities: result.entities as ILogEntry[], cursor: result.cursor };

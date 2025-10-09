@@ -1,4 +1,4 @@
-# Class: LoggingClient
+# Class: LoggingRestClient
 
 Client for performing logging through to REST endpoints.
 
@@ -14,7 +14,7 @@ Client for performing logging through to REST endpoints.
 
 ### Constructor
 
-> **new LoggingClient**(`config`): `LoggingClient`
+> **new LoggingRestClient**(`config`): `LoggingRestClient`
 
 Create a new instance of LoggingClient.
 
@@ -28,7 +28,7 @@ The configuration for the client.
 
 #### Returns
 
-`LoggingClient`
+`LoggingRestClient`
 
 #### Overrides
 
@@ -38,13 +38,9 @@ The configuration for the client.
 
 ### CLASS\_NAME
 
-> `readonly` **CLASS\_NAME**: `string` = `LoggingClient._CLASS_NAME`
+> `readonly` `static` **CLASS\_NAME**: `string`
 
 Runtime name for the class.
-
-#### Implementation of
-
-`ILoggingComponent.CLASS_NAME`
 
 ## Methods
 
@@ -76,7 +72,7 @@ Nothing.
 
 ### query()
 
-> **query**(`level?`, `source?`, `timeStart?`, `timeEnd?`, `cursor?`, `pageSize?`): `Promise`\<\{ `entities`: `ILogEntry`[]; `cursor?`: `string`; \}\>
+> **query**(`level?`, `source?`, `timeStart?`, `timeEnd?`, `cursor?`, `limit?`): `Promise`\<\{ `entities`: `ILogEntry`[]; `cursor?`: `string`; \}\>
 
 Query the log entries.
 
@@ -110,13 +106,13 @@ The inclusive time as the end of the log entries.
 
 `string`
 
-The cursor to request the next page of entities.
+The cursor to request the next chunk of entities.
 
-##### pageSize?
+##### limit?
 
 `number`
 
-The maximum number of entities in a page.
+Limit the number of entities to return.
 
 #### Returns
 

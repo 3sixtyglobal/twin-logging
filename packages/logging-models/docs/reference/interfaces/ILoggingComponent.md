@@ -6,6 +6,14 @@ Interface describing a logging contract.
 
 - `IComponent`
 
+## Indexable
+
+\[`key`: `string`\]: `any`
+
+All methods are optional, so we introduce an index signature to allow
+any additional properties or methods, which removes the TypeScript error where
+the class has no properties in common with the type.
+
 ## Methods
 
 ### log()
@@ -32,7 +40,7 @@ Nothing.
 
 ### query()
 
-> **query**(`level?`, `source?`, `timeStart?`, `timeEnd?`, `cursor?`, `pageSize?`): `Promise`\<\{ `entities`: [`ILogEntry`](ILogEntry.md)[]; `cursor?`: `string`; \}\>
+> **query**(`level?`, `source?`, `timeStart?`, `timeEnd?`, `cursor?`, `limit?`): `Promise`\<\{ `entities`: [`ILogEntry`](ILogEntry.md)[]; `cursor?`: `string`; \}\>
 
 Query the log entries.
 
@@ -66,13 +74,13 @@ The inclusive time as the end of the log entries.
 
 `string`
 
-The cursor to request the next page of entities.
+The cursor to request the next chunk of entities.
 
-##### pageSize?
+##### limit?
 
 `number`
 
-The maximum number of entities in a page.
+Limit the number of entities to return.
 
 #### Returns
 

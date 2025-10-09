@@ -17,7 +17,7 @@ export class SilentLoggingConnector implements ILoggingConnector {
 	/**
 	 * Runtime name for the class.
 	 */
-	public readonly CLASS_NAME: string = nameof<SilentLoggingConnector>();
+	public static readonly CLASS_NAME: string = nameof<SilentLoggingConnector>();
 
 	/**
 	 * Log an entry to the connector.
@@ -31,8 +31,8 @@ export class SilentLoggingConnector implements ILoggingConnector {
 	 * @param conditions The conditions to match for the entities.
 	 * @param sortProperties The optional sort order.
 	 * @param properties The optional keys to return, defaults to all.
-	 * @param cursor The cursor to request the next page of entities.
-	 * @param pageSize The maximum number of entities in a page.
+	 * @param cursor The cursor to request the next chunk of entities.
+	 * @param limit Limit the number of entities to return.
 	 * @returns All the entities for the storage matching the conditions,
 	 * and a cursor which can be used to request more entities.
 	 */
@@ -44,7 +44,7 @@ export class SilentLoggingConnector implements ILoggingConnector {
 		}[],
 		properties?: (keyof ILogEntry)[],
 		cursor?: string,
-		pageSize?: number
+		limit?: number
 	): Promise<{
 		/**
 		 * The entities, which can be partial if a limited keys list was provided.

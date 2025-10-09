@@ -28,23 +28,19 @@ The options for the logging connector.
 
 ## Properties
 
+### CLASS\_NAME
+
+> `readonly` `static` **CLASS\_NAME**: `string`
+
+Runtime name for the class.
+
+***
+
 ### NAMESPACE
 
 > `readonly` `static` **NAMESPACE**: `string` = `"console"`
 
 The namespace for the logging connector.
-
-***
-
-### CLASS\_NAME
-
-> `readonly` **CLASS\_NAME**: `string`
-
-Runtime name for the class.
-
-#### Implementation of
-
-`ILoggingConnector.CLASS_NAME`
 
 ## Methods
 

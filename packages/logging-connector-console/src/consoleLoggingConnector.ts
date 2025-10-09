@@ -15,6 +15,11 @@ import type { IConsoleLoggingConnectorConstructorOptions } from "./models/IConso
  */
 export class ConsoleLoggingConnector implements ILoggingConnector {
 	/**
+	 * Runtime name for the class.
+	 */
+	public static readonly CLASS_NAME: string = nameof<ConsoleLoggingConnector>();
+
+	/**
 	 * The namespace for the logging connector.
 	 */
 	public static readonly NAMESPACE: string = "console";
@@ -30,11 +35,6 @@ export class ConsoleLoggingConnector implements ILoggingConnector {
 		magenta: 35,
 		red: 31
 	};
-
-	/**
-	 * Runtime name for the class.
-	 */
-	public readonly CLASS_NAME: string = nameof<ConsoleLoggingConnector>();
 
 	/**
 	 * The log levels to display, will default to all.
@@ -76,7 +76,7 @@ export class ConsoleLoggingConnector implements ILoggingConnector {
 	 * @returns Nothing.
 	 */
 	public async log(logEntry: ILogEntry): Promise<void> {
-		Guards.object<ILogEntry>(this.CLASS_NAME, nameof(logEntry), logEntry);
+		Guards.object<ILogEntry>(ConsoleLoggingConnector.CLASS_NAME, nameof(logEntry), logEntry);
 
 		if (this._levels.includes(logEntry.level)) {
 			logEntry.ts ??= Date.now();
