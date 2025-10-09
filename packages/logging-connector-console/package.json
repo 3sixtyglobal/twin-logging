@@ -1,6 +1,6 @@
 {
 	"name": "@twin.org/logging-connector-console",
-	"version": "0.0.2-next.2",
+	"version": "0.0.2-next.3",
 	"description": "Logging connector implementation using the console",
 	"repository": {
 		"type": "git",
@@ -33,7 +33,7 @@
 	"dependencies": {
 		"@twin.org/core": "next",
 		"@twin.org/nameof": "next",
-		"@twin.org/logging-models": "0.0.2-next.2"
+		"@twin.org/logging-models": "0.0.2-next.3"
 	},
 	"devDependencies": {
 		"@twin.org/nameof-transformer": "next",
