@@ -1,6 +1,6 @@
 // Copyright 2024 IOTA Stiftung.
 // SPDX-License-Identifier: Apache-2.0.
-import type { IEntityStorageLoggingConnectorConfig } from "./IEntityStorageLoggingConnectorConfig";
+import type { IEntityStorageLoggingConnectorConfig } from "./IEntityStorageLoggingConnectorConfig.js";
 
 /**
  * The options for the entity storage logging connector.

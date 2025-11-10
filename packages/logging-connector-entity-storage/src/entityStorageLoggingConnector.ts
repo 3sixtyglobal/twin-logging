@@ -1,16 +1,16 @@
 // Copyright 2024 IOTA Stiftung.
 // SPDX-License-Identifier: Apache-2.0.
 import { BaseError, Converter, Guards, type IError, Is, RandomHelper } from "@twin.org/core";
-import type { EntityCondition, SortDirection } from "@twin.org/entity";
+import { LogicalOperator, type EntityCondition, type SortDirection } from "@twin.org/entity";
 import {
 	EntityStorageConnectorFactory,
 	type IEntityStorageConnector
 } from "@twin.org/entity-storage-models";
-import type { ILogEntry, ILoggingConnector, LogLevel } from "@twin.org/logging-models";
+import { type ILogEntry, type ILoggingConnector, LogLevel } from "@twin.org/logging-models";
 import { nameof } from "@twin.org/nameof";
-import type { LogEntry } from "./entities/logEntry";
-import type { LogEntryError } from "./entities/logEntryError";
-import type { IEntityStorageLoggingConnectorConstructorOptions } from "./models/IEntityStorageLoggingConnectorConstructorOptions";
+import type { LogEntry } from "./entities/logEntry.js";
+import type { LogEntryError } from "./entities/logEntryError.js";
+import type { IEntityStorageLoggingConnectorConstructorOptions } from "./models/IEntityStorageLoggingConnectorConstructorOptions.js";
 
 /**
  * Class for performing logging operations in entity storage.
@@ -43,10 +43,18 @@ export class EntityStorageLoggingConnector implements ILoggingConnector {
 	 * @param options The options for the connector.
 	 */
 	constructor(options?: IEntityStorageLoggingConnectorConstructorOptions) {
-		this._levels = options?.config?.levels ?? ["debug", "info", "warn", "error", "trace"];
+		this._levels = options?.config?.levels ?? Object.values(LogLevel);
 		this._logEntryStorage = EntityStorageConnectorFactory.get(
 			options?.logEntryStorageConnectorType ?? "log-entry"
 		);
+	}
+
+	/**
+	 * Returns the class name of the component.
+	 * @returns The class name of the component.
+	 */
+	public className(): string {
+		return EntityStorageLoggingConnector.CLASS_NAME;
 	}
 
 	/**
@@ -103,8 +111,17 @@ export class EntityStorageLoggingConnector implements ILoggingConnector {
 		 */
 		cursor?: string;
 	}> {
+		const finalConditions: EntityCondition<ILogEntry> = {
+			conditions: [],
+			logicalOperator: LogicalOperator.And
+		};
+
+		if (!Is.empty(conditions)) {
+			finalConditions.conditions.push(conditions);
+		}
+
 		const result = await this._logEntryStorage.query(
-			conditions as EntityCondition<LogEntry>,
+			finalConditions,
 			sortProperties,
 			properties,
 			cursor,

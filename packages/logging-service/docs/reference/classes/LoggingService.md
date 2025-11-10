@@ -36,6 +36,24 @@ Runtime name for the class.
 
 ## Methods
 
+### className()
+
+> **className**(): `string`
+
+Returns the class name of the component.
+
+#### Returns
+
+`string`
+
+The class name of the component.
+
+#### Implementation of
+
+`ILoggingComponent.className`
+
+***
+
 ### log()
 
 > **log**(`logEntry`): `Promise`\<`void`\>

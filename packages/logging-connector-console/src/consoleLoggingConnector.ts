@@ -3,12 +3,12 @@
 import { Guards, Is } from "@twin.org/core";
 import {
 	LogEntryHelper,
+	LogLevel,
 	type ILogEntry,
-	type ILoggingConnector,
-	type LogLevel
+	type ILoggingConnector
 } from "@twin.org/logging-models";
 import { nameof } from "@twin.org/nameof";
-import type { IConsoleLoggingConnectorConstructorOptions } from "./models/IConsoleLoggingConnectorConstructorOptions";
+import type { IConsoleLoggingConnectorConstructorOptions } from "./models/IConsoleLoggingConnectorConstructorOptions.js";
 
 /**
  * Class for performing logging operations in the console.
@@ -65,9 +65,17 @@ export class ConsoleLoggingConnector implements ILoggingConnector {
 	 * @param options The options for the logging connector.
 	 */
 	constructor(options?: IConsoleLoggingConnectorConstructorOptions) {
-		this._levels = options?.config?.levels ?? ["debug", "info", "warn", "error", "trace"];
+		this._levels = options?.config?.levels ?? Object.values(LogLevel);
 		this._translateMessages = options?.config?.translateMessages ?? false;
 		this._hideGroups = options?.config?.hideGroups ?? false;
+	}
+
+	/**
+	 * Returns the class name of the component.
+	 * @returns The class name of the component.
+	 */
+	public className(): string {
+		return ConsoleLoggingConnector.CLASS_NAME;
 	}
 
 	/**

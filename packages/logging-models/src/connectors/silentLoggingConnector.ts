@@ -2,8 +2,8 @@
 // SPDX-License-Identifier: Apache-2.0.
 import type { EntityCondition, SortDirection } from "@twin.org/entity";
 import { nameof } from "@twin.org/nameof";
-import type { ILogEntry } from "../models/ILogEntry";
-import type { ILoggingConnector } from "../models/ILoggingConnector";
+import type { ILogEntry } from "../models/ILogEntry.js";
+import type { ILoggingConnector } from "../models/ILoggingConnector.js";
 
 /**
  * Class for performing logging operations to nowhere.
@@ -18,6 +18,14 @@ export class SilentLoggingConnector implements ILoggingConnector {
 	 * Runtime name for the class.
 	 */
 	public static readonly CLASS_NAME: string = nameof<SilentLoggingConnector>();
+
+	/**
+	 * Returns the class name of the component.
+	 * @returns The class name of the component.
+	 */
+	public className(): string {
+		return SilentLoggingConnector.CLASS_NAME;
+	}
 
 	/**
 	 * Log an entry to the connector.

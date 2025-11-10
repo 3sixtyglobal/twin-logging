@@ -3,9 +3,9 @@
 import { MemoryEntityStorageConnector } from "@twin.org/entity-storage-connector-memory";
 import { EntityStorageConnectorFactory } from "@twin.org/entity-storage-models";
 import { nameof } from "@twin.org/nameof";
-import type { LogEntry } from "../src/entities/logEntry";
-import { EntityStorageLoggingConnector } from "../src/entityStorageLoggingConnector";
-import { initSchema } from "../src/schema";
+import type { LogEntry } from "../src/entities/logEntry.js";
+import { EntityStorageLoggingConnector } from "../src/entityStorageLoggingConnector.js";
+import { initSchema } from "../src/schema.js";
 
 describe("EntityStorageLoggingConnector", () => {
 	beforeAll(() => {

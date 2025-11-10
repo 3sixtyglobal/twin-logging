@@ -1,7 +1,7 @@
 // Copyright 2024 IOTA Stiftung.
 // SPDX-License-Identifier: Apache-2.0.
 import { Factory } from "@twin.org/core";
-import type { ILoggingConnector } from "../models/ILoggingConnector";
+import type { ILoggingConnector } from "../models/ILoggingConnector.js";
 
 /**
  * Factory for creating logging connectors.

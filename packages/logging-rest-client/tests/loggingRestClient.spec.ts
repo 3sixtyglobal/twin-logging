@@ -1,6 +1,6 @@
 // Copyright 2024 IOTA Stiftung.
 // SPDX-License-Identifier: Apache-2.0.
-import { LoggingRestClient } from "../src/loggingRestClient";
+import { LoggingRestClient } from "../src/loggingRestClient.js";
 
 describe("LoggingRestClient", () => {
 	test("Can create an instance", async () => {

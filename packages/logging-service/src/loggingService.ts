@@ -15,7 +15,7 @@ import {
 	type LogLevel
 } from "@twin.org/logging-models";
 import { nameof } from "@twin.org/nameof";
-import type { ILoggingServiceConstructorOptions } from "./models/ILoggingServiceConstructorOptions";
+import type { ILoggingServiceConstructorOptions } from "./models/ILoggingServiceConstructorOptions.js";
 
 /**
  * Service for performing logging operations to a connector.
@@ -40,6 +40,14 @@ export class LoggingService implements ILoggingComponent {
 		this._loggingConnector = LoggingConnectorFactory.get(
 			options?.loggingConnectorType ?? "logging"
 		);
+	}
+
+	/**
+	 * Returns the class name of the component.
+	 * @returns The class name of the component.
+	 */
+	public className(): string {
+		return LoggingService.CLASS_NAME;
 	}
 
 	/**
@@ -118,8 +126,9 @@ export class LoggingService implements ILoggingComponent {
 			});
 		}
 
-		if (Is.function(this._loggingConnector?.query)) {
-			const result = await this._loggingConnector.query(
+		const queryConnector = this._loggingConnector?.query?.bind(this._loggingConnector);
+		if (Is.function(queryConnector)) {
+			const result = await queryConnector(
 				condition,
 				[{ property: "ts", sortDirection: SortDirection.Descending }],
 				undefined,

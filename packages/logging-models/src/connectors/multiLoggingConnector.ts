@@ -3,11 +3,11 @@
 import { Guards, Is } from "@twin.org/core";
 import type { EntityCondition, SortDirection } from "@twin.org/entity";
 import { nameof } from "@twin.org/nameof";
-import { LoggingConnectorFactory } from "../factories/loggingConnectorFactory";
-import type { ILogEntry } from "../models/ILogEntry";
-import type { ILoggingConnector } from "../models/ILoggingConnector";
-import type { IMultiLoggingConnectorConstructorOptions } from "../models/IMultiLoggingConnectorConstructorOptions";
-import type { LogLevel } from "../models/logLevel";
+import { LoggingConnectorFactory } from "../factories/loggingConnectorFactory.js";
+import type { ILogEntry } from "../models/ILogEntry.js";
+import type { ILoggingConnector } from "../models/ILoggingConnector.js";
+import type { IMultiLoggingConnectorConstructorOptions } from "../models/IMultiLoggingConnectorConstructorOptions.js";
+import { LogLevel } from "../models/logLevel.js";
 
 /**
  * Class for performing logging operations on multiple connectors.
@@ -46,10 +46,18 @@ export class MultiLoggingConnector implements ILoggingConnector {
 			nameof(options.loggingConnectorTypes),
 			options.loggingConnectorTypes
 		);
-		this._levels = options?.config?.levels ?? ["debug", "info", "warn", "error", "trace"];
+		this._levels = options?.config?.levels ?? Object.values(LogLevel);
 		this._loggingConnectors = options.loggingConnectorTypes.map(t =>
 			LoggingConnectorFactory.get(t)
 		);
+	}
+
+	/**
+	 * Returns the class name of the component.
+	 * @returns The class name of the component.
+	 */
+	public className(): string {
+		return MultiLoggingConnector.CLASS_NAME;
 	}
 
 	/**

@@ -1,6 +1,6 @@
 // Copyright 2024 IOTA Stiftung.
 // SPDX-License-Identifier: Apache-2.0.
-import type { LogLevel } from "./logLevel";
+import type { LogLevel } from "./logLevel.js";
 
 /**
  * Configuration for the logging connectors to specify the levels to display.

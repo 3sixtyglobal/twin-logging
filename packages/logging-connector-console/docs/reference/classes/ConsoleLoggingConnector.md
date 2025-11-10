@@ -44,6 +44,24 @@ The namespace for the logging connector.
 
 ## Methods
 
+### className()
+
+> **className**(): `string`
+
+Returns the class name of the component.
+
+#### Returns
+
+`string`
+
+The class name of the component.
+
+#### Implementation of
+
+`ILoggingConnector.className`
+
+***
+
 ### log()
 
 > **log**(`logEntry`): `Promise`\<`void`\>

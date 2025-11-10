@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0.
 import type { IComponent } from "@twin.org/core";
 import type { EntityCondition, SortDirection } from "@twin.org/entity";
-import type { ILogEntry } from "./ILogEntry";
+import type { ILogEntry } from "./ILogEntry.js";
 
 /**
  * Interface describing a logging connector.

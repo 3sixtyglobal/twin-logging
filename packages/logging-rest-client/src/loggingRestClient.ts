@@ -31,6 +31,14 @@ export class LoggingRestClient extends BaseRestClient implements ILoggingCompone
 	}
 
 	/**
+	 * Returns the class name of the component.
+	 * @returns The class name of the component.
+	 */
+	public className(): string {
+		return LoggingRestClient.CLASS_NAME;
+	}
+
+	/**
 	 * Log an entry to the connector.
 	 * @param logEntry The entry to log.
 	 * @returns Nothing.
