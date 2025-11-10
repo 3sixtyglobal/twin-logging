@@ -1,6 +1,6 @@
 {
 	"name": "@twin.org/logging-rest-client",
-	"version": "0.0.3-next.0",
+	"version": "0.0.3-next.1",
 	"description": "Logging contract implementation which can connect to REST endpoints",
 	"repository": {
 		"type": "git",
@@ -33,7 +33,7 @@
 		"@twin.org/core": "next",
 		"@twin.org/entity": "next",
 		"@twin.org/nameof": "next",
-		"@twin.org/logging-models": "0.0.3-next.0"
+		"@twin.org/logging-models": "0.0.3-next.1"
 	},
 	"devDependencies": {
 		"@twin.org/nameof-transformer": "next",
