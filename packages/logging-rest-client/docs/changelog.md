@@ -1,5 +1,19 @@
 # @twin.org/logging-rest-client - Changelog
 
+## [0.0.3-next.2](https://github.com/twinfoundation/logging/compare/logging-rest-client-v0.0.3-next.1...logging-rest-client-v0.0.3-next.2) (2026-03-02)
+
+
+### Bug Fixes
+
+* api data types ([8d37cab](https://github.com/twinfoundation/logging/commit/8d37cab7ec759f079b6480bcc27d739357dbc392))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @twin.org/logging-models bumped from 0.0.3-next.1 to 0.0.3-next.2
+
 ## [0.0.3-next.1](https://github.com/twinfoundation/logging/compare/logging-rest-client-v0.0.3-next.0...logging-rest-client-v0.0.3-next.1) (2025-11-10)
 
 
