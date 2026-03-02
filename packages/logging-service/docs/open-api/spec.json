@@ -70,12 +70,62 @@
 					}
 				},
 				"responses": {
-					"200": {
-						"description": "The rest request ended in success with no data.",
+					"204": {
+						"description": "The rest request ended in success with no data."
+					},
+					"400": {
+						"description": "The server cannot process the request, see the content for more details.",
 						"content": {
-							"text/plain": {
+							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/NoContentResponse"
+									"$ref": "#/components/schemas/Error"
+								},
+								"examples": {
+									"exampleResponse": {
+										"value": {
+											"name": "GeneralError",
+											"message": "errorMessage",
+											"properties": {
+												"foo": "bar"
+											}
+										}
+									}
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "You are not authorized to use the API or no credentials were supplied, see the content for more details.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Error"
+								},
+								"examples": {
+									"exampleResponse": {
+										"value": {
+											"name": "UnauthorizedError",
+											"message": "errorMessage"
+										}
+									}
+								}
+							}
+						}
+					},
+					"500": {
+						"description": "The server has encountered a situation it does not know how to handle, see the content for more details.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Error"
+								},
+								"examples": {
+									"exampleResponse": {
+										"value": {
+											"name": "InternalServerError",
+											"message": "errorMessage"
+										}
+									}
 								}
 							}
 						}
@@ -114,10 +164,7 @@
 						"in": "query",
 						"required": false,
 						"schema": {
-							"type": [
-								"number",
-								"string"
-							]
+							"type": "string"
 						}
 					},
 					{
@@ -126,10 +173,7 @@
 						"in": "query",
 						"required": false,
 						"schema": {
-							"type": [
-								"number",
-								"string"
-							]
+							"type": "string"
 						}
 					},
 					{
@@ -181,6 +225,63 @@
 								}
 							}
 						}
+					},
+					"400": {
+						"description": "The server cannot process the request, see the content for more details.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Error"
+								},
+								"examples": {
+									"exampleResponse": {
+										"value": {
+											"name": "GeneralError",
+											"message": "errorMessage",
+											"properties": {
+												"foo": "bar"
+											}
+										}
+									}
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "You are not authorized to use the API or no credentials were supplied, see the content for more details.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Error"
+								},
+								"examples": {
+									"exampleResponse": {
+										"value": {
+											"name": "UnauthorizedError",
+											"message": "errorMessage"
+										}
+									}
+								}
+							}
+						}
+					},
+					"500": {
+						"description": "The server has encountered a situation it does not know how to handle, see the content for more details.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Error"
+								},
+								"examples": {
+									"exampleResponse": {
+										"value": {
+											"name": "InternalServerError",
+											"message": "errorMessage"
+										}
+									}
+								}
+							}
+						}
 					}
 				}
 			}
@@ -220,7 +321,6 @@
 					"name",
 					"message"
 				],
-				"additionalProperties": false,
 				"description": "Model to describe serialized error."
 			},
 			"LogEntry": {
@@ -255,7 +355,6 @@
 					"source",
 					"message"
 				],
-				"additionalProperties": false,
 				"description": "Interface describing a log entry."
 			},
 			"LogLevel": {
@@ -306,7 +405,6 @@
 				"required": [
 					"entities"
 				],
-				"additionalProperties": false,
 				"description": "The response payload."
 			}
 		},

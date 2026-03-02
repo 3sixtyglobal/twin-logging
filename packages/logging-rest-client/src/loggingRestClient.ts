@@ -83,8 +83,8 @@ export class LoggingRestClient extends BaseRestClient implements ILoggingCompone
 			query: {
 				level,
 				source,
-				timeStart,
-				timeEnd,
+				timeStart: Coerce.string(timeStart),
+				timeEnd: Coerce.string(timeEnd),
 				cursor,
 				limit: Coerce.string(limit)
 			}

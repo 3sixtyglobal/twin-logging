@@ -24,13 +24,13 @@ The source of the log entries to retrieve.
 
 #### timeStart?
 
-> `optional` **timeStart**: `string` \| `number`
+> `optional` **timeStart**: `string`
 
 The start time of the metrics to retrieve as a timestamp in ms.
 
 #### timeEnd?
 
-> `optional` **timeEnd**: `string` \| `number`
+> `optional` **timeEnd**: `string`
 
 The end time of the metrics to retrieve as a timestamp in ms.
 

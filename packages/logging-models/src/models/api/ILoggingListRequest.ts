@@ -23,12 +23,12 @@ export interface ILoggingListRequest {
 		/**
 		 * The start time of the metrics to retrieve as a timestamp in ms.
 		 */
-		timeStart?: number | string;
+		timeStart?: string;
 
 		/**
 		 * The end time of the metrics to retrieve as a timestamp in ms.
 		 */
-		timeEnd?: number | string;
+		timeEnd?: string;
 
 		/**
 		 * The optional cursor to get next chunk.
