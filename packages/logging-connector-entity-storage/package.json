@@ -1,7 +1,7 @@
 {
 	"name": "@twin.org/logging-connector-entity-storage",
 	"version": "0.0.3-next.2",
-	"description": "Logging connector implementation using entity storage",
+	"description": "Persists log events to entity storage for durable retention, querying, and downstream processing.",
 	"repository": {
 		"type": "git",
 		"url": "git+https://github.com/twinfoundation/logging.git",

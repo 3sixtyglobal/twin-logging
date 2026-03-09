@@ -1,6 +1,6 @@
 # TWIN Logging Models
 
-Models which define the structure of the logging contracts and connectors.
+Defines shared logging contracts, event shapes, and connector interfaces used across the repository.
 
 ## Installation
 

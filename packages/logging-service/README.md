@@ -1,6 +1,6 @@
 # TWIN Logging Service
 
-Logging contract implementation and REST endpoint definitions.
+Exposes logging operations through service routes and API contracts for server-side integration.
 
 ## Installation
 

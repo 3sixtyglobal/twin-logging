@@ -1,7 +1,7 @@
 {
 	"name": "@twin.org/logging-service",
 	"version": "0.0.3-next.2",
-	"description": "Logging contract implementation and REST endpoint definitions",
+	"description": "Exposes logging operations through service routes and API contracts for server-side integration.",
 	"repository": {
 		"type": "git",
 		"url": "git+https://github.com/twinfoundation/logging.git",

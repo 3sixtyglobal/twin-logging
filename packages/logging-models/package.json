@@ -1,7 +1,7 @@
 {
 	"name": "@twin.org/logging-models",
 	"version": "0.0.3-next.2",
-	"description": "Models which define the structure of the logging connectors and services",
+	"description": "Defines shared logging contracts, event shapes, and connector interfaces used across the repository.",
 	"repository": {
 		"type": "git",
 		"url": "git+https://github.com/twinfoundation/logging.git",

@@ -1,7 +1,7 @@
 {
 	"name": "@twin.org/logging-rest-client",
 	"version": "0.0.3-next.2",
-	"description": "Logging contract implementation which can connect to REST endpoints",
+	"description": "Provides a client for interacting with logging service endpoints from applications and services.",
 	"repository": {
 		"type": "git",
 		"url": "git+https://github.com/twinfoundation/logging.git",
