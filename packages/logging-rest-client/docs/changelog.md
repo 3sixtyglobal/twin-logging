@@ -1,4 +1,4 @@
-# @twin.org/logging-rest-client - Changelog
+# Changelog
 
 ## [0.0.3-next.2](https://github.com/twinfoundation/logging/compare/logging-rest-client-v0.0.3-next.1...logging-rest-client-v0.0.3-next.2) (2026-03-02)
 

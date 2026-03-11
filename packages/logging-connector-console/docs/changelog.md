@@ -1,4 +1,4 @@
-# @twin.org/logging-connector-console - Changelog
+# Changelog
 
 ## [0.0.3-next.2](https://github.com/twinfoundation/logging/compare/logging-connector-console-v0.0.3-next.1...logging-connector-console-v0.0.3-next.2) (2026-03-02)
 
