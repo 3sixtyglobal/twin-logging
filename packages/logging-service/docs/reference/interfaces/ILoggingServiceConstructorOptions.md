@@ -4,14 +4,8 @@ Options for the logging service constructor.
 
 ## Properties
 
-### loggingConnectorType?
+### loggingConnectorType? {#loggingconnectortype}
 
 > `optional` **loggingConnectorType**: `string`
 
 The type of the logging connector to use.
-
-#### Default
-
-```ts
-logging
-```

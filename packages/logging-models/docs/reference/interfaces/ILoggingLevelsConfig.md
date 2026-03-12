@@ -4,7 +4,7 @@ Configuration for the logging connectors to specify the levels to display.
 
 ## Properties
 
-### levels?
+### levels? {#levels}
 
 > `optional` **levels**: [`LogLevel`](../type-aliases/LogLevel.md)[]
 

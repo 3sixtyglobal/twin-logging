@@ -6,31 +6,31 @@ The log levels.
 
 ## Type Declaration
 
-### Info
+### Info {#info}
 
 > `readonly` **Info**: `"info"` = `"info"`
 
 Info.
 
-### Error
+### Error {#error}
 
 > `readonly` **Error**: `"error"` = `"error"`
 
 Error.
 
-### Warn
+### Warn {#warn}
 
 > `readonly` **Warn**: `"warn"` = `"warn"`
 
 Warn.
 
-### Trace
+### Trace {#trace}
 
 > `readonly` **Trace**: `"trace"` = `"trace"`
 
 Trace.
 
-### Debug
+### Debug {#debug}
 
 > `readonly` **Debug**: `"debug"` = `"debug"`
 

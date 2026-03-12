@@ -14,7 +14,7 @@ Helper class for log entry operations.
 
 ## Methods
 
-### translate()
+### translate() {#translate}
 
 > `static` **translate**(`logEntry`): `string` \| `undefined`
 

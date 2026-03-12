@@ -8,7 +8,7 @@ Interface describing a logging contract.
 
 ## Methods
 
-### log()
+### log() {#log}
 
 > **log**(`logEntry`): `Promise`\<`void`\>
 
@@ -30,7 +30,7 @@ Nothing.
 
 ***
 
-### query()
+### query() {#query}
 
 > **query**(`level?`, `source?`, `timeStart?`, `timeEnd?`, `cursor?`, `limit?`): `Promise`\<\{ `entities`: [`ILogEntry`](ILogEntry.md)[]; `cursor?`: `string`; \}\>
 

@@ -8,7 +8,7 @@ Interface describing a logging connector.
 
 ## Methods
 
-### log()
+### log() {#log}
 
 > **log**(`logEntry`): `Promise`\<`void`\>
 
@@ -30,7 +30,7 @@ Nothing.
 
 ***
 
-### query()?
+### query()? {#query}
 
 > `optional` **query**(`conditions?`, `sortProperties?`, `properties?`, `cursor?`, `limit?`): `Promise`\<\{ `entities`: `Partial`\<[`ILogEntry`](ILogEntry.md)\>[]; `cursor?`: `string`; \}\>
 

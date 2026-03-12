@@ -28,7 +28,7 @@ The options for the logging connector.
 
 ## Properties
 
-### CLASS\_NAME
+### CLASS\_NAME {#class_name}
 
 > `readonly` `static` **CLASS\_NAME**: `string`
 
@@ -36,7 +36,7 @@ Runtime name for the class.
 
 ***
 
-### NAMESPACE
+### NAMESPACE {#namespace}
 
 > `readonly` `static` **NAMESPACE**: `string` = `"console"`
 
@@ -44,7 +44,7 @@ The namespace for the logging connector.
 
 ## Methods
 
-### className()
+### className() {#classname}
 
 > **className**(): `string`
 
@@ -62,7 +62,7 @@ The class name of the component.
 
 ***
 
-### log()
+### log() {#log}
 
 > **log**(`logEntry`): `Promise`\<`void`\>
 

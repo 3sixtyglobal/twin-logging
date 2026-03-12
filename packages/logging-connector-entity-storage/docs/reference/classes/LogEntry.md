@@ -14,7 +14,7 @@ Call defining a log entry.
 
 ## Properties
 
-### id
+### id {#id}
 
 > **id**: `string`
 
@@ -22,7 +22,7 @@ The id.
 
 ***
 
-### level
+### level {#level}
 
 > **level**: `LogLevel`
 
@@ -30,7 +30,7 @@ The level of the error being logged.
 
 ***
 
-### source
+### source {#source}
 
 > **source**: `string`
 
@@ -38,7 +38,7 @@ The source of the log entry.
 
 ***
 
-### ts
+### ts {#ts}
 
 > **ts**: `number`
 
@@ -46,7 +46,7 @@ The timestamp of the log entry.
 
 ***
 
-### message
+### message {#message}
 
 > **message**: `string`
 
@@ -54,7 +54,7 @@ The message.
 
 ***
 
-### error?
+### error? {#error}
 
 > `optional` **error**: [`LogEntryError`](LogEntryError.md)[]
 
@@ -62,7 +62,7 @@ Associated error data.
 
 ***
 
-### data?
+### data? {#data}
 
 > `optional` **data**: `object`
 

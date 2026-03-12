@@ -4,7 +4,7 @@ Interface describing a log entry.
 
 ## Properties
 
-### level
+### level {#level}
 
 > **level**: [`LogLevel`](../type-aliases/LogLevel.md)
 
@@ -12,7 +12,7 @@ The level of the error being logged.
 
 ***
 
-### source
+### source {#source}
 
 > **source**: `string`
 
@@ -20,7 +20,7 @@ The source of the log entry.
 
 ***
 
-### ts?
+### ts? {#ts}
 
 > `optional` **ts**: `number`
 
@@ -28,7 +28,7 @@ The timestamp of the log entry, if left blank will be populated by the connector
 
 ***
 
-### message
+### message {#message}
 
 > **message**: `string`
 
@@ -36,7 +36,7 @@ The message.
 
 ***
 
-### error?
+### error? {#error}
 
 > `optional` **error**: `IError`
 
@@ -44,7 +44,7 @@ Optional error details.
 
 ***
 
-### data?
+### data? {#data}
 
 > `optional` **data**: `object`
 

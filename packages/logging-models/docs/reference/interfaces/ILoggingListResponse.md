@@ -4,7 +4,7 @@ Response for log entry list request.
 
 ## Properties
 
-### body
+### body {#body}
 
 > **body**: `object`
 

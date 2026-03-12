@@ -8,7 +8,7 @@ Configuration for the Console Logging Connector.
 
 ## Properties
 
-### translateMessages?
+### translateMessages? {#translatemessages}
 
 > `optional` **translateMessages**: `boolean`
 
@@ -16,7 +16,7 @@ Translate message using the current locale.
 
 ***
 
-### hideGroups?
+### hideGroups? {#hidegroups}
 
 > `optional` **hideGroups**: `boolean`
 
@@ -24,7 +24,7 @@ Hide the group display.
 
 ***
 
-### levels?
+### levels? {#levels}
 
 > `optional` **levels**: `LogLevel`[]
 

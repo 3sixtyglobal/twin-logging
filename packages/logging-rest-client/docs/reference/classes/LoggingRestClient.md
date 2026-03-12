@@ -36,7 +36,7 @@ The configuration for the client.
 
 ## Properties
 
-### CLASS\_NAME
+### CLASS\_NAME {#class_name}
 
 > `readonly` `static` **CLASS\_NAME**: `string`
 
@@ -44,7 +44,7 @@ Runtime name for the class.
 
 ## Methods
 
-### className()
+### className() {#classname}
 
 > **className**(): `string`
 
@@ -62,7 +62,7 @@ The class name of the component.
 
 ***
 
-### log()
+### log() {#log}
 
 > **log**(`logEntry`): `Promise`\<`void`\>
 
@@ -88,7 +88,7 @@ Nothing.
 
 ***
 
-### query()
+### query() {#query}
 
 > **query**(`level?`, `source?`, `timeStart?`, `timeEnd?`, `cursor?`, `limit?`): `Promise`\<\{ `entities`: `ILogEntry`[]; `cursor?`: `string`; \}\>
 

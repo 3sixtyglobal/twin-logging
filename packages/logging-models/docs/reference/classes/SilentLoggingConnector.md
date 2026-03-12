@@ -18,7 +18,7 @@ Class for performing logging operations to nowhere.
 
 ## Properties
 
-### NAMESPACE
+### NAMESPACE {#namespace}
 
 > `readonly` `static` **NAMESPACE**: `string` = `"silent"`
 
@@ -26,7 +26,7 @@ The namespace for the logging connector.
 
 ***
 
-### CLASS\_NAME
+### CLASS\_NAME {#class_name}
 
 > `readonly` `static` **CLASS\_NAME**: `string`
 
@@ -34,7 +34,7 @@ Runtime name for the class.
 
 ## Methods
 
-### className()
+### className() {#classname}
 
 > **className**(): `string`
 
@@ -52,7 +52,7 @@ The class name of the component.
 
 ***
 
-### log()
+### log() {#log}
 
 > **log**(`logEntry`): `Promise`\<`void`\>
 
@@ -78,7 +78,7 @@ Nothing.
 
 ***
 
-### query()
+### query() {#query}
 
 > **query**(`conditions?`, `sortProperties?`, `properties?`, `cursor?`, `limit?`): `Promise`\<\{ `entities`: `Partial`\<[`ILogEntry`](../interfaces/ILogEntry.md)\>[]; `cursor?`: `string`; \}\>
 
