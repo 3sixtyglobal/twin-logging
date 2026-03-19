@@ -6,14 +6,20 @@ The options for the entity storage logging connector.
 
 ### logEntryStorageConnectorType? {#logentrystorageconnectortype}
 
-> `optional` **logEntryStorageConnectorType**: `string`
+> `optional` **logEntryStorageConnectorType?**: `string`
 
 The type of the entity storage connector to use.
+
+#### Default
+
+```ts
+log-entry
+```
 
 ***
 
 ### config? {#config}
 
-> `optional` **config**: `ILoggingLevelsConfig`
+> `optional` **config?**: `ILoggingLevelsConfig`
 
 The configuration for the entity storage logging connector.

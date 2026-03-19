@@ -6,6 +6,12 @@ Options for the logging service constructor.
 
 ### loggingConnectorType? {#loggingconnectortype}
 
-> `optional` **loggingConnectorType**: `string`
+> `optional` **loggingConnectorType?**: `string`
 
 The type of the logging connector to use.
+
+#### Default
+
+```ts
+logging
+```

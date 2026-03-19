@@ -22,7 +22,7 @@ The source of the log entry.
 
 ### ts? {#ts}
 
-> `optional` **ts**: `number`
+> `optional` **ts?**: `number`
 
 The timestamp of the log entry, if left blank will be populated by the connector.
 
@@ -38,7 +38,7 @@ The message.
 
 ### error? {#error}
 
-> `optional` **error**: `IError`
+> `optional` **error?**: `IError`
 
 Optional error details.
 
@@ -46,7 +46,7 @@ Optional error details.
 
 ### data? {#data}
 
-> `optional` **data**: `object`
+> `optional` **data?**: `object`
 
 Optional data for the message.
 

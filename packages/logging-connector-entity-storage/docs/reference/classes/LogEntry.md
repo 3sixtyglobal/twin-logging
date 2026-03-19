@@ -56,7 +56,7 @@ The message.
 
 ### error? {#error}
 
-> `optional` **error**: [`LogEntryError`](LogEntryError.md)[]
+> `optional` **error?**: [`LogEntryError`](LogEntryError.md)[]
 
 Associated error data.
 
@@ -64,7 +64,7 @@ Associated error data.
 
 ### data? {#data}
 
-> `optional` **data**: `object`
+> `optional` **data?**: `object`
 
 Data for the message.
 

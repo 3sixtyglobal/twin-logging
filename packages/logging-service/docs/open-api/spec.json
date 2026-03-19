@@ -290,6 +290,8 @@
 	"components": {
 		"schemas": {
 			"Error": {
+				"title": "Error",
+				"description": "Model to describe serialized error.",
 				"type": "object",
 				"properties": {
 					"name": {
@@ -320,10 +322,11 @@
 				"required": [
 					"name",
 					"message"
-				],
-				"description": "Model to describe serialized error."
+				]
 			},
 			"LogEntry": {
+				"title": "LogEntry",
+				"description": "Interface describing a log entry.",
 				"type": "object",
 				"properties": {
 					"level": {
@@ -354,38 +357,33 @@
 					"level",
 					"source",
 					"message"
-				],
-				"description": "Interface describing a log entry."
+				]
 			},
 			"LogLevel": {
+				"title": "LogLevel",
+				"description": "The log levels.",
 				"anyOf": [
 					{
-						"type": "string",
 						"const": "info",
 						"description": "Info."
 					},
 					{
-						"type": "string",
 						"const": "error",
 						"description": "Error."
 					},
 					{
-						"type": "string",
 						"const": "warn",
 						"description": "Warn."
 					},
 					{
-						"type": "string",
 						"const": "trace",
 						"description": "Trace."
 					},
 					{
-						"type": "string",
 						"const": "debug",
 						"description": "Debug."
 					}
-				],
-				"description": "The log levels."
+				]
 			},
 			"LoggingListResponse": {
 				"type": "object",

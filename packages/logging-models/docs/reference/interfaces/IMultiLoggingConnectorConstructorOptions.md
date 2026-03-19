@@ -14,6 +14,6 @@ The logging connectors to multiplex.
 
 ### config? {#config}
 
-> `optional` **config**: [`ILoggingLevelsConfig`](ILoggingLevelsConfig.md)
+> `optional` **config?**: [`ILoggingLevelsConfig`](ILoggingLevelsConfig.md)
 
 The configuration for the logging connector.
