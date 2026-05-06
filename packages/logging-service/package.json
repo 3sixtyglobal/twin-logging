@@ -4,7 +4,7 @@
 	"description": "Exposes logging operations through service routes and API contracts for server-side integration.",
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/twinfoundation/logging.git",
+		"url": "git+https://github.com/iotaledger/logging.git",
 		"directory": "packages/logging-service"
 	},
 	"author": "martyn.janes@iota.org",
@@ -79,7 +79,7 @@
 		"business-logic"
 	],
 	"bugs": {
-		"url": "git+https://github.com/twinfoundation/logging/issues"
+		"url": "git+https://github.com/iotaledger/logging/issues"
 	},
 	"homepage": "https://twindev.org"
 }

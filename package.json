@@ -4,7 +4,7 @@
 	"description": "Logging",
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/twinfoundation/logging.git"
+		"url": "git+https://github.com/iotaledger/logging.git"
 	},
 	"author": "martyn.janes@iota.org",
 	"license": "Apache-2.0",
@@ -62,7 +62,7 @@
 	],
 	"type": "module",
 	"bugs": {
-		"url": "git+https://github.com/twinfoundation/logging/issues"
+		"url": "git+https://github.com/iotaledger/logging/issues"
 	},
 	"homepage": "https://twindev.org"
 }
