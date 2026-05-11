@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.0.3-next.3](https://github.com/iotaledger/twin-logging/compare/logging-models-v0.0.3-next.2...logging-models-v0.0.3-next.3) (2026-05-11)
+
+
+### Features
+
+* typescript 6 update ([cb28b05](https://github.com/iotaledger/twin-logging/commit/cb28b0557595d5ba9b25fab2d9f1222590787f5a))
+
 ## [0.0.3-next.2](https://github.com/iotaledger/twin-logging/compare/logging-models-v0.0.3-next.1...logging-models-v0.0.3-next.2) (2026-03-02)
 
 
