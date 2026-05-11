@@ -290,7 +290,6 @@
 	"components": {
 		"schemas": {
 			"Error": {
-				"title": "Error",
 				"description": "Model to describe serialized error.",
 				"type": "object",
 				"properties": {
@@ -300,7 +299,7 @@
 					},
 					"message": {
 						"type": "string",
-						"description": "The message for the error."
+						"description": "The message for the error as an i18n key."
 					},
 					"source": {
 						"type": "string",
@@ -325,7 +324,6 @@
 				]
 			},
 			"LogEntry": {
-				"title": "LogEntry",
 				"description": "Interface describing a log entry.",
 				"type": "object",
 				"properties": {
@@ -360,7 +358,6 @@
 				]
 			},
 			"LogLevel": {
-				"title": "LogLevel",
 				"description": "The log levels.",
 				"anyOf": [
 					{

@@ -16,34 +16,19 @@ export class LogEntryHelper {
 		if (Is.stringValue(logEntry.level) && Is.stringValue(logEntry.source)) {
 			const sourceMessage = `${logEntry.level}.${StringHelper.camelCase(logEntry.source)}.${logEntry.message}`;
 			if (I18n.hasMessage(sourceMessage)) {
-				return I18n.formatMessage(
-					sourceMessage,
-					logEntry.data as {
-						[key: string]: unknown;
-					}
-				);
+				return I18n.formatMessage(sourceMessage, logEntry.data);
 			}
 		}
 
 		if (Is.stringValue(logEntry.source)) {
 			const sourceMessage = `${StringHelper.camelCase(logEntry.source)}.${logEntry.message}`;
 			if (I18n.hasMessage(sourceMessage)) {
-				return I18n.formatMessage(
-					sourceMessage,
-					logEntry.data as {
-						[key: string]: unknown;
-					}
-				);
+				return I18n.formatMessage(sourceMessage, logEntry.data);
 			}
 		}
 
 		if (I18n.hasMessage(logEntry.message)) {
-			return I18n.formatMessage(
-				logEntry.message,
-				logEntry.data as {
-					[key: string]: unknown;
-				}
-			);
+			return I18n.formatMessage(logEntry.message, logEntry.data);
 		}
 	}
 }
