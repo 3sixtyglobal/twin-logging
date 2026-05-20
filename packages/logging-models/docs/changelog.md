@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.0.3-next.4](https://github.com/iotaledger/twin-logging/compare/logging-models-v0.0.3-next.3...logging-models-v0.0.3-next.4) (2026-05-20)
+
+
+### Features
+
+* update dependencies ([ed1e652](https://github.com/iotaledger/twin-logging/commit/ed1e652c4ba32c854d06e9def2f7f6db0bf9a7bd))
+
 ## [0.0.3-next.3](https://github.com/iotaledger/twin-logging/compare/logging-models-v0.0.3-next.2...logging-models-v0.0.3-next.3) (2026-05-11)
 
 
