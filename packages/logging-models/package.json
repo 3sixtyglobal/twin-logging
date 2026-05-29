@@ -4,7 +4,7 @@
 	"description": "Defines shared logging contracts, event shapes, and connector interfaces used across the repository.",
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/iotaledger/logging.git",
+		"url": "git+https://github.com/iotaledger/twin-logging.git",
 		"directory": "packages/logging-models"
 	},
 	"author": "martyn.janes@iota.org",
@@ -74,7 +74,7 @@
 		"schemas"
 	],
 	"bugs": {
-		"url": "git+https://github.com/iotaledger/logging/issues"
+		"url": "git+https://github.com/iotaledger/twin-logging/issues"
 	},
 	"homepage": "https://twindev.org"
 }
