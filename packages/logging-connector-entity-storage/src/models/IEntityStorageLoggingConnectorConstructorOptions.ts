@@ -13,6 +13,12 @@ export interface IEntityStorageLoggingConnectorConstructorOptions {
 	logEntryStorageConnectorType?: string;
 
 	/**
+	 * The type of the tenant component to use for partitioning.
+	 * @default tenant
+	 */
+	tenantComponentType?: string;
+
+	/**
 	 * The configuration for the entity storage logging connector.
 	 */
 	config?: IEntityStorageLoggingConnectorConfig;

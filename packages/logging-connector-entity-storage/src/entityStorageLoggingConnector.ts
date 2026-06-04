@@ -1,7 +1,17 @@
 // Copyright 2024 IOTA Stiftung.
 // SPDX-License-Identifier: Apache-2.0.
-import { BaseError, Converter, Guards, type IError, Is, RandomHelper } from "@twin.org/core";
-import { LogicalOperator, type EntityCondition, type SortDirection } from "@twin.org/entity";
+import type { ITenantComponent } from "@twin.org/api-models";
+import { ContextIdKeys, ContextIdStore } from "@twin.org/context";
+import {
+	BaseError,
+	ComponentFactory,
+	Converter,
+	Guards,
+	type IError,
+	Is,
+	RandomHelper
+} from "@twin.org/core";
+import { type EntityCondition, LogicalOperator, type SortDirection } from "@twin.org/entity";
 import {
 	EntityStorageConnectorFactory,
 	type IEntityStorageConnector
@@ -39,6 +49,12 @@ export class EntityStorageLoggingConnector implements ILoggingConnector {
 	private readonly _logEntryStorage: IEntityStorageConnector<LogEntry>;
 
 	/**
+	 * Tenant component for partitioning.
+	 * @internal
+	 */
+	private readonly _tenantComponent?: ITenantComponent;
+
+	/**
 	 * Create a new instance of EntityStorageLoggingConnector.
 	 * @param options The options for the connector.
 	 */
@@ -46,6 +62,9 @@ export class EntityStorageLoggingConnector implements ILoggingConnector {
 		this._levels = options?.config?.levels ?? Object.values(LogLevel);
 		this._logEntryStorage = EntityStorageConnectorFactory.get(
 			options?.logEntryStorageConnectorType ?? "log-entry"
+		);
+		this._tenantComponent = ComponentFactory.getIfExists<ITenantComponent>(
+			options?.tenantComponentType ?? "tenant"
 		);
 	}
 
@@ -78,7 +97,16 @@ export class EntityStorageLoggingConnector implements ILoggingConnector {
 				data: logEntry.data
 			};
 
-			await this._logEntryStorage.set(entity);
+			// Log entry must be run once per tenant in multi tenant mode
+			// if the tenant id is not already set in the context
+			// as these are most likely startup events or logging run outside of a tenant context
+			// we need to be sent to all tenants
+			const contextIds = (await ContextIdStore.getContextIds()) ?? {};
+			if (Is.stringValue(contextIds[ContextIdKeys.Tenant]) || Is.empty(this._tenantComponent)) {
+				await this._logEntryStorage.set(entity);
+			} else {
+				await this._tenantComponent.runPerTenant(async () => this._logEntryStorage.set(entity));
+			}
 		}
 	}
 
