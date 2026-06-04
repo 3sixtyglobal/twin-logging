@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.0.3-next.5](https://github.com/iotaledger/twin-logging/compare/logging-service-v0.0.3-next.4...logging-service-v0.0.3-next.5) (2026-06-04)
+
+
+### Miscellaneous Chores
+
+* **logging-service:** Synchronize repo versions
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @twin.org/logging-models bumped from 0.0.3-next.4 to 0.0.3-next.5
+
 ## [0.0.3-next.4](https://github.com/iotaledger/twin-logging/compare/logging-service-v0.0.3-next.3...logging-service-v0.0.3-next.4) (2026-05-20)
 
 

@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.0.3-next.5](https://github.com/iotaledger/twin-logging/compare/logging-connector-entity-storage-v0.0.3-next.4...logging-connector-entity-storage-v0.0.3-next.5) (2026-06-04)
+
+
+### Features
+
+* tenant spread entity storage ([#42](https://github.com/iotaledger/twin-logging/issues/42)) ([f2da111](https://github.com/iotaledger/twin-logging/commit/f2da11160beb33337c8055083f7951a34062fb58))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @twin.org/logging-models bumped from 0.0.3-next.4 to 0.0.3-next.5
+
 ## [0.0.3-next.4](https://github.com/iotaledger/twin-logging/compare/logging-connector-entity-storage-v0.0.3-next.3...logging-connector-entity-storage-v0.0.3-next.4) (2026-05-20)
 
 
