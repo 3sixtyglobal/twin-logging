@@ -18,6 +18,20 @@ log-entry
 
 ***
 
+### tenantComponentType? {#tenantcomponenttype}
+
+> `optional` **tenantComponentType?**: `string`
+
+The type of the tenant component to use for partitioning.
+
+#### Default
+
+```ts
+tenant
+```
+
+***
+
 ### config? {#config}
 
 > `optional` **config?**: `ILoggingLevelsConfig`
