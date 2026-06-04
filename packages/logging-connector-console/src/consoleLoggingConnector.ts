@@ -146,7 +146,7 @@ export class ConsoleLoggingConnector implements ILoggingConnector {
 
 	/**
 	 * Add color to a string.
-	 * @param string The string to colorize.
+	 * @param message The string to colorize.
 	 * @param color The color to use.
 	 * @returns The colorized string.
 	 * @internal
