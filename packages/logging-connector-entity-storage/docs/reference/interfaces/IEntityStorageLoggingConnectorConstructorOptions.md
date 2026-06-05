@@ -34,6 +34,6 @@ tenant
 
 ### config? {#config}
 
-> `optional` **config?**: `ILoggingLevelsConfig`
+> `optional` **config?**: [`IEntityStorageLoggingConnectorConfig`](IEntityStorageLoggingConnectorConfig.md)
 
 The configuration for the entity storage logging connector.

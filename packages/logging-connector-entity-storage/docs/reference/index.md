@@ -8,11 +8,9 @@
 
 ## Interfaces
 
+- [IBatchEntry](interfaces/IBatchEntry.md)
+- [IEntityStorageLoggingConnectorConfig](interfaces/IEntityStorageLoggingConnectorConfig.md)
 - [IEntityStorageLoggingConnectorConstructorOptions](interfaces/IEntityStorageLoggingConnectorConstructorOptions.md)
-
-## Type Aliases
-
-- [IEntityStorageLoggingConnectorConfig](type-aliases/IEntityStorageLoggingConnectorConfig.md)
 
 ## Functions
 
