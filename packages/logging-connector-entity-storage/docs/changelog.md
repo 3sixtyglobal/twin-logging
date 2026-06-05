@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.0.3-next.6](https://github.com/iotaledger/twin-logging/compare/logging-connector-entity-storage-v0.0.3-next.5...logging-connector-entity-storage-v0.0.3-next.6) (2026-06-05)
+
+
+### Features
+
+* entity storage batching ([#45](https://github.com/iotaledger/twin-logging/issues/45)) ([4b3e97a](https://github.com/iotaledger/twin-logging/commit/4b3e97a79b4089ce1ada9d90ad1687c9404acf87))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @twin.org/logging-models bumped from 0.0.3-next.5 to 0.0.3-next.6
+
 ## [0.0.3-next.5](https://github.com/iotaledger/twin-logging/compare/logging-connector-entity-storage-v0.0.3-next.4...logging-connector-entity-storage-v0.0.3-next.5) (2026-06-04)
 
 

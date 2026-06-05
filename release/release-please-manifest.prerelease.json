@@ -1,7 +1,7 @@
 {
-	"packages/logging-models": "0.0.3-next.5",
-	"packages/logging-connector-console": "0.0.3-next.5",
-	"packages/logging-connector-entity-storage": "0.0.3-next.5",
-	"packages/logging-service": "0.0.3-next.5",
-	"packages/logging-rest-client": "0.0.3-next.5"
+	"packages/logging-models": "0.0.3-next.6",
+	"packages/logging-connector-console": "0.0.3-next.6",
+	"packages/logging-connector-entity-storage": "0.0.3-next.6",
+	"packages/logging-service": "0.0.3-next.6",
+	"packages/logging-rest-client": "0.0.3-next.6"
 }
