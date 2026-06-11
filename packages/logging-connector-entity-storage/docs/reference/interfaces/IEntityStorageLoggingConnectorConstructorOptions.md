@@ -18,16 +18,16 @@ log-entry
 
 ***
 
-### tenantComponentType? {#tenantcomponenttype}
+### platformComponentType? {#platformcomponenttype}
 
-> `optional` **tenantComponentType?**: `string`
+> `optional` **platformComponentType?**: `string`
 
-The type of the tenant component to use for partitioning.
+The type of the platform component to use for partitioning.
 
 #### Default
 
 ```ts
-tenant
+platform
 ```
 
 ***
