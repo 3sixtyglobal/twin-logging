@@ -20,7 +20,7 @@ export interface IBatchEntry {
 
 	/**
 	 * True when the entry was produced outside any tenant context and must be
-	 * written to every tenant via runPerTenant on flush.
+	 * written to every tenant via run on flush.
 	 */
 	perTenant: boolean;
 }

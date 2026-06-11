@@ -1,6 +1,6 @@
 // Copyright 2024 IOTA Stiftung.
 // SPDX-License-Identifier: Apache-2.0.
-import type { ITenantComponent } from "@twin.org/api-models";
+import type { IPlatformComponent } from "@twin.org/api-models";
 import { ContextIdKeys, ContextIdStore, type IContextIds } from "@twin.org/context";
 import {
 	BaseError,
@@ -68,10 +68,10 @@ export class EntityStorageLoggingConnector implements ILoggingConnector {
 	private readonly _logEntryStorage: IEntityStorageConnector<LogEntry>;
 
 	/**
-	 * Tenant component for partitioning.
+	 * Platform component for partitioning.
 	 * @internal
 	 */
-	private readonly _tenantComponent?: ITenantComponent;
+	private readonly _platformComponent: IPlatformComponent;
 
 	/**
 	 * Flush when the cache reaches this size; undefined or <= 1 disables size-based flushing.
@@ -136,8 +136,8 @@ export class EntityStorageLoggingConnector implements ILoggingConnector {
 		this._logEntryStorage = EntityStorageConnectorFactory.get(
 			options?.logEntryStorageConnectorType ?? "log-entry"
 		);
-		this._tenantComponent = ComponentFactory.getIfExists<ITenantComponent>(
-			options?.tenantComponentType ?? "tenant"
+		this._platformComponent = ComponentFactory.get<IPlatformComponent>(
+			options?.platformComponentType ?? "platform"
 		);
 	}
 
@@ -198,16 +198,16 @@ export class EntityStorageLoggingConnector implements ILoggingConnector {
 				data: logEntry.data
 			};
 
+			// If we don't have a tenant context ID and the tenant component is multi-tenant,
+			// we consider the entry as per-tenant and run it in the tenant context to ensure
+			// correct partitioning.
 			const contextIds = (await ContextIdStore.getContextIds()) ?? {};
 			const perTenant =
-				!Is.stringValue(contextIds[ContextIdKeys.Tenant]) && !Is.empty(this._tenantComponent);
+				!Is.stringValue(contextIds[ContextIdKeys.Tenant]) &&
+				this._platformComponent.isMultiTenant();
 
 			if (Is.empty(this._batchSize) && Is.empty(this._batchIntervalMs)) {
-				if (perTenant) {
-					await this._tenantComponent?.runPerTenant(async () => this._logEntryStorage.set(entity));
-				} else {
-					await ContextIdStore.run(contextIds, async () => this._logEntryStorage.set(entity));
-				}
+				await this._platformComponent.execute(async () => this._logEntryStorage.set(entity));
 			} else {
 				if (!Is.empty(this._batchIntervalMs) && Is.empty(this._batchTimer)) {
 					this._batchTimer = setInterval(async () => {
@@ -340,7 +340,7 @@ export class EntityStorageLoggingConnector implements ILoggingConnector {
 			}
 
 			if (perTenantEntities.length > 0) {
-				await this._tenantComponent?.runPerTenant(async () =>
+				await this._platformComponent.execute(async () =>
 					this._logEntryStorage.setBatch(perTenantEntities)
 				);
 			}
