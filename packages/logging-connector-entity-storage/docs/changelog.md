@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.0.3-next.7](https://github.com/iotaledger/twin-logging/compare/logging-connector-entity-storage-v0.0.3-next.6...logging-connector-entity-storage-v0.0.3-next.7) (2026-06-11)
+
+
+### Features
+
+* organization identifiers ([#48](https://github.com/iotaledger/twin-logging/issues/48)) ([eb28785](https://github.com/iotaledger/twin-logging/commit/eb28785377e71d88e79c2bc0a58343fd02cd5390))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @twin.org/logging-models bumped from 0.0.3-next.6 to 0.0.3-next.7
+
 ## [0.0.3-next.6](https://github.com/iotaledger/twin-logging/compare/logging-connector-entity-storage-v0.0.3-next.5...logging-connector-entity-storage-v0.0.3-next.6) (2026-06-05)
 
 
