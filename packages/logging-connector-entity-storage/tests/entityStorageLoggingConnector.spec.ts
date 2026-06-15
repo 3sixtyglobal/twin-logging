@@ -34,7 +34,8 @@ describe("EntityStorageLoggingConnector", () => {
 
 	beforeEach(() => {
 		storage = new MemoryEntityStorageConnector<LogEntry>({
-			entitySchema: nameof<LogEntry>()
+			entitySchema: nameof<LogEntry>(),
+			config: { storageKey: "log-entry" }
 		});
 		EntityStorageConnectorFactory.register("log-entry", () => storage);
 	});
