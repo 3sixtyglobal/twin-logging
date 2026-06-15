@@ -39,6 +39,10 @@ describe("EntityStorageLoggingConnector", () => {
 		EntityStorageConnectorFactory.register("log-entry", () => storage);
 	});
 
+	afterEach(async () => {
+		await storage.teardown();
+	});
+
 	test("can construct", async () => {
 		ComponentFactory.register("platform", () => makePlatformComponent(false));
 		const logging = new EntityStorageLoggingConnector();
