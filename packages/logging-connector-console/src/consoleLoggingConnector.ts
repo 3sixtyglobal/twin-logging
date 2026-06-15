@@ -81,7 +81,7 @@ export class ConsoleLoggingConnector implements ILoggingConnector {
 	/**
 	 * Log an entry to the connector.
 	 * @param logEntry The entry to log.
-	 * @returns Nothing.
+	 * @returns A promise that resolves when the entry has been written to the console.
 	 */
 	public async log(logEntry: ILogEntry): Promise<void> {
 		Guards.object<ILogEntry>(ConsoleLoggingConnector.CLASS_NAME, nameof(logEntry), logEntry);
@@ -130,9 +130,9 @@ export class ConsoleLoggingConnector implements ILoggingConnector {
 	}
 
 	/**
-	 * Convert a string to a color.
-	 * @param str The string to convert.
-	 * @returns The color.
+	 * Derives an HSL color string from a source string using a hash of its characters.
+	 * @param str The string to derive a color from.
+	 * @returns An HSL color string suitable for use in CSS.
 	 * @internal
 	 */
 	private stringToColor(str: string): string {
@@ -157,8 +157,8 @@ export class ConsoleLoggingConnector implements ILoggingConnector {
 	}
 
 	/**
-	 * Handle a group.
-	 * @param group The group.
+	 * Opens or switches the console group when the active group changes.
+	 * @param group The group identifier to display.
 	 * @internal
 	 */
 	private handleGroup(group: string): void {

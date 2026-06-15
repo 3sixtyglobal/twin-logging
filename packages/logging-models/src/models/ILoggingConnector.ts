@@ -11,7 +11,7 @@ export interface ILoggingConnector extends IComponent {
 	/**
 	 * Log an entry to the connector.
 	 * @param logEntry The entry to log.
-	 * @returns Nothing.
+	 * @returns A promise that resolves when the entry has been accepted by the connector.
 	 */
 	log(logEntry: ILogEntry): Promise<void>;
 

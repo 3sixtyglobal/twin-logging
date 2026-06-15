@@ -3,7 +3,7 @@
 import { entity, property } from "@twin.org/entity";
 
 /**
- * Call defining a log entry error.
+ * Entity representing a flattened error captured within a log entry.
  */
 @entity()
 export class LogEntryError {

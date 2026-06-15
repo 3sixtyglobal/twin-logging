@@ -152,7 +152,7 @@ export class EntityStorageLoggingConnector implements ILoggingConnector {
 	/**
 	 * Start the connector; sets up the interval timer when batchIntervalMs is configured.
 	 * The timer is also started lazily by the first batched write if this method is not called.
-	 * @returns Nothing.
+	 * @returns A promise that resolves when the connector is ready to accept log entries.
 	 */
 	public async start(): Promise<void> {
 		if (!Is.empty(this._batchIntervalMs) && Is.empty(this._batchTimer)) {
@@ -164,7 +164,7 @@ export class EntityStorageLoggingConnector implements ILoggingConnector {
 
 	/**
 	 * Stop the connector; flushes any remaining cached entries and clears the timer.
-	 * @returns Nothing.
+	 * @returns A promise that resolves when the final flush completes and the timer is cleared.
 	 */
 	public async stop(): Promise<void> {
 		if (!Is.empty(this._batchTimer)) {
@@ -180,7 +180,7 @@ export class EntityStorageLoggingConnector implements ILoggingConnector {
 	 * When batching is active the entry is held in memory until a flush is triggered
 	 * by the size threshold or the interval timer; otherwise it is written immediately.
 	 * @param logEntry The entry to log.
-	 * @returns Nothing.
+	 * @returns A promise that resolves when the entry is accepted (written or enqueued).
 	 */
 	public async log(logEntry: ILogEntry): Promise<void> {
 		Guards.object<ILogEntry>(EntityStorageLoggingConnector.CLASS_NAME, nameof(logEntry), logEntry);
@@ -308,7 +308,7 @@ export class EntityStorageLoggingConnector implements ILoggingConnector {
 	 * Entries sharing the same tenant context are grouped into a single setBatch call.
 	 * If the mutex cannot be acquired the call returns without writing.
 	 * On a storage write failure the entries are returned to the head of the cache for the next attempt.
-	 * @returns Nothing.
+	 * @returns A promise that resolves when all cached entries have been written to storage.
 	 */
 	public async flush(): Promise<void> {
 		if (this._batchCache.length === 0) {

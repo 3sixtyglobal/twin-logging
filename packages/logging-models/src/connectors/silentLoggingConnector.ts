@@ -30,7 +30,7 @@ export class SilentLoggingConnector implements ILoggingConnector {
 	/**
 	 * Log an entry to the connector.
 	 * @param logEntry The entry to log.
-	 * @returns Nothing.
+	 * @returns A promise that resolves immediately without performing any output.
 	 */
 	public async log(logEntry: ILogEntry): Promise<void> {}
 

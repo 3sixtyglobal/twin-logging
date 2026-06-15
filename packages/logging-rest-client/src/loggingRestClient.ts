@@ -41,7 +41,7 @@ export class LoggingRestClient extends BaseRestClient implements ILoggingCompone
 	/**
 	 * Log an entry to the connector.
 	 * @param logEntry The entry to log.
-	 * @returns Nothing.
+	 * @returns A promise that resolves when the REST endpoint has accepted the entry.
 	 */
 	public async log(logEntry: ILogEntry): Promise<void> {
 		Guards.object<ILogEntry>(LoggingRestClient.CLASS_NAME, nameof(logEntry), logEntry);

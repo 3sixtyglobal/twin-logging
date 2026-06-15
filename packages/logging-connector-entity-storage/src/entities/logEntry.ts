@@ -5,7 +5,7 @@ import type { LogLevel } from "@twin.org/logging-models";
 import type { LogEntryError } from "./logEntryError.js";
 
 /**
- * Call defining a log entry.
+ * Entity representing a persisted log entry.
  */
 @entity()
 export class LogEntry {

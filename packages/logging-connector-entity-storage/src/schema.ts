@@ -6,7 +6,7 @@ import { LogEntry } from "./entities/logEntry.js";
 import { LogEntryError } from "./entities/logEntryError.js";
 
 /**
- * Initialize the schema for the logging connector entity storage.
+ * Registers entity schemas for the logging connector entity storage with the schema factory.
  */
 export function initSchema(): void {
 	EntitySchemaFactory.register(nameof<LogEntry>(), () => EntitySchemaHelper.getSchema(LogEntry));
