@@ -98,6 +98,12 @@ export class EntityStorageLoggingConnector implements ILoggingConnector {
 	private readonly _maxCacheSize: number;
 
 	/**
+	 * Timeout in milliseconds passed to Mutex.lock calls.
+	 * @internal
+	 */
+	private readonly _mutexTimeoutMs?: number;
+
+	/**
 	 * Unique key used to serialize concurrent flush calls via Mutex.
 	 * @internal
 	 */
@@ -130,6 +136,8 @@ export class EntityStorageLoggingConnector implements ILoggingConnector {
 			Coerce.integer(options?.config?.maxCacheSize) ??
 			EntityStorageLoggingConnector.DEFAULT_MAX_CACHE_SIZE;
 		this._maxCacheSize = cfgMaxCacheSize > 0 ? cfgMaxCacheSize : 0;
+
+		this._mutexTimeoutMs = Coerce.integer(options?.config?.mutexTimeoutMs);
 
 		this._mutexKey = RandomHelper.generateUuidV7("compact");
 		this._batchCache = [];
@@ -216,7 +224,10 @@ export class EntityStorageLoggingConnector implements ILoggingConnector {
 				}
 
 				let shouldFlush = false;
-				const locked = await Mutex.lock(this._mutexKey);
+				const locked = await Mutex.lock(this._mutexKey, {
+					throwOnTimeout: true,
+					timeoutMs: this._mutexTimeoutMs
+				});
 				if (locked) {
 					try {
 						this._batchCache.push({ entity, contextIds, perTenant });
@@ -314,7 +325,10 @@ export class EntityStorageLoggingConnector implements ILoggingConnector {
 		if (this._batchCache.length === 0) {
 			return;
 		}
-		const locked = await Mutex.lock(this._mutexKey);
+		const locked = await Mutex.lock(this._mutexKey, {
+			throwOnTimeout: true,
+			timeoutMs: this._mutexTimeoutMs
+		});
 		if (!locked) {
 			return;
 		}

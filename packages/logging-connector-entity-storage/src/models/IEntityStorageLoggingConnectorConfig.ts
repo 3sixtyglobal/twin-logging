@@ -29,4 +29,9 @@ export interface IEntityStorageLoggingConnectorConfig extends ILoggingLevelsConf
 	 * @default 1000
 	 */
 	maxCacheSize?: number;
+
+	/**
+	 * Maximum number of milliseconds to wait when acquiring a mutex lock before timing out.
+	 */
+	mutexTimeoutMs?: number;
 }
