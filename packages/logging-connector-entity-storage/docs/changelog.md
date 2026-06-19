@@ -1,5 +1,25 @@
 # Changelog
 
+## [0.0.3-next.8](https://github.com/iotaledger/twin-logging/compare/logging-connector-entity-storage-v0.0.3-next.7...logging-connector-entity-storage-v0.0.3-next.8) (2026-06-19)
+
+
+### Features
+
+* configurable timeout for mutex ([1a9925d](https://github.com/iotaledger/twin-logging/commit/1a9925dc9eee4497283d31f7b02dc28f49e3ee89))
+
+
+### Bug Fixes
+
+* use async getStore in tests ([48b6253](https://github.com/iotaledger/twin-logging/commit/48b62531de81a3b63685dfa955e1b510c702fee3))
+* use async getStore in tests ([ad74cad](https://github.com/iotaledger/twin-logging/commit/ad74cad157746c75b1ca82869edaab45b66a7da7))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @twin.org/logging-models bumped from 0.0.3-next.7 to 0.0.3-next.8
+
 ## [0.0.3-next.7](https://github.com/iotaledger/twin-logging/compare/logging-connector-entity-storage-v0.0.3-next.6...logging-connector-entity-storage-v0.0.3-next.7) (2026-06-11)
 
 
