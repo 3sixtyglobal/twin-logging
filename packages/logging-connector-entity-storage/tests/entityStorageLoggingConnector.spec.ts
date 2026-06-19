@@ -21,7 +21,8 @@ function makePlatformComponent(multiTenant: boolean): IPlatformComponent {
 			} else {
 				await method();
 			}
-		}
+		},
+		getLocalOriginContext: async () => undefined
 	};
 }
 
