@@ -1,6 +1,6 @@
 # Class: LogEntryError
 
-Call defining a log entry error.
+Entity representing a flattened error captured within a log entry.
 
 ## Constructors
 

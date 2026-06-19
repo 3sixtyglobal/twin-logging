@@ -1,6 +1,6 @@
 # Interface: ILoggingListRequest
 
-Get the a list of the log entries.
+Request parameters for retrieving a list of log entries.
 
 ## Properties
 

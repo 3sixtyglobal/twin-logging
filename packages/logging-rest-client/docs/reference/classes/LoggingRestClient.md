@@ -80,7 +80,7 @@ The entry to log.
 
 `Promise`\<`void`\>
 
-Nothing.
+A promise that resolves when the REST endpoint has accepted the entry.
 
 #### Implementation of
 

@@ -97,7 +97,7 @@ The timer is also started lazily by the first batched write if this method is no
 
 `Promise`\<`void`\>
 
-Nothing.
+A promise that resolves when the connector is ready to accept log entries.
 
 #### Implementation of
 
@@ -115,7 +115,7 @@ Stop the connector; flushes any remaining cached entries and clears the timer.
 
 `Promise`\<`void`\>
 
-Nothing.
+A promise that resolves when the final flush completes and the timer is cleared.
 
 #### Implementation of
 
@@ -144,7 +144,7 @@ The entry to log.
 
 `Promise`\<`void`\>
 
-Nothing.
+A promise that resolves when the entry is accepted (written or enqueued).
 
 #### Implementation of
 
@@ -217,4 +217,4 @@ On a storage write failure the entries are returned to the head of the cache for
 
 `Promise`\<`void`\>
 
-Nothing.
+A promise that resolves when all cached entries have been written to storage.

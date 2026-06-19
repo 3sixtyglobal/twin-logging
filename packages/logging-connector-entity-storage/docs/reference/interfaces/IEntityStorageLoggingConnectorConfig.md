@@ -56,6 +56,14 @@ Set to 0 to disable the limit.
 
 ***
 
+### mutexTimeoutMs? {#mutextimeoutms}
+
+> `optional` **mutexTimeoutMs?**: `number`
+
+Maximum number of milliseconds to wait when acquiring a mutex lock before timing out.
+
+***
+
 ### levels? {#levels}
 
 > `optional` **levels?**: `LogLevel`[]

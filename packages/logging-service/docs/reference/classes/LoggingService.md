@@ -72,7 +72,7 @@ The entry to log.
 
 `Promise`\<`void`\>
 
-Nothing.
+A promise that resolves when the underlying connector has accepted the entry.
 
 #### Implementation of
 

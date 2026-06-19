@@ -70,7 +70,7 @@ The entry to log.
 
 `Promise`\<`void`\>
 
-Nothing.
+A promise that resolves immediately without performing any output.
 
 #### Implementation of
 

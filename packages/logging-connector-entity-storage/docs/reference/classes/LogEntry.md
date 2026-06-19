@@ -1,6 +1,6 @@
 # Class: LogEntry
 
-Call defining a log entry.
+Entity representing a persisted log entry.
 
 ## Constructors
 

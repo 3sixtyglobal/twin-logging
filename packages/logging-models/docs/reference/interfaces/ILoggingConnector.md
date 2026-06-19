@@ -26,7 +26,7 @@ The entry to log.
 
 `Promise`\<`void`\>
 
-Nothing.
+A promise that resolves when the entry has been accepted by the connector.
 
 ***
 

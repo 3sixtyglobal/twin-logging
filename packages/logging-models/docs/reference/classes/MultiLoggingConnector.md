@@ -80,7 +80,7 @@ The entry to log.
 
 `Promise`\<`void`\>
 
-Nothing.
+A promise that resolves when all child connectors have settled for this entry.
 
 #### Implementation of
 
