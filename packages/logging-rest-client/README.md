@@ -1,6 +1,6 @@
 # TWIN Logging REST Client
 
-Logging contract implementation which can connect to REST endpoints.
+Provides a client for interacting with logging service endpoints from applications and services.
 
 ## Installation
 

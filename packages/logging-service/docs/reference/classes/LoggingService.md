@@ -28,27 +28,33 @@ The options for the connector.
 
 ## Properties
 
-### NAMESPACE
+### CLASS\_NAME {#class_name}
 
-> `readonly` `static` **NAMESPACE**: `string` = `"logging"`
-
-The namespace for the logging component.
-
-***
-
-### CLASS\_NAME
-
-> `readonly` **CLASS\_NAME**: `string`
+> `readonly` `static` **CLASS\_NAME**: `string`
 
 Runtime name for the class.
 
-#### Implementation of
-
-`ILoggingComponent.CLASS_NAME`
-
 ## Methods
 
-### log()
+### className() {#classname}
+
+> **className**(): `string`
+
+Returns the class name of the component.
+
+#### Returns
+
+`string`
+
+The class name of the component.
+
+#### Implementation of
+
+`ILoggingComponent.className`
+
+***
+
+### log() {#log}
 
 > **log**(`logEntry`): `Promise`\<`void`\>
 
@@ -66,7 +72,7 @@ The entry to log.
 
 `Promise`\<`void`\>
 
-Nothing.
+A promise that resolves when the underlying connector has accepted the entry.
 
 #### Implementation of
 
@@ -74,9 +80,9 @@ Nothing.
 
 ***
 
-### query()
+### query() {#query}
 
-> **query**(`level?`, `source?`, `timeStart?`, `timeEnd?`, `cursor?`, `pageSize?`): `Promise`\<\{ `entities`: `ILogEntry`[]; `cursor?`: `string`; \}\>
+> **query**(`level?`, `source?`, `timeStart?`, `timeEnd?`, `cursor?`, `limit?`): `Promise`\<\{ `entities`: `ILogEntry`[]; `cursor?`: `string`; \}\>
 
 Query the log entries.
 
@@ -110,13 +116,13 @@ The inclusive time as the end of the log entries.
 
 `string`
 
-The cursor to request the next page of entities.
+The cursor to request the next chunk of entities.
 
-##### pageSize?
+##### limit?
 
 `number`
 
-The maximum number of entities in a page.
+Limit the number of entities to return.
 
 #### Returns
 

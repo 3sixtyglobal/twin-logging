@@ -144,7 +144,7 @@ export function generateRestRoutesLogging(
  * @param httpRequestContext The request context for the API.
  * @param componentName The name of the component to use in the routes.
  * @param request The request.
- * @returns The response object with additional http response properties.
+ * @returns A promise that resolves to a no-content response when the entry has been logged.
  */
 export async function loggingCreate(
 	httpRequestContext: IHttpRequestContext,
@@ -165,7 +165,7 @@ export async function loggingCreate(
  * @param httpRequestContext The request context for the API.
  * @param componentName The name of the component to use in the routes.
  * @param request The request.
- * @returns The response object with additional http response properties.
+ * @returns A promise that resolves to the matching log entries and an optional pagination cursor.
  */
 export async function loggingList(
 	httpRequestContext: IHttpRequestContext,
@@ -180,7 +180,7 @@ export async function loggingList(
 		Coerce.number(request?.query?.timeStart),
 		Coerce.number(request?.query?.timeEnd),
 		request?.query?.cursor,
-		Coerce.number(request?.query?.pageSize)
+		Coerce.number(request?.query?.limit)
 	);
 	return {
 		body: itemsAndCursor

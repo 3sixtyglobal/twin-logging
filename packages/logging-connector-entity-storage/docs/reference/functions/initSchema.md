@@ -2,7 +2,7 @@
 
 > **initSchema**(): `void`
 
-Initialize the schema for the logging connector entity storage.
+Registers entity schemas for the logging connector entity storage with the schema factory.
 
 ## Returns
 

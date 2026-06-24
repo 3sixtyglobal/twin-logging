@@ -1,6 +1,6 @@
 # TWIN Logging Connector Entity Storage
 
-Logging connector implementation using entity storage.
+Persists log events to entity storage for durable retention, querying, and downstream processing.
 
 ## Installation
 

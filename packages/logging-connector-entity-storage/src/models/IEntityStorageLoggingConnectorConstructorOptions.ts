@@ -1,6 +1,6 @@
 // Copyright 2024 IOTA Stiftung.
 // SPDX-License-Identifier: Apache-2.0.
-import type { IEntityStorageLoggingConnectorConfig } from "./IEntityStorageLoggingConnectorConfig";
+import type { IEntityStorageLoggingConnectorConfig } from "./IEntityStorageLoggingConnectorConfig.js";
 
 /**
  * The options for the entity storage logging connector.
@@ -11,6 +11,12 @@ export interface IEntityStorageLoggingConnectorConstructorOptions {
 	 * @default log-entry
 	 */
 	logEntryStorageConnectorType?: string;
+
+	/**
+	 * The type of the platform component to use for partitioning.
+	 * @default platform
+	 */
+	platformComponentType?: string;
 
 	/**
 	 * The configuration for the entity storage logging connector.

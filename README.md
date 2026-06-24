@@ -1,14 +1,16 @@
 # TWIN Logging
 
-This mono-repository contains the packages to use with logging in TWIN applications.
+This repository provides reusable logging building blocks for applications and services across the TWIN ecosystem. The packages are designed to work together so teams can model log events consistently, route messages to different destinations, and expose or consume logging capabilities through service interfaces.
+
+Together, these components help standardise how operational and domain events are captured, transported, and persisted. This supports clearer observability, easier integration between services, and a more maintainable approach to logging as systems grow.
 
 ## Packages
 
-- [logging-models](packages/logging-models/README.md) - Models which define the structure of the logging contracts and connectors.
-- [logging-connector-console](packages/logging-connector-console/README.md) - Logging connector implementation using the console.
-- [logging-connector-entity-storage](packages/logging-connector-entity-storage/README.md) - Logging connector implementation using entity storage.
-- [logging-service](packages/logging-service/README.md) - Logging contract implementation and REST endpoint definitions.
-- [logging-rest-client](packages/logging-rest-client/README.md) - Logging contract implementation which can connect to REST endpoints.
+- [logging-models](packages/logging-models/README.md) - Defines shared logging contracts, event shapes, and connector interfaces used across the repository.
+- [logging-connector-console](packages/logging-connector-console/README.md) - Sends log events to the console for local development, debugging, and lightweight runtime diagnostics.
+- [logging-connector-entity-storage](packages/logging-connector-entity-storage/README.md) - Persists log events to entity storage for durable retention, querying, and downstream processing.
+- [logging-service](packages/logging-service/README.md) - Exposes logging operations through service routes and API contracts for server-side integration.
+- [logging-rest-client](packages/logging-rest-client/README.md) - Provides a client for interacting with logging service endpoints from applications and services.
 
 ## Contributing
 

@@ -4,7 +4,7 @@ Create a new log entry.
 
 ## Properties
 
-### body
+### body {#body}
 
 > **body**: [`ILogEntry`](ILogEntry.md)
 

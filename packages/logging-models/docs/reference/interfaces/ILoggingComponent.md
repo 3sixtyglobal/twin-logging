@@ -8,7 +8,7 @@ Interface describing a logging contract.
 
 ## Methods
 
-### log()
+### log() {#log}
 
 > **log**(`logEntry`): `Promise`\<`void`\>
 
@@ -26,13 +26,13 @@ The entry to log.
 
 `Promise`\<`void`\>
 
-Nothing.
+A promise that resolves when the entry has been accepted by the component.
 
 ***
 
-### query()
+### query() {#query}
 
-> **query**(`level?`, `source?`, `timeStart?`, `timeEnd?`, `cursor?`, `pageSize?`): `Promise`\<\{ `entities`: [`ILogEntry`](ILogEntry.md)[]; `cursor?`: `string`; \}\>
+> **query**(`level?`, `source?`, `timeStart?`, `timeEnd?`, `cursor?`, `limit?`): `Promise`\<\{ `entities`: [`ILogEntry`](ILogEntry.md)[]; `cursor?`: `string`; \}\>
 
 Query the log entries.
 
@@ -66,13 +66,13 @@ The inclusive time as the end of the log entries.
 
 `string`
 
-The cursor to request the next page of entities.
+The cursor to request the next chunk of entities.
 
-##### pageSize?
+##### limit?
 
 `number`
 
-The maximum number of entities in a page.
+Limit the number of entities to return.
 
 #### Returns
 

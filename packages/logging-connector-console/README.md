@@ -1,6 +1,6 @@
 # TWIN Logging Connector Console
 
-Logging connector implementation using the console.
+Sends log events to the console for local development, debugging, and lightweight runtime diagnostics.
 
 ## Installation
 

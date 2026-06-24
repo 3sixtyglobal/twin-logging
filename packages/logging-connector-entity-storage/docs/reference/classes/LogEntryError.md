@@ -1,6 +1,6 @@
 # Class: LogEntryError
 
-Call defining a log entry error.
+Entity representing a flattened error captured within a log entry.
 
 ## Constructors
 
@@ -14,7 +14,7 @@ Call defining a log entry error.
 
 ## Properties
 
-### name
+### name {#name}
 
 > **name**: `string`
 
@@ -22,7 +22,7 @@ The name for the error.
 
 ***
 
-### message
+### message {#message}
 
 > **message**: `string`
 
@@ -30,17 +30,17 @@ The message for the error.
 
 ***
 
-### source?
+### source? {#source}
 
-> `optional` **source**: `string`
+> `optional` **source?**: `string`
 
 The source of the error.
 
 ***
 
-### properties?
+### properties? {#properties}
 
-> `optional` **properties**: `object`
+> `optional` **properties?**: `object`
 
 Any additional information for the error.
 
@@ -50,8 +50,8 @@ Any additional information for the error.
 
 ***
 
-### stack?
+### stack? {#stack}
 
-> `optional` **stack**: `string`
+> `optional` **stack?**: `string`
 
 The stack trace for the error.

@@ -4,7 +4,7 @@ Options for the multi logging connector.
 
 ## Properties
 
-### loggingConnectorTypes
+### loggingConnectorTypes {#loggingconnectortypes}
 
 > **loggingConnectorTypes**: `string`[]
 
@@ -12,8 +12,8 @@ The logging connectors to multiplex.
 
 ***
 
-### config?
+### config? {#config}
 
-> `optional` **config**: [`ILoggingLevelsConfig`](ILoggingLevelsConfig.md)
+> `optional` **config?**: [`ILoggingLevelsConfig`](ILoggingLevelsConfig.md)
 
 The configuration for the logging connector.

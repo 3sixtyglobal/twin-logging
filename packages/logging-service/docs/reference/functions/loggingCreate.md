@@ -28,4 +28,4 @@ The request.
 
 `Promise`\<`INoContentResponse`\>
 
-The response object with additional http response properties.
+A promise that resolves to a no-content response when the entry has been logged.

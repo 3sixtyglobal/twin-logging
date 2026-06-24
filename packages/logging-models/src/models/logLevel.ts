@@ -2,6 +2,37 @@
 // SPDX-License-Identifier: Apache-2.0.
 
 /**
- * Log level.
+ * The log levels.
  */
-export type LogLevel = "info" | "error" | "warn" | "trace" | "debug";
+// eslint-disable-next-line @typescript-eslint/naming-convention
+export const LogLevel = {
+	/**
+	 * Info.
+	 */
+	Info: "info",
+
+	/**
+	 * Error.
+	 */
+	Error: "error",
+
+	/**
+	 * Warn.
+	 */
+	Warn: "warn",
+
+	/**
+	 * Trace.
+	 */
+	Trace: "trace",
+
+	/**
+	 * Debug.
+	 */
+	Debug: "debug"
+} as const;
+
+/**
+ * The log levels.
+ */
+export type LogLevel = (typeof LogLevel)[keyof typeof LogLevel];

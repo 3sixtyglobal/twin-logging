@@ -28,27 +28,41 @@ The options for the logging connector.
 
 ## Properties
 
-### NAMESPACE
+### CLASS\_NAME {#class_name}
+
+> `readonly` `static` **CLASS\_NAME**: `string`
+
+Runtime name for the class.
+
+***
+
+### NAMESPACE {#namespace}
 
 > `readonly` `static` **NAMESPACE**: `string` = `"console"`
 
 The namespace for the logging connector.
 
-***
+## Methods
 
-### CLASS\_NAME
+### className() {#classname}
 
-> `readonly` **CLASS\_NAME**: `string`
+> **className**(): `string`
 
-Runtime name for the class.
+Returns the class name of the component.
+
+#### Returns
+
+`string`
+
+The class name of the component.
 
 #### Implementation of
 
-`ILoggingConnector.CLASS_NAME`
+`ILoggingConnector.className`
 
-## Methods
+***
 
-### log()
+### log() {#log}
 
 > **log**(`logEntry`): `Promise`\<`void`\>
 
@@ -66,7 +80,7 @@ The entry to log.
 
 `Promise`\<`void`\>
 
-Nothing.
+A promise that resolves when the entry has been written to the console.
 
 #### Implementation of
 

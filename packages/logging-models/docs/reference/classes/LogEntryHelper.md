@@ -14,11 +14,11 @@ Helper class for log entry operations.
 
 ## Methods
 
-### translate()
+### translate() {#translate}
 
-> `static` **translate**(`logEntry`): `undefined` \| `string`
+> `static` **translate**(`logEntry`): `string` \| `undefined`
 
-Translate the log entry.
+Translates the message of a log entry using the current locale.
 
 #### Parameters
 
@@ -26,10 +26,10 @@ Translate the log entry.
 
 [`ILogEntry`](../interfaces/ILogEntry.md)
 
-The log entry.
+The log entry whose message should be translated.
 
 #### Returns
 
-`undefined` \| `string`
+`string` \| `undefined`
 
-The translated log entry if a translation can be found.
+The translated message string, or undefined if no matching translation key exists.

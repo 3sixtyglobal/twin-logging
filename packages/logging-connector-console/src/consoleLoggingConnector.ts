@@ -3,17 +3,22 @@
 import { Guards, Is } from "@twin.org/core";
 import {
 	LogEntryHelper,
+	LogLevel,
 	type ILogEntry,
-	type ILoggingConnector,
-	type LogLevel
+	type ILoggingConnector
 } from "@twin.org/logging-models";
 import { nameof } from "@twin.org/nameof";
-import type { IConsoleLoggingConnectorConstructorOptions } from "./models/IConsoleLoggingConnectorConstructorOptions";
+import type { IConsoleLoggingConnectorConstructorOptions } from "./models/IConsoleLoggingConnectorConstructorOptions.js";
 
 /**
  * Class for performing logging operations in the console.
  */
 export class ConsoleLoggingConnector implements ILoggingConnector {
+	/**
+	 * Runtime name for the class.
+	 */
+	public static readonly CLASS_NAME: string = nameof<ConsoleLoggingConnector>();
+
 	/**
 	 * The namespace for the logging connector.
 	 */
@@ -30,11 +35,6 @@ export class ConsoleLoggingConnector implements ILoggingConnector {
 		magenta: 35,
 		red: 31
 	};
-
-	/**
-	 * Runtime name for the class.
-	 */
-	public readonly CLASS_NAME: string = nameof<ConsoleLoggingConnector>();
 
 	/**
 	 * The log levels to display, will default to all.
@@ -65,18 +65,26 @@ export class ConsoleLoggingConnector implements ILoggingConnector {
 	 * @param options The options for the logging connector.
 	 */
 	constructor(options?: IConsoleLoggingConnectorConstructorOptions) {
-		this._levels = options?.config?.levels ?? ["debug", "info", "warn", "error", "trace"];
+		this._levels = options?.config?.levels ?? Object.values(LogLevel);
 		this._translateMessages = options?.config?.translateMessages ?? false;
 		this._hideGroups = options?.config?.hideGroups ?? false;
 	}
 
 	/**
+	 * Returns the class name of the component.
+	 * @returns The class name of the component.
+	 */
+	public className(): string {
+		return ConsoleLoggingConnector.CLASS_NAME;
+	}
+
+	/**
 	 * Log an entry to the connector.
 	 * @param logEntry The entry to log.
-	 * @returns Nothing.
+	 * @returns A promise that resolves when the entry has been written to the console.
 	 */
 	public async log(logEntry: ILogEntry): Promise<void> {
-		Guards.object<ILogEntry>(this.CLASS_NAME, nameof(logEntry), logEntry);
+		Guards.object<ILogEntry>(ConsoleLoggingConnector.CLASS_NAME, nameof(logEntry), logEntry);
 
 		if (this._levels.includes(logEntry.level)) {
 			logEntry.ts ??= Date.now();
@@ -122,13 +130,12 @@ export class ConsoleLoggingConnector implements ILoggingConnector {
 	}
 
 	/**
-	 * Convert a string to a color.
-	 * @param str The string to convert.
-	 * @returns The color.
+	 * Derives an HSL color string from a source string using a hash of its characters.
+	 * @param str The string to derive a color from.
+	 * @returns An HSL color string suitable for use in CSS.
 	 * @internal
 	 */
 	private stringToColor(str: string): string {
-		// eslint-disable-next-line no-bitwise
 		const stringUniqueHash = [...str].reduce(
 			// eslint-disable-next-line no-bitwise
 			(acc, char) => char.charCodeAt(0) + ((acc << 5) - acc),
@@ -139,7 +146,7 @@ export class ConsoleLoggingConnector implements ILoggingConnector {
 
 	/**
 	 * Add color to a string.
-	 * @param string The string to colorize.
+	 * @param message The string to colorize.
 	 * @param color The color to use.
 	 * @returns The colorized string.
 	 * @internal
@@ -150,8 +157,8 @@ export class ConsoleLoggingConnector implements ILoggingConnector {
 	}
 
 	/**
-	 * Handle a group.
-	 * @param group The group.
+	 * Opens or switches the console group when the active group changes.
+	 * @param group The group identifier to display.
 	 * @internal
 	 */
 	private handleGroup(group: string): void {

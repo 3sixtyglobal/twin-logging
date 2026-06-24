@@ -1,9 +1,9 @@
 // Copyright 2024 IOTA Stiftung.
 // SPDX-License-Identifier: Apache-2.0.
-import type { LogLevel } from "../logLevel";
+import type { LogLevel } from "../logLevel.js";
 
 /**
- * Get the a list of the log entries.
+ * Request parameters for retrieving a list of log entries.
  */
 export interface ILoggingListRequest {
 	/**
@@ -23,12 +23,12 @@ export interface ILoggingListRequest {
 		/**
 		 * The start time of the metrics to retrieve as a timestamp in ms.
 		 */
-		timeStart?: number | string;
+		timeStart?: string;
 
 		/**
 		 * The end time of the metrics to retrieve as a timestamp in ms.
 		 */
-		timeEnd?: number | string;
+		timeEnd?: string;
 
 		/**
 		 * The optional cursor to get next chunk.
@@ -36,8 +36,8 @@ export interface ILoggingListRequest {
 		cursor?: string;
 
 		/**
-		 * The maximum number of entities in a page.
+		 * Limit the number of entities to return.
 		 */
-		pageSize?: number | string;
+		limit?: string;
 	};
 }

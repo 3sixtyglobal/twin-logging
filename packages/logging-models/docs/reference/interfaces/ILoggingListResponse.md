@@ -4,7 +4,7 @@ Response for log entry list request.
 
 ## Properties
 
-### body
+### body {#body}
 
 > **body**: `object`
 
@@ -18,6 +18,6 @@ The entities, which can be partial if a limited keys list was provided.
 
 #### cursor?
 
-> `optional` **cursor**: `string`
+> `optional` **cursor?**: `string`
 
 An optional cursor, when defined can be used to call find to get more entities.

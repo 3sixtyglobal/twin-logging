@@ -2,8 +2,8 @@
 // SPDX-License-Identifier: Apache-2.0.
 import type { EntityCondition, SortDirection } from "@twin.org/entity";
 import { nameof } from "@twin.org/nameof";
-import type { ILogEntry } from "../models/ILogEntry";
-import type { ILoggingConnector } from "../models/ILoggingConnector";
+import type { ILogEntry } from "../models/ILogEntry.js";
+import type { ILoggingConnector } from "../models/ILoggingConnector.js";
 
 /**
  * Class for performing logging operations to nowhere.
@@ -17,12 +17,20 @@ export class SilentLoggingConnector implements ILoggingConnector {
 	/**
 	 * Runtime name for the class.
 	 */
-	public readonly CLASS_NAME: string = nameof<SilentLoggingConnector>();
+	public static readonly CLASS_NAME: string = nameof<SilentLoggingConnector>();
+
+	/**
+	 * Returns the class name of the component.
+	 * @returns The class name of the component.
+	 */
+	public className(): string {
+		return SilentLoggingConnector.CLASS_NAME;
+	}
 
 	/**
 	 * Log an entry to the connector.
 	 * @param logEntry The entry to log.
-	 * @returns Nothing.
+	 * @returns A promise that resolves immediately without performing any output.
 	 */
 	public async log(logEntry: ILogEntry): Promise<void> {}
 
@@ -31,8 +39,8 @@ export class SilentLoggingConnector implements ILoggingConnector {
 	 * @param conditions The conditions to match for the entities.
 	 * @param sortProperties The optional sort order.
 	 * @param properties The optional keys to return, defaults to all.
-	 * @param cursor The cursor to request the next page of entities.
-	 * @param pageSize The maximum number of entities in a page.
+	 * @param cursor The cursor to request the next chunk of entities.
+	 * @param limit Limit the number of entities to return.
 	 * @returns All the entities for the storage matching the conditions,
 	 * and a cursor which can be used to request more entities.
 	 */
@@ -44,7 +52,7 @@ export class SilentLoggingConnector implements ILoggingConnector {
 		}[],
 		properties?: (keyof ILogEntry)[],
 		cursor?: string,
-		pageSize?: number
+		limit?: number
 	): Promise<{
 		/**
 		 * The entities, which can be partial if a limited keys list was provided.

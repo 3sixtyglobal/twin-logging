@@ -1,7 +1,7 @@
 // Copyright 2024 IOTA Stiftung.
 // SPDX-License-Identifier: Apache-2.0.
 import type { IError } from "@twin.org/core";
-import type { LogLevel } from "./logLevel";
+import type { LogLevel } from "./logLevel.js";
 
 /**
  * Interface describing a log entry.

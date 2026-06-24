@@ -15,21 +15,16 @@ import {
 	type LogLevel
 } from "@twin.org/logging-models";
 import { nameof } from "@twin.org/nameof";
-import type { ILoggingServiceConstructorOptions } from "./models/ILoggingServiceConstructorOptions";
+import type { ILoggingServiceConstructorOptions } from "./models/ILoggingServiceConstructorOptions.js";
 
 /**
  * Service for performing logging operations to a connector.
  */
 export class LoggingService implements ILoggingComponent {
 	/**
-	 * The namespace for the logging component.
-	 */
-	public static readonly NAMESPACE: string = "logging";
-
-	/**
 	 * Runtime name for the class.
 	 */
-	public readonly CLASS_NAME: string = nameof<LoggingService>();
+	public static readonly CLASS_NAME: string = nameof<LoggingService>();
 
 	/**
 	 * Logging connector used by the service.
@@ -48,12 +43,20 @@ export class LoggingService implements ILoggingComponent {
 	}
 
 	/**
+	 * Returns the class name of the component.
+	 * @returns The class name of the component.
+	 */
+	public className(): string {
+		return LoggingService.CLASS_NAME;
+	}
+
+	/**
 	 * Log an entry to the connector.
 	 * @param logEntry The entry to log.
-	 * @returns Nothing.
+	 * @returns A promise that resolves when the underlying connector has accepted the entry.
 	 */
 	public async log(logEntry: ILogEntry): Promise<void> {
-		Guards.object<ILogEntry>(this.CLASS_NAME, nameof(logEntry), logEntry);
+		Guards.object<ILogEntry>(LoggingService.CLASS_NAME, nameof(logEntry), logEntry);
 
 		await this._loggingConnector.log(logEntry);
 	}
@@ -64,8 +67,8 @@ export class LoggingService implements ILoggingComponent {
 	 * @param source The source of the log entries.
 	 * @param timeStart The inclusive time as the start of the log entries.
 	 * @param timeEnd The inclusive time as the end of the log entries.
-	 * @param cursor The cursor to request the next page of entities.
-	 * @param pageSize The maximum number of entities in a page.
+	 * @param cursor The cursor to request the next chunk of entities.
+	 * @param limit Limit the number of entities to return.
 	 * @returns All the entities for the storage matching the conditions,
 	 * and a cursor which can be used to request more entities.
 	 */
@@ -75,7 +78,7 @@ export class LoggingService implements ILoggingComponent {
 		timeStart?: number,
 		timeEnd?: number,
 		cursor?: string,
-		pageSize?: number
+		limit?: number
 	): Promise<{
 		/**
 		 * The entities, which can be partial if a limited keys list was provided.
@@ -123,13 +126,14 @@ export class LoggingService implements ILoggingComponent {
 			});
 		}
 
-		if (Is.function(this._loggingConnector?.query)) {
-			const result = await this._loggingConnector.query(
+		const queryConnector = this._loggingConnector?.query?.bind(this._loggingConnector);
+		if (Is.function(queryConnector)) {
+			const result = await queryConnector(
 				condition,
 				[{ property: "ts", sortDirection: SortDirection.Descending }],
 				undefined,
 				cursor,
-				pageSize
+				limit
 			);
 
 			return { entities: result.entities as ILogEntry[], cursor: result.cursor };

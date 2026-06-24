@@ -1,47 +1,47 @@
 # Interface: ILoggingListRequest
 
-Get the a list of the log entries.
+Request parameters for retrieving a list of log entries.
 
 ## Properties
 
-### query?
+### query? {#query}
 
-> `optional` **query**: `object`
+> `optional` **query?**: `object`
 
 The query parameters.
 
 #### level?
 
-> `optional` **level**: [`LogLevel`](../type-aliases/LogLevel.md)
+> `optional` **level?**: [`LogLevel`](../type-aliases/LogLevel.md)
 
 The level of the log entries to retrieve.
 
 #### source?
 
-> `optional` **source**: `string`
+> `optional` **source?**: `string`
 
 The source of the log entries to retrieve.
 
 #### timeStart?
 
-> `optional` **timeStart**: `string` \| `number`
+> `optional` **timeStart?**: `string`
 
 The start time of the metrics to retrieve as a timestamp in ms.
 
 #### timeEnd?
 
-> `optional` **timeEnd**: `string` \| `number`
+> `optional` **timeEnd?**: `string`
 
 The end time of the metrics to retrieve as a timestamp in ms.
 
 #### cursor?
 
-> `optional` **cursor**: `string`
+> `optional` **cursor?**: `string`
 
 The optional cursor to get next chunk.
 
-#### pageSize?
+#### limit?
 
-> `optional` **pageSize**: `string` \| `number`
+> `optional` **limit?**: `string`
 
-The maximum number of entities in a page.
+Limit the number of entities to return.

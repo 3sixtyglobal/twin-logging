@@ -1,8 +1,8 @@
 // Copyright 2024 IOTA Stiftung.
 // SPDX-License-Identifier: Apache-2.0.
 import type { IComponent } from "@twin.org/core";
-import type { ILogEntry } from "./ILogEntry";
-import type { LogLevel } from "./logLevel";
+import type { ILogEntry } from "./ILogEntry.js";
+import type { LogLevel } from "./logLevel.js";
 
 /**
  * Interface describing a logging contract.
@@ -11,7 +11,7 @@ export interface ILoggingComponent extends IComponent {
 	/**
 	 * Log an entry to the component.
 	 * @param logEntry The entry to log.
-	 * @returns Nothing.
+	 * @returns A promise that resolves when the entry has been accepted by the component.
 	 */
 	log(logEntry: ILogEntry): Promise<void>;
 
@@ -21,8 +21,8 @@ export interface ILoggingComponent extends IComponent {
 	 * @param source The source of the log entries.
 	 * @param timeStart The inclusive time as the start of the log entries.
 	 * @param timeEnd The inclusive time as the end of the log entries.
-	 * @param cursor The cursor to request the next page of entities.
-	 * @param pageSize The maximum number of entities in a page.
+	 * @param cursor The cursor to request the next chunk of entities.
+	 * @param limit Limit the number of entities to return.
 	 * @returns All the entities for the storage matching the conditions,
 	 * and a cursor which can be used to request more entities.
 	 */
@@ -32,7 +32,7 @@ export interface ILoggingComponent extends IComponent {
 		timeStart?: number,
 		timeEnd?: number,
 		cursor?: string,
-		pageSize?: number
+		limit?: number
 	): Promise<{
 		/**
 		 * The entities, which can be partial if a limited keys list was provided.

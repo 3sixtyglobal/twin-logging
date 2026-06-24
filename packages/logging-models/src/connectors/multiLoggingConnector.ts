@@ -3,11 +3,11 @@
 import { Guards, Is } from "@twin.org/core";
 import type { EntityCondition, SortDirection } from "@twin.org/entity";
 import { nameof } from "@twin.org/nameof";
-import { LoggingConnectorFactory } from "../factories/loggingConnectorFactory";
-import type { ILogEntry } from "../models/ILogEntry";
-import type { ILoggingConnector } from "../models/ILoggingConnector";
-import type { IMultiLoggingConnectorConstructorOptions } from "../models/IMultiLoggingConnectorConstructorOptions";
-import type { LogLevel } from "../models/logLevel";
+import { LoggingConnectorFactory } from "../factories/loggingConnectorFactory.js";
+import type { ILogEntry } from "../models/ILogEntry.js";
+import type { ILoggingConnector } from "../models/ILoggingConnector.js";
+import type { IMultiLoggingConnectorConstructorOptions } from "../models/IMultiLoggingConnectorConstructorOptions.js";
+import { LogLevel } from "../models/logLevel.js";
 
 /**
  * Class for performing logging operations on multiple connectors.
@@ -21,7 +21,7 @@ export class MultiLoggingConnector implements ILoggingConnector {
 	/**
 	 * Runtime name for the class.
 	 */
-	public readonly CLASS_NAME: string = nameof<MultiLoggingConnector>();
+	public static readonly CLASS_NAME: string = nameof<MultiLoggingConnector>();
 
 	/**
 	 * The connectors to send the log entries to.
@@ -40,25 +40,33 @@ export class MultiLoggingConnector implements ILoggingConnector {
 	 * @param options The options for the connector.
 	 */
 	constructor(options: IMultiLoggingConnectorConstructorOptions) {
-		Guards.object(this.CLASS_NAME, nameof(options), options);
+		Guards.object(MultiLoggingConnector.CLASS_NAME, nameof(options), options);
 		Guards.arrayValue(
-			this.CLASS_NAME,
+			MultiLoggingConnector.CLASS_NAME,
 			nameof(options.loggingConnectorTypes),
 			options.loggingConnectorTypes
 		);
-		this._levels = options?.config?.levels ?? ["debug", "info", "warn", "error", "trace"];
+		this._levels = options?.config?.levels ?? Object.values(LogLevel);
 		this._loggingConnectors = options.loggingConnectorTypes.map(t =>
 			LoggingConnectorFactory.get(t)
 		);
 	}
 
 	/**
+	 * Returns the class name of the component.
+	 * @returns The class name of the component.
+	 */
+	public className(): string {
+		return MultiLoggingConnector.CLASS_NAME;
+	}
+
+	/**
 	 * Log an entry to the connector.
 	 * @param logEntry The entry to log.
-	 * @returns Nothing.
+	 * @returns A promise that resolves when all child connectors have settled for this entry.
 	 */
 	public async log(logEntry: ILogEntry): Promise<void> {
-		Guards.object<ILogEntry>(this.CLASS_NAME, nameof(logEntry), logEntry);
+		Guards.object<ILogEntry>(MultiLoggingConnector.CLASS_NAME, nameof(logEntry), logEntry);
 
 		if (this._levels.includes(logEntry.level)) {
 			logEntry.ts ??= Date.now();
@@ -74,8 +82,8 @@ export class MultiLoggingConnector implements ILoggingConnector {
 	 * @param conditions The conditions to match for the entities.
 	 * @param sortProperties The optional sort order.
 	 * @param properties The optional keys to return, defaults to all.
-	 * @param cursor The cursor to request the next page of entities.
-	 * @param pageSize The maximum number of entities in a page.
+	 * @param cursor The cursor to request the next chunk of entities.
+	 * @param limit Limit the number of entities to return.
 	 * @returns All the entities for the storage matching the conditions,
 	 * and a cursor which can be used to request more entities.
 	 */
@@ -87,7 +95,7 @@ export class MultiLoggingConnector implements ILoggingConnector {
 		}[],
 		properties?: (keyof ILogEntry)[],
 		cursor?: string,
-		pageSize?: number
+		limit?: number
 	): Promise<{
 		/**
 		 * The entities, which can be partial if a limited keys list was provided.
@@ -103,7 +111,7 @@ export class MultiLoggingConnector implements ILoggingConnector {
 		for (const loggingConnector of this._loggingConnectors) {
 			// eslint-disable-next-line @typescript-eslint/unbound-method
 			if (Is.function(loggingConnector.query)) {
-				return loggingConnector.query(conditions, sortProperties, properties, cursor, pageSize);
+				return loggingConnector.query(conditions, sortProperties, properties, cursor, limit);
 			}
 		}
 

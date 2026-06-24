@@ -28,4 +28,4 @@ The request.
 
 `Promise`\<`ILoggingListResponse`\>
 
-The response object with additional http response properties.
+A promise that resolves to the matching log entries and an optional pagination cursor.
