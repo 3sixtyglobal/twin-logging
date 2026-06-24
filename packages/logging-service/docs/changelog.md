@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.9.0](https://github.com/iotaledger/twin-logging/compare/logging-service-v0.9.0...logging-service-v0.9.0) (2026-06-24)
+
+
+### Features
+
+* release to production ([3458161](https://github.com/iotaledger/twin-logging/commit/3458161b4bb530f86e4d1fe06123d885cdcb114d))
+* release to production ([#58](https://github.com/iotaledger/twin-logging/issues/58)) ([fba59e5](https://github.com/iotaledger/twin-logging/commit/fba59e5d15fc94514a430e6180fb5301c91acb95))
+
 ## [0.9.0-next.1](https://github.com/iotaledger/twin-logging/compare/logging-service-v0.9.0-next.0...logging-service-v0.9.0-next.1) (2026-06-23)
 
 
