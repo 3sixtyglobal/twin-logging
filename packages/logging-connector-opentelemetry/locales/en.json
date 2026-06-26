@@ -1,0 +1,13 @@
+{
+	"error": {
+		"openTelemetryLoggingConnector": {
+			"unknownExporterType": "The exporter type \"{type}\" is not supported, valid values are: otlp"
+		}
+	},
+	"info": {
+		"openTelemetryLoggingConnector": {
+			"connectorStarted": "The connector was started with \"{exporterCount}\" exporter(s)",
+			"connectorStopped": "The connector was stopped"
+		}
+	}
+}

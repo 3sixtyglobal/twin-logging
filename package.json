@@ -57,6 +57,7 @@
 		"packages/logging-models",
 		"packages/logging-connector-console",
 		"packages/logging-connector-entity-storage",
+		"packages/logging-connector-opentelemetry",
 		"packages/logging-service",
 		"packages/logging-rest-client"
 	],
