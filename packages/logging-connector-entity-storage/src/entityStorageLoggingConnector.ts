@@ -286,7 +286,7 @@ export class EntityStorageLoggingConnector implements ILoggingConnector {
 		}
 
 		const result = await this._logEntryStorage.query(
-			finalConditions,
+			finalConditions.conditions.length > 0 ? finalConditions : undefined,
 			sortProperties,
 			properties,
 			cursor,
