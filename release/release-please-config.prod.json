@@ -20,6 +20,10 @@
 			"package-name": "logging-connector-entity-storage",
 			"changelog-path": "docs/changelog.md"
 		},
+		"packages/logging-connector-opentelemetry": {
+			"package-name": "logging-connector-opentelemetry",
+			"changelog-path": "docs/changelog.md"
+		},
 		"packages/logging-service": {
 			"package-name": "logging-service",
 			"changelog-path": "docs/changelog.md"
@@ -38,6 +42,7 @@
 				"logging-models",
 				"logging-connector-console",
 				"logging-connector-entity-storage",
+				"logging-connector-opentelemetry",
 				"logging-service",
 				"logging-rest-client"
 			]

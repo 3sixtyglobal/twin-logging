@@ -2,6 +2,7 @@
 	"packages/logging-models": "0.9.0",
 	"packages/logging-connector-console": "0.9.0",
 	"packages/logging-connector-entity-storage": "0.9.0",
+	"packages/logging-connector-opentelemetry": "0.9.0",
 	"packages/logging-service": "0.9.0",
 	"packages/logging-rest-client": "0.9.0"
 }
