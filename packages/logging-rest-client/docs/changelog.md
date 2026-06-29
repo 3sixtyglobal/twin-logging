@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.9.1-next.3](https://github.com/iotaledger/twin-logging/compare/logging-rest-client-v0.9.1-next.2...logging-rest-client-v0.9.1-next.3) (2026-06-29)
+
+
+### Features
+
+* enhanced rest testing ([#63](https://github.com/iotaledger/twin-logging/issues/63)) ([6f20a7e](https://github.com/iotaledger/twin-logging/commit/6f20a7e9f6e04214a9f0e542cc92e00a71ef7235))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @twin.org/logging-models bumped from 0.9.1-next.2 to 0.9.1-next.3
+
 ## [0.9.1-next.2](https://github.com/iotaledger/twin-logging/compare/logging-rest-client-v0.9.1-next.1...logging-rest-client-v0.9.1-next.2) (2026-06-26)
 
 
