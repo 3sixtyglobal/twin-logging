@@ -252,11 +252,11 @@ describe("EntityStorageLoggingConnector", () => {
 				await logging.stop();
 			});
 
-			test("starts timer lazily on first log call without explicit start", async () => {
+			test("starts timer on first log call after explicit start", async () => {
 				const logging = new EntityStorageLoggingConnector({
 					config: { batchSize: 0, batchIntervalMs: 1000 }
 				});
-				// Deliberately skip start()
+				await logging.start();
 				await logInContext(logging, { level: LogLevel.Info, source: "test", message: "lazy" });
 
 				const before = await storage.query(undefined, undefined, undefined, undefined, 100);

@@ -116,6 +116,12 @@ export class EntityStorageLoggingConnector implements ILoggingConnector {
 	private _batchTimer: ReturnType<typeof setInterval> | undefined;
 
 	/**
+	 * Is the service running.
+	 * @internal
+	 */
+	private _started: boolean;
+
+	/**
 	 * Create a new instance of EntityStorageLoggingConnector.
 	 * @param options The options for the connector.
 	 */
@@ -140,6 +146,7 @@ export class EntityStorageLoggingConnector implements ILoggingConnector {
 		this._mutexTimeoutMs = Coerce.integer(options?.config?.mutexTimeoutMs);
 
 		this._mutexKey = RandomHelper.generateUuidV7("compact");
+		this._started = false;
 		this._batchCache = [];
 		this._logEntryStorage = EntityStorageConnectorFactory.get(
 			options?.logEntryStorageConnectorType ?? "log-entry"
@@ -159,14 +166,12 @@ export class EntityStorageLoggingConnector implements ILoggingConnector {
 
 	/**
 	 * Start the connector; sets up the interval timer when batchIntervalMs is configured.
-	 * The timer is also started lazily by the first batched write if this method is not called.
 	 * @returns A promise that resolves when the connector is ready to accept log entries.
 	 */
 	public async start(): Promise<void> {
-		if (!Is.empty(this._batchIntervalMs) && Is.empty(this._batchTimer)) {
-			this._batchTimer = setInterval(async () => {
-				await this.flush();
-			}, this._batchIntervalMs);
+		if (!this._started) {
+			this._started = true;
+			this.startTimer();
 		}
 	}
 
@@ -175,9 +180,9 @@ export class EntityStorageLoggingConnector implements ILoggingConnector {
 	 * @returns A promise that resolves when the final flush completes and the timer is cleared.
 	 */
 	public async stop(): Promise<void> {
-		if (!Is.empty(this._batchTimer)) {
-			clearInterval(this._batchTimer);
-			this._batchTimer = undefined;
+		if (this._started) {
+			this._started = false;
+			this.stopTimer();
 		}
 		await this.flush();
 	}
@@ -217,12 +222,6 @@ export class EntityStorageLoggingConnector implements ILoggingConnector {
 			if (Is.empty(this._batchSize) && Is.empty(this._batchIntervalMs)) {
 				await this._platformComponent.execute(async () => this._logEntryStorage.set(entity));
 			} else {
-				if (!Is.empty(this._batchIntervalMs) && Is.empty(this._batchTimer)) {
-					this._batchTimer = setInterval(async () => {
-						await this.flush();
-					}, this._batchIntervalMs);
-				}
-
 				let shouldFlush = false;
 				const locked = await Mutex.lock(this._mutexKey, {
 					throwOnTimeout: true,
@@ -322,7 +321,10 @@ export class EntityStorageLoggingConnector implements ILoggingConnector {
 	 * @returns A promise that resolves when all cached entries have been written to storage.
 	 */
 	public async flush(): Promise<void> {
+		this.stopTimer();
+
 		if (this._batchCache.length === 0) {
+			this.startTimer();
 			return;
 		}
 		const locked = await Mutex.lock(this._mutexKey, {
@@ -330,6 +332,7 @@ export class EntityStorageLoggingConnector implements ILoggingConnector {
 			timeoutMs: this._mutexTimeoutMs
 		});
 		if (!locked) {
+			this.startTimer();
 			return;
 		}
 		let entries: IBatchEntry[] = [];
@@ -371,6 +374,31 @@ export class EntityStorageLoggingConnector implements ILoggingConnector {
 			}
 		} finally {
 			Mutex.unlock(this._mutexKey);
+		}
+
+		this.startTimer();
+	}
+
+	/**
+	 * Start the interval timer if batchIntervalMs is configured and the connector is running.
+	 * @internal
+	 */
+	private startTimer(): void {
+		if (!Is.empty(this._batchIntervalMs) && Is.empty(this._batchTimer) && this._started) {
+			this._batchTimer = globalThis.setTimeout(async () => {
+				await this.flush();
+			}, this._batchIntervalMs);
+		}
+	}
+
+	/**
+	 * Stop the interval timer if it is running.
+	 * @internal
+	 */
+	private stopTimer(): void {
+		if (!Is.empty(this._batchTimer)) {
+			globalThis.clearTimeout(this._batchTimer);
+			this._batchTimer = undefined;
 		}
 	}
 }
