@@ -91,7 +91,6 @@ The class name of the component.
 > **start**(): `Promise`\<`void`\>
 
 Start the connector; sets up the interval timer when batchIntervalMs is configured.
-The timer is also started lazily by the first batched write if this method is not called.
 
 #### Returns
 
