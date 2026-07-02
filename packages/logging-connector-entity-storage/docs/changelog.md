@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.9.1-next.4](https://github.com/iotaledger/twin-logging/compare/logging-connector-entity-storage-v0.9.1-next.3...logging-connector-entity-storage-v0.9.1-next.4) (2026-07-02)
+
+
+### Bug Fixes
+
+* batch flush state machine ([0fa2a90](https://github.com/iotaledger/twin-logging/commit/0fa2a9041ee4004be78e9f3daefb3ba34cc1f5c7))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @twin.org/logging-models bumped from 0.9.1-next.3 to 0.9.1-next.4
+
 ## [0.9.1-next.3](https://github.com/iotaledger/twin-logging/compare/logging-connector-entity-storage-v0.9.1-next.2...logging-connector-entity-storage-v0.9.1-next.3) (2026-06-29)
 
 

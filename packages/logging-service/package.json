@@ -1,6 +1,6 @@
 {
 	"name": "@twin.org/logging-service",
-	"version": "0.9.1-next.3",
+	"version": "0.9.1-next.4",
 	"description": "Exposes logging operations through service routes and API contracts for server-side integration.",
 	"repository": {
 		"type": "git",
@@ -33,7 +33,7 @@
 		"@twin.org/core": "next",
 		"@twin.org/entity": "next",
 		"@twin.org/nameof": "next",
-		"@twin.org/logging-models": "0.9.1-next.3",
+		"@twin.org/logging-models": "0.9.1-next.4",
 		"@twin.org/web": "next"
 	},
 	"devDependencies": {
