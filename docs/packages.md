@@ -32,6 +32,14 @@ This package provides an OpenTelemetry-backed logging connector that forwards lo
 - [Examples](../packages/logging-connector-opentelemetry/docs/examples.md)
 - [Changelog](../packages/logging-connector-opentelemetry/docs/changelog.md)
 
+## logging-connector-file
+
+This package provides a file-backed logging connector that persists logs to size-limited files on disk with rotation and retention. It suits service-style and self-hosted deployments that need recent operational logs available locally without depending on a remote store, while keeping total on-disk usage predictable.
+
+- [README](../packages/logging-connector-file/README.md)
+- [Examples](../packages/logging-connector-file/docs/examples.md)
+- [Changelog](../packages/logging-connector-file/docs/changelog.md)
+
 ## logging-service
 
 This package provides service-side logging routes and API contract implementations so other components can submit and manage log events through consistent endpoints. It acts as the integration layer between logging clients and logging providers.

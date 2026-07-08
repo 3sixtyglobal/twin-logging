@@ -10,6 +10,7 @@ Together, these components help standardise how operational and domain events ar
 - [logging-connector-console](packages/logging-connector-console/README.md) - Sends log events to the console for local development, debugging, and lightweight runtime diagnostics.
 - [logging-connector-entity-storage](packages/logging-connector-entity-storage/README.md) - Persists log events to entity storage for durable retention, querying, and downstream processing.
 - [logging-connector-opentelemetry](packages/logging-connector-opentelemetry/README.md) - Forwards log events to OpenTelemetry-compatible observability pipelines via OTLP.
+- [logging-connector-file](packages/logging-connector-file/README.md) - Persists log events to size-limited files on disk with rotation and retention.
 - [logging-service](packages/logging-service/README.md) - Exposes logging operations through service routes and API contracts for server-side integration.
 - [logging-rest-client](packages/logging-rest-client/README.md) - Provides a client for interacting with logging service endpoints from applications and services.
 

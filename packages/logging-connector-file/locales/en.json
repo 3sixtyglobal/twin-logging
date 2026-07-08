@@ -1,0 +1,7 @@
+{
+	"error": {
+		"fileLoggingConnector": {
+			"maxFileSizeTooSmall": "The maximum file size of {maxFileSizeBytes} bytes is below the minimum of {minimum} bytes, use 0 to disable rotation"
+		}
+	}
+}
