@@ -1,6 +1,6 @@
 {
 	"name": "@twin.org/logging-connector-opentelemetry",
-	"version": "0.9.1-next.4",
+	"version": "0.9.1-next.5",
 	"description": "Forwards log events to OpenTelemetry-compatible observability pipelines via OTLP.",
 	"repository": {
 		"type": "git",
@@ -35,7 +35,7 @@
 		"@opentelemetry/semantic-conventions": "1.41.1",
 		"@twin.org/core": "next",
 		"@twin.org/nameof": "next",
-		"@twin.org/logging-models": "0.9.1-next.4"
+		"@twin.org/logging-models": "0.9.1-next.5"
 	},
 	"devDependencies": {
 		"@twin.org/nameof-transformer": "next",

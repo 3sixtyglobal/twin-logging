@@ -1,6 +1,6 @@
 {
 	"name": "@twin.org/logging-connector-file",
-	"version": "0.9.1-next.4",
+	"version": "0.9.1-next.5",
 	"description": "Writes log events to size-limited files on disk with rotation and retention for local log persistence.",
 	"repository": {
 		"type": "git",
@@ -30,7 +30,7 @@
 	"dependencies": {
 		"@twin.org/core": "next",
 		"@twin.org/nameof": "next",
-		"@twin.org/logging-models": "0.9.1-next.4"
+		"@twin.org/logging-models": "0.9.1-next.5"
 	},
 	"devDependencies": {
 		"@twin.org/nameof-transformer": "next",
