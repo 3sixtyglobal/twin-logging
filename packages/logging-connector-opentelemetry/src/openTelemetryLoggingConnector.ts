@@ -121,10 +121,11 @@ export class OpenTelemetryLoggingConnector implements ILoggingConnector {
 				});
 
 				if (config.processor === "simple") {
-					processors.push(new SimpleLogRecordProcessor(exporter));
+					processors.push(new SimpleLogRecordProcessor({ exporter }));
 				} else {
 					processors.push(
-						new BatchLogRecordProcessor(exporter, {
+						new BatchLogRecordProcessor({
+							exporter,
 							scheduledDelayMillis: config.scheduledDelayMs,
 							maxExportBatchSize: config.maxExportBatchSize,
 							maxQueueSize: config.maxQueueSize,
