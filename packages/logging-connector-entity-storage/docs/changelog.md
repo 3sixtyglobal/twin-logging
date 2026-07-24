@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.9.1-next.6](https://github.com/iotaledger/twin-logging/compare/logging-connector-entity-storage-v0.9.1-next.5...logging-connector-entity-storage-v0.9.1-next.6) (2026-07-24)
+
+
+### Features
+
+* entity-storage retentions limits ([#70](https://github.com/iotaledger/twin-logging/issues/70)) ([e82f819](https://github.com/iotaledger/twin-logging/commit/e82f819e7e1e7f6a522a4cc43d886340316743be))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @twin.org/logging-models bumped from 0.9.1-next.5 to 0.9.1-next.6
+
 ## [0.9.1-next.5](https://github.com/iotaledger/twin-logging/compare/logging-connector-entity-storage-v0.9.1-next.4...logging-connector-entity-storage-v0.9.1-next.5) (2026-07-20)
 
 
