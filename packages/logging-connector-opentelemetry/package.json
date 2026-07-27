@@ -1,6 +1,6 @@
 {
 	"name": "@twin.org/logging-connector-opentelemetry",
-	"version": "0.9.1-next.6",
+	"version": "0.9.1",
 	"description": "Forwards log events to OpenTelemetry-compatible observability pipelines via OTLP.",
 	"repository": {
 		"type": "git",
@@ -33,14 +33,14 @@
 		"@opentelemetry/resources": "2.10.0",
 		"@opentelemetry/sdk-logs": "0.221.0",
 		"@opentelemetry/semantic-conventions": "1.43.0",
-		"@twin.org/core": "next",
-		"@twin.org/nameof": "next",
-		"@twin.org/logging-models": "0.9.1-next.6"
+		"@twin.org/core": "^0.9.1",
+		"@twin.org/nameof": "^0.9.1",
+		"@twin.org/logging-models": "^0.9.1"
 	},
 	"devDependencies": {
-		"@twin.org/nameof-transformer": "next",
-		"@twin.org/nameof-vitest-plugin": "next",
-		"@twin.org/validate-locales": "next",
+		"@twin.org/nameof-transformer": "^0.9.1",
+		"@twin.org/nameof-vitest-plugin": "^0.9.1",
+		"@twin.org/validate-locales": "^0.9.1",
 		"@vitest/coverage-v8": "4.1.10",
 		"copyfiles": "2.4.1",
 		"dotenv": "17.4.2",
