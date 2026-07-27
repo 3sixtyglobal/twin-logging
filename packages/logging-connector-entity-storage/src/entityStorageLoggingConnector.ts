@@ -14,7 +14,12 @@ import {
 	Mutex,
 	RandomHelper
 } from "@twin.org/core";
-import { type EntityCondition, LogicalOperator, type SortDirection } from "@twin.org/entity";
+import {
+	ComparisonOperator,
+	type EntityCondition,
+	LogicalOperator,
+	SortDirection
+} from "@twin.org/entity";
 import {
 	EntityStorageConnectorFactory,
 	type IEntityStorageConnector
@@ -54,6 +59,26 @@ export class EntityStorageLoggingConnector implements ILoggingConnector {
 	 * Default maximum number of entries to hold in the in-memory cache.
 	 */
 	public static readonly DEFAULT_MAX_CACHE_SIZE: number = 1000;
+
+	/**
+	 * Default interval in milliseconds between retention cleanup runs, 5 minutes.
+	 */
+	public static readonly DEFAULT_RETENTION_INTERVAL_MS: number = 300000;
+
+	/**
+	 * Default age threshold in milliseconds; entries older than this are deleted, 2 days.
+	 */
+	public static readonly DEFAULT_RETAIN_FOR_MS: number = 172800000;
+
+	/**
+	 * Default maximum number of stored entries to keep before the oldest are removed.
+	 */
+	public static readonly DEFAULT_MAX_ENTRIES: number = 10000;
+
+	/**
+	 * Default maximum number of entries to remove per removeBatch call during cleanup.
+	 */
+	public static readonly DEFAULT_RETENTION_BATCH_SIZE: number = 1000;
 
 	/**
 	 * The log levels to capture, will default to all.
@@ -110,10 +135,49 @@ export class EntityStorageLoggingConnector implements ILoggingConnector {
 	private readonly _mutexKey: string;
 
 	/**
+	 * Age threshold in milliseconds; entries older than this are deleted during cleanup.
+	 * Undefined when age-based retention is disabled.
+	 * @internal
+	 */
+	private readonly _retainForMs?: number;
+
+	/**
+	 * Maximum number of stored entries to keep; oldest are removed when exceeded.
+	 * Undefined when count-based retention is disabled.
+	 * @internal
+	 */
+	private readonly _maxEntries?: number;
+
+	/**
+	 * Interval in milliseconds between retention cleanup runs.
+	 * Undefined when the retention timer is disabled.
+	 * @internal
+	 */
+	private readonly _retentionIntervalMs?: number;
+
+	/**
+	 * Maximum entries deleted per removeBatch call during a cleanup pass.
+	 * @internal
+	 */
+	private readonly _retentionBatchSize: number;
+
+	/**
 	 * Handle for the interval timer, present only while the connector is running.
 	 * @internal
 	 */
-	private _batchTimer: ReturnType<typeof setInterval> | undefined;
+	private _batchTimer?: ReturnType<typeof setInterval>;
+
+	/**
+	 * Handle for the retention cleanup timer, present only while the connector is running.
+	 * @internal
+	 */
+	private _retentionTimer?: ReturnType<typeof setTimeout>;
+
+	/**
+	 * Is the service running.
+	 * @internal
+	 */
+	private _started: boolean;
 
 	/**
 	 * Create a new instance of EntityStorageLoggingConnector.
@@ -139,7 +203,31 @@ export class EntityStorageLoggingConnector implements ILoggingConnector {
 
 		this._mutexTimeoutMs = Coerce.integer(options?.config?.mutexTimeoutMs);
 
+		const cfgRetainForMs =
+			Coerce.integer(options?.config?.retainForMs) ??
+			EntityStorageLoggingConnector.DEFAULT_RETAIN_FOR_MS;
+		this._retainForMs = cfgRetainForMs > 0 ? cfgRetainForMs : undefined;
+
+		const cfgMaxEntries =
+			Coerce.integer(options?.config?.maxEntries) ??
+			EntityStorageLoggingConnector.DEFAULT_MAX_ENTRIES;
+		this._maxEntries = cfgMaxEntries > 0 ? cfgMaxEntries : undefined;
+
+		const cfgRetentionIntervalMs =
+			Coerce.integer(options?.config?.retentionIntervalMs) ??
+			EntityStorageLoggingConnector.DEFAULT_RETENTION_INTERVAL_MS;
+		this._retentionIntervalMs = cfgRetentionIntervalMs > 0 ? cfgRetentionIntervalMs : undefined;
+
+		const cfgRetentionBatchSize =
+			Coerce.integer(options?.config?.retentionBatchSize) ??
+			EntityStorageLoggingConnector.DEFAULT_RETENTION_BATCH_SIZE;
+		this._retentionBatchSize =
+			cfgRetentionBatchSize > 0
+				? cfgRetentionBatchSize
+				: EntityStorageLoggingConnector.DEFAULT_RETENTION_BATCH_SIZE;
+
 		this._mutexKey = RandomHelper.generateUuidV7("compact");
+		this._started = false;
 		this._batchCache = [];
 		this._logEntryStorage = EntityStorageConnectorFactory.get(
 			options?.logEntryStorageConnectorType ?? "log-entry"
@@ -159,14 +247,13 @@ export class EntityStorageLoggingConnector implements ILoggingConnector {
 
 	/**
 	 * Start the connector; sets up the interval timer when batchIntervalMs is configured.
-	 * The timer is also started lazily by the first batched write if this method is not called.
 	 * @returns A promise that resolves when the connector is ready to accept log entries.
 	 */
 	public async start(): Promise<void> {
-		if (!Is.empty(this._batchIntervalMs) && Is.empty(this._batchTimer)) {
-			this._batchTimer = setInterval(async () => {
-				await this.flush();
-			}, this._batchIntervalMs);
+		if (!this._started) {
+			this._started = true;
+			this.startTimer();
+			this.startRetentionTimer();
 		}
 	}
 
@@ -175,9 +262,10 @@ export class EntityStorageLoggingConnector implements ILoggingConnector {
 	 * @returns A promise that resolves when the final flush completes and the timer is cleared.
 	 */
 	public async stop(): Promise<void> {
-		if (!Is.empty(this._batchTimer)) {
-			clearInterval(this._batchTimer);
-			this._batchTimer = undefined;
+		if (this._started) {
+			this._started = false;
+			this.stopTimer();
+			this.stopRetentionTimer();
 		}
 		await this.flush();
 	}
@@ -217,12 +305,6 @@ export class EntityStorageLoggingConnector implements ILoggingConnector {
 			if (Is.empty(this._batchSize) && Is.empty(this._batchIntervalMs)) {
 				await this._platformComponent.execute(async () => this._logEntryStorage.set(entity));
 			} else {
-				if (!Is.empty(this._batchIntervalMs) && Is.empty(this._batchTimer)) {
-					this._batchTimer = setInterval(async () => {
-						await this.flush();
-					}, this._batchIntervalMs);
-				}
-
 				let shouldFlush = false;
 				const locked = await Mutex.lock(this._mutexKey, {
 					throwOnTimeout: true,
@@ -286,7 +368,7 @@ export class EntityStorageLoggingConnector implements ILoggingConnector {
 		}
 
 		const result = await this._logEntryStorage.query(
-			finalConditions,
+			finalConditions.conditions.length > 0 ? finalConditions : undefined,
 			sortProperties,
 			properties,
 			cursor,
@@ -322,7 +404,10 @@ export class EntityStorageLoggingConnector implements ILoggingConnector {
 	 * @returns A promise that resolves when all cached entries have been written to storage.
 	 */
 	public async flush(): Promise<void> {
+		this.stopTimer();
+
 		if (this._batchCache.length === 0) {
+			this.startTimer();
 			return;
 		}
 		const locked = await Mutex.lock(this._mutexKey, {
@@ -330,6 +415,7 @@ export class EntityStorageLoggingConnector implements ILoggingConnector {
 			timeoutMs: this._mutexTimeoutMs
 		});
 		if (!locked) {
+			this.startTimer();
 			return;
 		}
 		let entries: IBatchEntry[] = [];
@@ -371,6 +457,125 @@ export class EntityStorageLoggingConnector implements ILoggingConnector {
 			}
 		} finally {
 			Mutex.unlock(this._mutexKey);
+		}
+
+		this.startTimer();
+	}
+
+	/**
+	 * Delete log entries that exceed the configured retention thresholds.
+	 * Age-based cleanup (retainForMs) runs first, then count-based (maxEntries).
+	 * Deletions are issued in batches of retentionBatchSize to avoid DB load spikes.
+	 * @internal
+	 */
+	private async runRetention(): Promise<void> {
+		this.stopRetentionTimer();
+
+		try {
+			if (!Is.empty(this._retainForMs)) {
+				const epoch = Date.now() - this._retainForMs;
+				const ageCondition: EntityCondition<LogEntry> = {
+					property: "ts",
+					value: epoch,
+					comparison: ComparisonOperator.LessThan
+				};
+				// Cursor is intentionally omitted on every iteration: after each
+				// removeBatch the deleted entries are gone, so the next query
+				// restarts from position 0 and naturally finds the next batch.
+				// Using the cursor would skip entries whose positions shifted
+				// after the preceding deletions.
+				while (true) {
+					const result = await this._logEntryStorage.query(
+						ageCondition,
+						undefined,
+						["id"],
+						undefined,
+						this._retentionBatchSize
+					);
+					const ids = result.entities.map(e => e.id).filter((id): id is string => !Is.empty(id));
+					if (ids.length === 0) {
+						break;
+					}
+					await this._logEntryStorage.removeBatch(ids);
+				}
+			}
+
+			if (!Is.empty(this._maxEntries)) {
+				let total = await this._logEntryStorage.count();
+				while (total > this._maxEntries) {
+					// batchLimit is capped to the exact excess so we never delete
+					// more than needed. The cursor is omitted for the same reason
+					// as the age-based loop above: deleted entries shift positions,
+					// so restarting from 0 with an ascending sort is always safe.
+					const batchLimit = Math.min(total - this._maxEntries, this._retentionBatchSize);
+					const result = await this._logEntryStorage.query(
+						undefined,
+						[{ property: "ts", sortDirection: SortDirection.Ascending }],
+						["id"],
+						undefined,
+						batchLimit
+					);
+					const ids = result.entities.map(e => e.id).filter((id): id is string => !Is.empty(id));
+					if (ids.length === 0) {
+						break;
+					}
+					await this._logEntryStorage.removeBatch(ids);
+					total -= ids.length;
+				}
+			}
+		} catch {}
+
+		this.startRetentionTimer();
+	}
+
+	/**
+	 * Start the retention timer if both a retention option and an interval are configured.
+	 * @internal
+	 */
+	private startRetentionTimer(): void {
+		if (
+			!Is.empty(this._retentionIntervalMs) &&
+			Is.empty(this._retentionTimer) &&
+			this._started &&
+			(!Is.empty(this._retainForMs) || !Is.empty(this._maxEntries))
+		) {
+			this._retentionTimer = globalThis.setTimeout(async () => {
+				await this.runRetention();
+			}, this._retentionIntervalMs);
+		}
+	}
+
+	/**
+	 * Stop the retention timer if it is running.
+	 * @internal
+	 */
+	private stopRetentionTimer(): void {
+		if (!Is.empty(this._retentionTimer)) {
+			globalThis.clearTimeout(this._retentionTimer);
+			this._retentionTimer = undefined;
+		}
+	}
+
+	/**
+	 * Start the interval timer if batchIntervalMs is configured and the connector is running.
+	 * @internal
+	 */
+	private startTimer(): void {
+		if (!Is.empty(this._batchIntervalMs) && Is.empty(this._batchTimer) && this._started) {
+			this._batchTimer = globalThis.setTimeout(async () => {
+				await this.flush();
+			}, this._batchIntervalMs);
+		}
+	}
+
+	/**
+	 * Stop the interval timer if it is running.
+	 * @internal
+	 */
+	private stopTimer(): void {
+		if (!Is.empty(this._batchTimer)) {
+			globalThis.clearTimeout(this._batchTimer);
+			this._batchTimer = undefined;
 		}
 	}
 }

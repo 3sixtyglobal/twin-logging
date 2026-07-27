@@ -252,11 +252,11 @@ describe("EntityStorageLoggingConnector", () => {
 				await logging.stop();
 			});
 
-			test("starts timer lazily on first log call without explicit start", async () => {
+			test("starts timer on first log call after explicit start", async () => {
 				const logging = new EntityStorageLoggingConnector({
 					config: { batchSize: 0, batchIntervalMs: 1000 }
 				});
-				// Deliberately skip start()
+				await logging.start();
 				await logInContext(logging, { level: LogLevel.Info, source: "test", message: "lazy" });
 
 				const before = await storage.query(undefined, undefined, undefined, undefined, 100);
@@ -311,6 +311,249 @@ describe("EntityStorageLoggingConnector", () => {
 
 				const afterAdvance = await storage.query(undefined, undefined, undefined, undefined, 100);
 				expect(afterAdvance.entities).toHaveLength(1);
+			});
+		});
+
+		describe("retention", () => {
+			beforeEach(() => {
+				vi.useFakeTimers();
+			});
+
+			afterEach(() => {
+				vi.useRealTimers();
+			});
+
+			test("removes entries older than retainForMs on timer tick", async () => {
+				const logging = new EntityStorageLoggingConnector({
+					config: {
+						batchSize: 0,
+						batchIntervalMs: 0,
+						retainForMs: 3600000,
+						retentionIntervalMs: 60000
+					}
+				});
+				await logging.start();
+
+				const twoHoursAgo = Date.now() - 7200000;
+				await logInContext(logging, {
+					level: LogLevel.Info,
+					source: "test",
+					message: "old-1",
+					ts: twoHoursAgo
+				});
+				await logInContext(logging, {
+					level: LogLevel.Info,
+					source: "test",
+					message: "old-2",
+					ts: twoHoursAgo
+				});
+				await logInContext(logging, { level: LogLevel.Info, source: "test", message: "recent" });
+
+				const before = await storage.query(undefined, undefined, undefined, undefined, 100);
+				expect(before.entities).toHaveLength(3);
+
+				await vi.advanceTimersByTimeAsync(60000);
+
+				const after = await storage.query(undefined, undefined, undefined, undefined, 100);
+				expect(after.entities).toHaveLength(1);
+				expect(after.entities[0].message).toBe("recent");
+
+				await logging.stop();
+			});
+
+			test("does not remove entries within retainForMs", async () => {
+				const logging = new EntityStorageLoggingConnector({
+					config: {
+						batchSize: 0,
+						batchIntervalMs: 0,
+						retainForMs: 3600000,
+						retentionIntervalMs: 60000
+					}
+				});
+				await logging.start();
+
+				await logInContext(logging, { level: LogLevel.Info, source: "test", message: "a" });
+				await logInContext(logging, { level: LogLevel.Info, source: "test", message: "b" });
+
+				await vi.advanceTimersByTimeAsync(60000);
+
+				const result = await storage.query(undefined, undefined, undefined, undefined, 100);
+				expect(result.entities).toHaveLength(2);
+
+				await logging.stop();
+			});
+
+			test("keeps only maxEntries newest entries when limit is exceeded", async () => {
+				const logging = new EntityStorageLoggingConnector({
+					config: {
+						batchSize: 0,
+						batchIntervalMs: 0,
+						retainForMs: 0,
+						maxEntries: 2,
+						retentionIntervalMs: 60000
+					}
+				});
+				await logging.start();
+
+				await logInContext(logging, {
+					level: LogLevel.Info,
+					source: "test",
+					message: "entry-1",
+					ts: 1000
+				});
+				await logInContext(logging, {
+					level: LogLevel.Info,
+					source: "test",
+					message: "entry-2",
+					ts: 2000
+				});
+				await logInContext(logging, {
+					level: LogLevel.Info,
+					source: "test",
+					message: "entry-3",
+					ts: 3000
+				});
+				await logInContext(logging, {
+					level: LogLevel.Info,
+					source: "test",
+					message: "entry-4",
+					ts: 4000
+				});
+
+				await vi.advanceTimersByTimeAsync(60000);
+
+				const result = await storage.query(undefined, undefined, undefined, undefined, 100);
+				expect(result.entities).toHaveLength(2);
+				const messages = result.entities.map(e => e.message).sort();
+				expect(messages).toEqual(["entry-3", "entry-4"]);
+
+				await logging.stop();
+			});
+
+			test("does not remove entries when count is within maxEntries", async () => {
+				const logging = new EntityStorageLoggingConnector({
+					config: {
+						batchSize: 0,
+						batchIntervalMs: 0,
+						maxEntries: 5,
+						retentionIntervalMs: 60000
+					}
+				});
+				await logging.start();
+
+				for (let i = 0; i < 3; i++) {
+					await logInContext(logging, {
+						level: LogLevel.Info,
+						source: "test",
+						message: `entry-${i}`
+					});
+				}
+
+				await vi.advanceTimersByTimeAsync(60000);
+
+				const result = await storage.query(undefined, undefined, undefined, undefined, 100);
+				expect(result.entities).toHaveLength(3);
+
+				await logging.stop();
+			});
+
+			test("deletes in batches respecting retentionBatchSize", async () => {
+				const logging = new EntityStorageLoggingConnector({
+					config: {
+						batchSize: 0,
+						batchIntervalMs: 0,
+						retainForMs: 3600000,
+						retentionIntervalMs: 60000,
+						retentionBatchSize: 2
+					}
+				});
+				await logging.start();
+
+				const removeBatchSpy = vi.spyOn(storage, "removeBatch");
+
+				const twoHoursAgo = Date.now() - 7200000;
+				for (let i = 0; i < 5; i++) {
+					await logInContext(logging, {
+						level: LogLevel.Info,
+						source: "test",
+						message: `old-${i}`,
+						ts: twoHoursAgo
+					});
+				}
+
+				await vi.advanceTimersByTimeAsync(60000);
+
+				// 5 old entries with batchSize=2: 3 removeBatch calls (2 + 2 + 1)
+				expect(removeBatchSpy).toHaveBeenCalledTimes(3);
+
+				await logging.stop();
+			});
+
+			test("stop clears retention timer so no further cleanup runs", async () => {
+				const logging = new EntityStorageLoggingConnector({
+					config: {
+						batchSize: 0,
+						batchIntervalMs: 0,
+						retainForMs: 3600000,
+						retentionIntervalMs: 60000
+					}
+				});
+				await logging.start();
+
+				const twoHoursAgo = Date.now() - 7200000;
+				await logInContext(logging, {
+					level: LogLevel.Info,
+					source: "test",
+					message: "old",
+					ts: twoHoursAgo
+				});
+
+				await logging.stop();
+
+				// Retention timer is cleared; old entry should not be deleted
+				await vi.advanceTimersByTimeAsync(120000);
+
+				const result = await storage.query(undefined, undefined, undefined, undefined, 100);
+				expect(result.entities).toHaveLength(1);
+			});
+
+			test("applies age-based cleanup before count-based cleanup when both are configured", async () => {
+				const logging = new EntityStorageLoggingConnector({
+					config: {
+						batchSize: 0,
+						batchIntervalMs: 0,
+						retainForMs: 3600000,
+						maxEntries: 10,
+						retentionIntervalMs: 60000
+					}
+				});
+				await logging.start();
+
+				const twoHoursAgo = Date.now() - 7200000;
+				for (let i = 0; i < 8; i++) {
+					await logInContext(logging, {
+						level: LogLevel.Info,
+						source: "test",
+						message: `old-${i}`,
+						ts: twoHoursAgo
+					});
+				}
+				for (let i = 0; i < 5; i++) {
+					await logInContext(logging, {
+						level: LogLevel.Info,
+						source: "test",
+						message: `recent-${i}`
+					});
+				}
+
+				// 13 total. Age-based removes 8 old → 5 remain. Count-based with maxEntries=10: 5 ≤ 10, no further action.
+				await vi.advanceTimersByTimeAsync(60000);
+
+				const result = await storage.query(undefined, undefined, undefined, undefined, 100);
+				expect(result.entities).toHaveLength(5);
+				expect(result.entities.every(e => e.message?.startsWith("recent"))).toBe(true);
+
+				await logging.stop();
 			});
 		});
 	});

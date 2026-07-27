@@ -12,6 +12,7 @@ import type {
 	LogLevel
 } from "@twin.org/logging-models";
 import { nameof } from "@twin.org/nameof";
+import { HttpMethod } from "@twin.org/web";
 
 /**
  * Client for performing logging through to REST endpoints.
@@ -46,7 +47,7 @@ export class LoggingRestClient extends BaseRestClient implements ILoggingCompone
 	public async log(logEntry: ILogEntry): Promise<void> {
 		Guards.object<ILogEntry>(LoggingRestClient.CLASS_NAME, nameof(logEntry), logEntry);
 
-		await this.fetch<ILoggingCreateRequest, IOkResponse>("/", "POST", {
+		await this.fetch<ILoggingCreateRequest, IOkResponse>("/", HttpMethod.POST, {
 			body: logEntry
 		});
 	}
@@ -79,16 +80,20 @@ export class LoggingRestClient extends BaseRestClient implements ILoggingCompone
 		 */
 		cursor?: string;
 	}> {
-		const response = await this.fetch<ILoggingListRequest, ILoggingListResponse>("/", "GET", {
-			query: {
-				level,
-				source,
-				timeStart: Coerce.string(timeStart),
-				timeEnd: Coerce.string(timeEnd),
-				cursor,
-				limit: Coerce.string(limit)
+		const response = await this.fetch<ILoggingListRequest, ILoggingListResponse>(
+			"/",
+			HttpMethod.GET,
+			{
+				query: {
+					level,
+					source,
+					timeStart: Coerce.string(timeStart),
+					timeEnd: Coerce.string(timeEnd),
+					cursor,
+					limit: Coerce.string(limit)
+				}
 			}
-		});
+		);
 
 		return response.body;
 	}

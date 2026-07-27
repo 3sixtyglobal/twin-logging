@@ -1,0 +1,2 @@
+# Default log file names are not locale keys.
+\.log$

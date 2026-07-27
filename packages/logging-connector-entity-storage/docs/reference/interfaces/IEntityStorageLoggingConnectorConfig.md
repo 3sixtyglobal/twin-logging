@@ -64,6 +64,70 @@ Maximum number of milliseconds to wait when acquiring a mutex lock before timing
 
 ***
 
+### retainForMs? {#retainforms}
+
+> `optional` **retainForMs?**: `number`
+
+Delete log entries older than this many milliseconds.
+When combined with maxEntries, age-based cleanup runs first.
+Set to 0 to disable age-based retention.
+
+#### Default
+
+```ts
+172800000 (2 days)
+```
+
+***
+
+### maxEntries? {#maxentries}
+
+> `optional` **maxEntries?**: `number`
+
+Keep at most this many log entries. When the stored count exceeds this limit,
+the oldest entries (by timestamp) are removed first.
+When combined with retainForMs, age-based cleanup runs first.
+Set to 0 to disable count-based retention.
+
+#### Default
+
+```ts
+10000
+```
+
+***
+
+### retentionIntervalMs? {#retentionintervalms}
+
+> `optional` **retentionIntervalMs?**: `number`
+
+How often the retention cleanup task runs in milliseconds.
+Has no effect when both retainForMs and maxEntries are 0.
+Set to 0 to disable periodic cleanup.
+
+#### Default
+
+```ts
+300000 (5 minutes)
+```
+
+***
+
+### retentionBatchSize? {#retentionbatchsize}
+
+> `optional` **retentionBatchSize?**: `number`
+
+Maximum number of entries to delete per removeBatch call during a cleanup pass.
+Keeping this value small avoids spikes in database load.
+
+#### Default
+
+```ts
+1000
+```
+
+***
+
 ### levels? {#levels}
 
 > `optional` **levels?**: `LogLevel`[]

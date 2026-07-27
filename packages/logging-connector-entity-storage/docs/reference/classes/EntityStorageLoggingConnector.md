@@ -66,6 +66,38 @@ Default interval in milliseconds between automatic flushes.
 
 Default maximum number of entries to hold in the in-memory cache.
 
+***
+
+### DEFAULT\_RETENTION\_INTERVAL\_MS {#default_retention_interval_ms}
+
+> `readonly` `static` **DEFAULT\_RETENTION\_INTERVAL\_MS**: `number` = `300000`
+
+Default interval in milliseconds between retention cleanup runs, 5 minutes.
+
+***
+
+### DEFAULT\_RETAIN\_FOR\_MS {#default_retain_for_ms}
+
+> `readonly` `static` **DEFAULT\_RETAIN\_FOR\_MS**: `number` = `172800000`
+
+Default age threshold in milliseconds; entries older than this are deleted, 2 days.
+
+***
+
+### DEFAULT\_MAX\_ENTRIES {#default_max_entries}
+
+> `readonly` `static` **DEFAULT\_MAX\_ENTRIES**: `number` = `10000`
+
+Default maximum number of stored entries to keep before the oldest are removed.
+
+***
+
+### DEFAULT\_RETENTION\_BATCH\_SIZE {#default_retention_batch_size}
+
+> `readonly` `static` **DEFAULT\_RETENTION\_BATCH\_SIZE**: `number` = `1000`
+
+Default maximum number of entries to remove per removeBatch call during cleanup.
+
 ## Methods
 
 ### className() {#classname}
@@ -91,7 +123,6 @@ The class name of the component.
 > **start**(): `Promise`\<`void`\>
 
 Start the connector; sets up the interval timer when batchIntervalMs is configured.
-The timer is also started lazily by the first batched write if this method is not called.
 
 #### Returns
 

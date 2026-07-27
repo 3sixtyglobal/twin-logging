@@ -34,4 +34,36 @@ export interface IEntityStorageLoggingConnectorConfig extends ILoggingLevelsConf
 	 * Maximum number of milliseconds to wait when acquiring a mutex lock before timing out.
 	 */
 	mutexTimeoutMs?: number;
+
+	/**
+	 * Delete log entries older than this many milliseconds.
+	 * When combined with maxEntries, age-based cleanup runs first.
+	 * Set to 0 to disable age-based retention.
+	 * @default 172800000 (2 days)
+	 */
+	retainForMs?: number;
+
+	/**
+	 * Keep at most this many log entries. When the stored count exceeds this limit,
+	 * the oldest entries (by timestamp) are removed first.
+	 * When combined with retainForMs, age-based cleanup runs first.
+	 * Set to 0 to disable count-based retention.
+	 * @default 10000
+	 */
+	maxEntries?: number;
+
+	/**
+	 * How often the retention cleanup task runs in milliseconds.
+	 * Has no effect when both retainForMs and maxEntries are 0.
+	 * Set to 0 to disable periodic cleanup.
+	 * @default 300000 (5 minutes)
+	 */
+	retentionIntervalMs?: number;
+
+	/**
+	 * Maximum number of entries to delete per removeBatch call during a cleanup pass.
+	 * Keeping this value small avoids spikes in database load.
+	 * @default 1000
+	 */
+	retentionBatchSize?: number;
 }

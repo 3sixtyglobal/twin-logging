@@ -152,7 +152,7 @@ export class ConsoleLoggingConnector implements ILoggingConnector {
 	 * @internal
 	 */
 	private colorize(message: string, color: "blue" | "cyan" | "green" | "magenta" | "red"): string {
-		// eslint-disable-next-line unicorn/escape-case,unicorn/no-hex-escape
+		// eslint-disable-next-line unicorn/escape-case
 		return `\x1b[${ConsoleLoggingConnector._COLORS[color]}m${message}\x1b[39m`;
 	}
 
