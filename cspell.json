@@ -18,15 +18,8 @@
 		"**/wordlists/**",
 		"changelog.md"
 	],
-	"words": [
-		"abbrev",
-		"autorelease",
+	"words": ["abbrev", "autorelease", "Millis", "nameof", "openapi", "Stiftung"],
 		"hotfixes",
-		"Millis",
-		"nameof",
-		"openapi",
-		"Stiftung"
-	],
 	"ignoreRegExpList": [
 		"/from\\s+(['\"]).*\\1/",
 		"/eslint-disable.*/",
