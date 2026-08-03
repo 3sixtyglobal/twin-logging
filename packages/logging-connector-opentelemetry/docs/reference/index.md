@@ -14,7 +14,9 @@
 
 - [IOpenTelemetryExporterConfig](type-aliases/IOpenTelemetryExporterConfig.md)
 - [OpenTelemetryExporterTypes](type-aliases/OpenTelemetryExporterTypes.md)
+- [OpenTelemetryProcessorTypes](type-aliases/OpenTelemetryProcessorTypes.md)
 
 ## Variables
 
 - [OpenTelemetryExporterTypes](variables/OpenTelemetryExporterTypes.md)
+- [OpenTelemetryProcessorTypes](variables/OpenTelemetryProcessorTypes.md)
