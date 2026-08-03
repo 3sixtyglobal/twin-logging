@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0.
 import { type FileHandle, mkdir, open, rename, rm, stat } from "node:fs/promises";
 import path from "node:path";
+import { ContextIdKeys, ContextIdStore, type IContextIds } from "@twin.org/context";
 import { BaseError, Coerce, GeneralError, Guards, type IError, Is, Mutex } from "@twin.org/core";
 import { type ILogEntry, type ILoggingConnector, LogLevel } from "@twin.org/logging-models";
 import { nameof } from "@twin.org/nameof";
@@ -16,6 +17,8 @@ import type { IFileLoggingConnectorConstructorOptions } from "./models/IFileLogg
  * When the active file would exceed the configured size limit it is rotated: the active
  * file becomes the newest numbered file and any file beyond the retained file limit is
  * removed, keeping total on-disk usage predictable.
+ *
+ * All tenants of a node share one file; each record carries the node and tenant.
  *
  * The connector assumes a single writer per file: one instance should own a given log file.
  * Its own writes and rotations are serialised with a mutex, but it does not coordinate with
@@ -199,6 +202,8 @@ export class FileLoggingConnector implements ILoggingConnector {
 	 * Log an entry to the connector.
 	 * The entry is appended to the active file as a single newline delimited JSON record;
 	 * when the active file exceeds the configured size limit it is rotated first.
+	 * The current ContextIdStore context is read on every call so that each record carries the
+	 * node and tenant it was logged under.
 	 * @param logEntry The entry to log.
 	 * @returns A promise that resolves when the entry has been written to disk.
 	 */
@@ -209,7 +214,8 @@ export class FileLoggingConnector implements ILoggingConnector {
 			return;
 		}
 
-		const line = `${JSON.stringify(this.toRecord(logEntry))}\n`;
+		const contextIds = (await ContextIdStore.getContextIds()) ?? {};
+		const line = `${JSON.stringify(this.toRecord(logEntry, contextIds))}\n`;
 		const lineBytes = Buffer.byteLength(line, "utf8");
 
 		const locked = await Mutex.lock(this._mutexKey, {
@@ -242,16 +248,23 @@ export class FileLoggingConnector implements ILoggingConnector {
 
 	/**
 	 * Build the plain record written to disk from a log entry, defaulting the timestamp to the
-	 * current time as an ISO string and flattening any error into a serialisable form.
+	 * current time as an ISO string and flattening any error into a serialisable form. The node
+	 * and tenant of the supplied context are included when set.
 	 * @param logEntry The entry being logged.
+	 * @param contextIds The context IDs the entry was logged under.
 	 * @returns The record to serialise as a single JSON line.
 	 * @internal
 	 */
-	private toRecord(logEntry: ILogEntry): { [key: string]: unknown } {
+	private toRecord(logEntry: ILogEntry, contextIds: IContextIds): { [key: string]: unknown } {
+		const node = contextIds[ContextIdKeys.Node];
+		const tenant = contextIds[ContextIdKeys.Tenant];
+
 		return {
 			level: logEntry.level,
 			source: logEntry.source,
 			timestamp: new Date(logEntry.ts ?? Date.now()).toISOString(),
+			node: Is.stringValue(node) ? node : undefined,
+			tenant: Is.stringValue(tenant) ? tenant : undefined,
 			message: logEntry.message,
 			data: logEntry.data,
 			error: Is.object<IError>(logEntry.error) ? BaseError.flatten(logEntry.error) : undefined
