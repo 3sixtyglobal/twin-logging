@@ -33,6 +33,7 @@
 		"@opentelemetry/resources": "2.10.0",
 		"@opentelemetry/sdk-logs": "0.221.0",
 		"@opentelemetry/semantic-conventions": "1.43.0",
+		"@twin.org/context": "next",
 		"@twin.org/core": "next",
 		"@twin.org/nameof": "next",
 		"@twin.org/logging-models": "0.9.2-next.1"

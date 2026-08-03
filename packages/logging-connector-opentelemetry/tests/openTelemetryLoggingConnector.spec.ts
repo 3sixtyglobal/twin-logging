@@ -1,7 +1,9 @@
 // Copyright 2026 IOTA Stiftung.
 // SPDX-License-Identifier: Apache-2.0.
 import { type LogRecord, SeverityNumber } from "@opentelemetry/api-logs";
+import * as opentelemetryResources from "@opentelemetry/resources";
 import { LoggerProvider } from "@opentelemetry/sdk-logs";
+import { ContextIdKeys, ContextIdStore } from "@twin.org/context";
 import { LogLevel } from "@twin.org/logging-models";
 import { OpenTelemetryLoggingConnector } from "../src/openTelemetryLoggingConnector.js";
 
@@ -65,6 +67,23 @@ describe("OpenTelemetryLoggingConnector", () => {
 	test("stop without start is a no-op", async () => {
 		const connector = new OpenTelemetryLoggingConnector({ config: { exporters: {} } });
 		await expect(connector.stop()).resolves.toBeUndefined();
+	});
+
+	test("can fail to construct with an unknown processor type", () => {
+		expect(
+			() =>
+				new OpenTelemetryLoggingConnector({
+					config: {
+						exporters: {
+							collector: {
+								type: "otlp",
+								endpoint: "http://localhost:4318/v1/logs",
+								processor: "unknown" as never
+							}
+						}
+					}
+				})
+		).toThrow("guard.arrayOneOf");
 	});
 
 	test("can fail to start with an unknown exporter type", async () => {
@@ -295,6 +314,65 @@ describe("OpenTelemetryLoggingConnector", () => {
 		const ts = emitted[0].timestamp as number;
 		expect(ts).toBeGreaterThanOrEqual(before);
 		expect(ts).toBeLessThanOrEqual(after);
+		await connector.stop();
+	});
+
+	test("creates a separate provider for each unique tenant context", async () => {
+		const connector = await makeConnector();
+
+		await ContextIdStore.run({ [ContextIdKeys.Tenant]: "tenant-a" }, async () =>
+			connector.log({ level: "info", source: "Test", message: "from-a" })
+		);
+		await ContextIdStore.run({ [ContextIdKeys.Tenant]: "tenant-b" }, async () =>
+			connector.log({ level: "info", source: "Test", message: "from-b" })
+		);
+
+		// One provider per unique context → getLogger called once per context.
+		expect(LoggerProvider.prototype.getLogger).toHaveBeenCalledTimes(2);
+		expect(emitted).toHaveLength(2);
+		await connector.stop();
+	});
+
+	test("reuses the same logger for repeated calls within the same tenant context", async () => {
+		const connector = await makeConnector();
+
+		await ContextIdStore.run({ [ContextIdKeys.Tenant]: "tenant-a" }, async () => {
+			await connector.log({ level: "info", source: "Test", message: "first" });
+			await connector.log({ level: "info", source: "Test", message: "second" });
+		});
+
+		// Same context → same provider → getLogger called only once.
+		expect(LoggerProvider.prototype.getLogger).toHaveBeenCalledTimes(1);
+		expect(emitted).toHaveLength(2);
+		await connector.stop();
+	});
+
+	test("maps tenant and node context IDs to semantic service resource attributes", async () => {
+		const resourceSpy = vi.spyOn(opentelemetryResources, "resourceFromAttributes");
+		const connector = await makeConnector({
+			resourceAttributes: { "service.name": "my-service" }
+		});
+
+		await ContextIdStore.run(
+			{ [ContextIdKeys.Tenant]: "tenant-a", [ContextIdKeys.Node]: "node-1" },
+			async () => connector.log({ level: "info", source: "Test", message: "hello" })
+		);
+
+		expect(resourceSpy).toHaveBeenCalledWith(
+			expect.objectContaining({
+				"service.name": "my-service",
+				"service.namespace": "tenant-a",
+				"service.instance.id": "node-1"
+			})
+		);
+		await connector.stop();
+	});
+
+	test("emits without error when there is no active context", async () => {
+		const connector = await makeConnector();
+		// No ContextIdStore.run() wrapper — simulates a background task with no tenant context.
+		await connector.log({ level: "info", source: "Test", message: "no-context" });
+		expect(emitted).toHaveLength(1);
 		await connector.stop();
 	});
 });
