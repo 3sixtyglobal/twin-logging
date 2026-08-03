@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.9.2-next.3](https://github.com/iotaledger/twin-logging/compare/logging-connector-file-v0.9.2-next.2...logging-connector-file-v0.9.2-next.3) (2026-08-03)
+
+
+### Bug Fixes
+
+* add context to logs ([#86](https://github.com/iotaledger/twin-logging/issues/86)) ([4f98bce](https://github.com/iotaledger/twin-logging/commit/4f98bce3bb9b41704334b14aa92fbd6bebef2838))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @twin.org/logging-models bumped from 0.9.2-next.2 to 0.9.2-next.3
+
 ## [0.9.2-next.2](https://github.com/iotaledger/twin-logging/compare/logging-connector-file-v0.9.2-next.1...logging-connector-file-v0.9.2-next.2) (2026-08-03)
 
 

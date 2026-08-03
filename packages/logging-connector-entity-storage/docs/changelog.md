@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.9.2-next.3](https://github.com/iotaledger/twin-logging/compare/logging-connector-entity-storage-v0.9.2-next.2...logging-connector-entity-storage-v0.9.2-next.3) (2026-08-03)
+
+
+### Miscellaneous Chores
+
+* **logging-connector-entity-storage:** Synchronize repo versions
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @twin.org/logging-models bumped from 0.9.2-next.2 to 0.9.2-next.3
+
 ## [0.9.2-next.2](https://github.com/iotaledger/twin-logging/compare/logging-connector-entity-storage-v0.9.2-next.1...logging-connector-entity-storage-v0.9.2-next.2) (2026-08-03)
 
 

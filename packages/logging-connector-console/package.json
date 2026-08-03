@@ -1,6 +1,6 @@
 {
 	"name": "@twin.org/logging-connector-console",
-	"version": "0.9.2-next.2",
+	"version": "0.9.2-next.3",
 	"description": "Sends log events to the console for local development, debugging, and lightweight runtime diagnostics.",
 	"repository": {
 		"type": "git",
@@ -30,7 +30,7 @@
 	"dependencies": {
 		"@twin.org/core": "next",
 		"@twin.org/nameof": "next",
-		"@twin.org/logging-models": "0.9.2-next.2"
+		"@twin.org/logging-models": "0.9.2-next.3"
 	},
 	"devDependencies": {
 		"@twin.org/nameof-transformer": "next",

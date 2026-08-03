@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.9.2-next.3](https://github.com/iotaledger/twin-logging/compare/logging-connector-opentelemetry-v0.9.2-next.2...logging-connector-opentelemetry-v0.9.2-next.3) (2026-08-03)
+
+
+### Features
+
+* always fallback to batch ([895423e](https://github.com/iotaledger/twin-logging/commit/895423ed81e2f304d7689976403a90e750f6866c))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @twin.org/logging-models bumped from 0.9.2-next.2 to 0.9.2-next.3
+
 ## [0.9.2-next.2](https://github.com/iotaledger/twin-logging/compare/logging-connector-opentelemetry-v0.9.2-next.1...logging-connector-opentelemetry-v0.9.2-next.2) (2026-08-03)
 
 
