@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.9.2-next.2](https://github.com/iotaledger/twin-logging/compare/logging-connector-opentelemetry-v0.9.2-next.1...logging-connector-opentelemetry-v0.9.2-next.2) (2026-08-03)
+
+
+### Bug Fixes
+
+* resource partitioning ([#83](https://github.com/iotaledger/twin-logging/issues/83)) ([ebdc855](https://github.com/iotaledger/twin-logging/commit/ebdc855fd33803abfbb8444205f45fb1b8b159ae))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @twin.org/logging-models bumped from 0.9.2-next.1 to 0.9.2-next.2
+
 ## [0.9.2-next.1](https://github.com/iotaledger/twin-logging/compare/logging-connector-opentelemetry-v0.9.2-next.0...logging-connector-opentelemetry-v0.9.2-next.1) (2026-08-02)
 
 

@@ -1,6 +1,6 @@
 {
 	"name": "@twin.org/logging-models",
-	"version": "0.9.2-next.1",
+	"version": "0.9.2-next.2",
 	"description": "Defines shared logging contracts, event shapes, and connector interfaces used across the repository.",
 	"repository": {
 		"type": "git",
