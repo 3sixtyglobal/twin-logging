@@ -9,6 +9,8 @@ When the active file would exceed the configured size limit it is rotated: the a
 file becomes the newest numbered file and any file beyond the retained file limit is
 removed, keeping total on-disk usage predictable.
 
+All tenants of a node share one file; each record carries the node and tenant.
+
 The connector assumes a single writer per file: one instance should own a given log file.
 Its own writes and rotations are serialised with a mutex, but it does not coordinate with
 other processes or external tools rotating the same file.
@@ -153,6 +155,8 @@ A promise that resolves when the handle has been closed.
 Log an entry to the connector.
 The entry is appended to the active file as a single newline delimited JSON record;
 when the active file exceeds the configured size limit it is rotated first.
+The current ContextIdStore context is read on every call so that each record carries the
+node and tenant it was logged under.
 
 #### Parameters
 
