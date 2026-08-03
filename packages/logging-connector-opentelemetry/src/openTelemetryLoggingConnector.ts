@@ -269,7 +269,7 @@ export class OpenTelemetryLoggingConnector implements ILoggingConnector {
 
 				if (config.processor === OpenTelemetryProcessorTypes.Simple) {
 					processors.push(new SimpleLogRecordProcessor({ exporter }));
-				} else if (config.processor === OpenTelemetryProcessorTypes.Batch) {
+				} else {
 					processors.push(
 						new BatchLogRecordProcessor({
 							exporter,
