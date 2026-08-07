@@ -30,7 +30,7 @@ The options for the logging connector.
 
 ### NAMESPACE {#namespace}
 
-> `readonly` `static` **NAMESPACE**: `string` = `"opentelemetry"`
+> `readonly` `static` **NAMESPACE**: `string` = `"open-telemetry"`
 
 The namespace for the logging connector.
 
