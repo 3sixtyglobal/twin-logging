@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.9.2-next.4](https://github.com/iotaledger/twin-logging/compare/logging-connector-file-v0.9.2-next.3...logging-connector-file-v0.9.2-next.4) (2026-08-07)
+
+
+### Features
+
+* linting and dependency update ([b91cb86](https://github.com/iotaledger/twin-logging/commit/b91cb8642ee499aea7d5335cca3ce8884550793d))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @twin.org/logging-models bumped from 0.9.2-next.3 to 0.9.2-next.4
+
 ## [0.9.2-next.3](https://github.com/iotaledger/twin-logging/compare/logging-connector-file-v0.9.2-next.2...logging-connector-file-v0.9.2-next.3) (2026-08-03)
 
 
