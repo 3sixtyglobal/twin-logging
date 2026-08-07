@@ -35,7 +35,7 @@ export class OpenTelemetryLoggingConnector implements ILoggingConnector {
 	/**
 	 * The namespace for the logging connector.
 	 */
-	public static readonly NAMESPACE: string = "opentelemetry";
+	public static readonly NAMESPACE: string = "open-telemetry";
 
 	/**
 	 * Runtime name for the class.

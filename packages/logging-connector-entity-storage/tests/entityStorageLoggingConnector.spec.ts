@@ -151,7 +151,7 @@ describe("EntityStorageLoggingConnector", () => {
 			// In multi-tenant mode without a tenant context the perTenant flag is set on each
 			// batch entry, so flush drains the perTenant bucket via platformComponent.execute().
 			// In single-tenant mode or when a tenant IS already set in context, perTenant is
-			// false and flush replays each entry's captured contextIds directly — execute() is
+			// false and flush replays each entry's captured contextIds directly - execute() is
 			// never called.
 			test("routes batched flush through platformComponent.execute only when no tenant context", async () => {
 				const logging = new EntityStorageLoggingConnector({
@@ -483,8 +483,8 @@ describe("EntityStorageLoggingConnector", () => {
 
 				await vi.advanceTimersByTimeAsync(60000);
 
-				// 5 old entries with batchSize=2: 3 removeBatch calls (2 + 2 + 1)
-				expect(removeBatchSpy).toHaveBeenCalledTimes(3);
+				// 5 old entries collected across batches, then removed in a single call
+				expect(removeBatchSpy).toHaveBeenCalledTimes(1);
 
 				await logging.stop();
 			});

@@ -479,48 +479,45 @@ export class EntityStorageLoggingConnector implements ILoggingConnector {
 					value: epoch,
 					comparison: ComparisonOperator.LessThan
 				};
-				// Cursor is intentionally omitted on every iteration: after each
-				// removeBatch the deleted entries are gone, so the next query
-				// restarts from position 0 and naturally finds the next batch.
-				// Using the cursor would skip entries whose positions shifted
-				// after the preceding deletions.
-				while (true) {
+				const allIds: string[] = [];
+				let cursor: string | undefined;
+				do {
 					const result = await this._logEntryStorage.query(
 						ageCondition,
 						undefined,
 						["id"],
-						undefined,
+						cursor,
 						this._retentionBatchSize
 					);
-					const ids = result.entities.map(e => e.id).filter((id): id is string => !Is.empty(id));
-					if (ids.length === 0) {
-						break;
-					}
-					await this._logEntryStorage.removeBatch(ids);
+					allIds.push(...result.entities.map(e => e.id as string));
+					cursor = result.cursor;
+				} while (!Is.empty(cursor));
+				if (allIds.length > 0) {
+					await this._logEntryStorage.removeBatch(allIds);
 				}
 			}
 
 			if (!Is.empty(this._maxEntries)) {
-				let total = await this._logEntryStorage.count();
-				while (total > this._maxEntries) {
-					// batchLimit is capped to the exact excess so we never delete
-					// more than needed. The cursor is omitted for the same reason
-					// as the age-based loop above: deleted entries shift positions,
-					// so restarting from 0 with an ascending sort is always safe.
-					const batchLimit = Math.min(total - this._maxEntries, this._retentionBatchSize);
-					const result = await this._logEntryStorage.query(
-						undefined,
-						[{ property: "ts", sortDirection: SortDirection.Ascending }],
-						["id"],
-						undefined,
-						batchLimit
-					);
-					const ids = result.entities.map(e => e.id).filter((id): id is string => !Is.empty(id));
-					if (ids.length === 0) {
-						break;
+				const total = await this._logEntryStorage.count();
+				if (total > this._maxEntries) {
+					const excess = total - this._maxEntries;
+					const allIds: string[] = [];
+					let cursor: string | undefined;
+					do {
+						const batchLimit = Math.min(excess - allIds.length, this._retentionBatchSize);
+						const result = await this._logEntryStorage.query(
+							undefined,
+							[{ property: "ts", sortDirection: SortDirection.Ascending }],
+							["id"],
+							cursor,
+							batchLimit
+						);
+						allIds.push(...result.entities.map(e => e.id as string));
+						cursor = result.cursor;
+					} while (!Is.empty(cursor) && allIds.length < excess);
+					if (allIds.length > 0) {
+						await this._logEntryStorage.removeBatch(allIds);
 					}
-					await this._logEntryStorage.removeBatch(ids);
-					total -= ids.length;
 				}
 			}
 		} catch {}

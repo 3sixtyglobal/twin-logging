@@ -370,7 +370,7 @@ describe("OpenTelemetryLoggingConnector", () => {
 
 	test("emits without error when there is no active context", async () => {
 		const connector = await makeConnector();
-		// No ContextIdStore.run() wrapper — simulates a background task with no tenant context.
+		// No ContextIdStore.run() wrapper - simulates a background task with no tenant context.
 		await connector.log({ level: "info", source: "Test", message: "no-context" });
 		expect(emitted).toHaveLength(1);
 		await connector.stop();
