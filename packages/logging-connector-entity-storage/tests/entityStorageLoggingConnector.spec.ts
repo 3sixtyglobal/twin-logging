@@ -555,6 +555,147 @@ describe("EntityStorageLoggingConnector", () => {
 
 				await logging.stop();
 			});
+
+			test("runs retention cleanup per tenant and does not delete entries from other tenants", async () => {
+				if (!multiTenant) {
+					return;
+				}
+
+				const tenantEntries = new Map<string, LogEntry[]>();
+
+				const getCurrentTenant = async (): Promise<string> => {
+					const contextIds = (await ContextIdStore.getContextIds()) ?? {};
+					const tenantId = contextIds[ContextIdKeys.Tenant];
+					return typeof tenantId === "string" && tenantId.length > 0 ? tenantId : "default";
+				};
+
+				const getTenantEntries = (tenant: string): LogEntry[] => {
+					let entries = tenantEntries.get(tenant);
+					if (!entries) {
+						entries = [];
+						tenantEntries.set(tenant, entries);
+					}
+					return entries;
+				};
+
+				vi.spyOn(storage, "set").mockImplementation(async (entity: LogEntry) => {
+					const tenant = await getCurrentTenant();
+					getTenantEntries(tenant).push(entity);
+				});
+
+				vi.spyOn(storage, "query").mockImplementation(async (...args: unknown[]) => {
+					const conditions = args[0] as
+						| {
+								property?: string;
+								comparison?: string;
+								value?: unknown;
+						  }
+						| undefined;
+					const sortProperties = args[1] as
+						{ property: string; sortDirection: number }[] | undefined;
+					const limit = args[4] as number | undefined;
+
+					const tenant = await getCurrentTenant();
+					let result = [...getTenantEntries(tenant)];
+
+					if (conditions?.property === "ts" && typeof conditions.value === "number") {
+						const maxTs = conditions.value;
+						result = result.filter(entry => entry.ts < maxTs);
+					}
+
+					if (Array.isArray(sortProperties) && sortProperties.length > 0) {
+						const firstSort = sortProperties[0];
+						if (firstSort.property === "ts") {
+							result.sort((a, b) => a.ts - b.ts);
+						}
+					}
+
+					if (typeof limit === "number") {
+						result = result.slice(0, limit);
+					}
+
+					return {
+						entities: result,
+						cursor: undefined
+					};
+				});
+
+				vi.spyOn(storage, "count").mockImplementation(async () => {
+					const tenant = await getCurrentTenant();
+					return getTenantEntries(tenant).length;
+				});
+
+				vi.spyOn(storage, "removeBatch").mockImplementation(async (ids: string[]) => {
+					const tenant = await getCurrentTenant();
+					const entries = getTenantEntries(tenant);
+					tenantEntries.set(
+						tenant,
+						entries.filter(entry => !ids.includes(entry.id))
+					);
+				});
+
+				const logging = new EntityStorageLoggingConnector({
+					config: {
+						batchSize: 0,
+						batchIntervalMs: 0,
+						retainForMs: 3600000,
+						retentionIntervalMs: 60000
+					}
+				});
+				await logging.start();
+
+				const twoHoursAgo = Date.now() - 7200000;
+
+				await ContextIdStore.run({ [ContextIdKeys.Tenant]: "test-tenant" }, async () => {
+					await logging.log({
+						level: LogLevel.Info,
+						source: "test",
+						message: "old-test-tenant",
+						ts: twoHoursAgo
+					});
+					await logging.log({
+						level: LogLevel.Info,
+						source: "test",
+						message: "recent-test-tenant"
+					});
+				});
+
+				await ContextIdStore.run({ [ContextIdKeys.Tenant]: "other-tenant" }, async () => {
+					await storage.set({
+						id: "other-old",
+						level: LogLevel.Info,
+						source: "test",
+						message: "old-other-tenant",
+						ts: twoHoursAgo
+					});
+					await storage.set({
+						id: "other-recent",
+						level: LogLevel.Info,
+						source: "test",
+						ts: Date.now(),
+						message: "recent-other-tenant"
+					});
+				});
+
+				await vi.advanceTimersByTimeAsync(60000);
+
+				const testTenantResult = await ContextIdStore.run(
+					{ [ContextIdKeys.Tenant]: "test-tenant" },
+					async () => storage.query(undefined, undefined, undefined, undefined, 100)
+				);
+				expect(testTenantResult.entities).toHaveLength(1);
+				expect(testTenantResult.entities[0].message).toBe("recent-test-tenant");
+
+				const otherTenantResult = await ContextIdStore.run(
+					{ [ContextIdKeys.Tenant]: "other-tenant" },
+					async () => storage.query(undefined, undefined, undefined, undefined, 100)
+				);
+				expect(otherTenantResult.entities).toHaveLength(2);
+				const otherTenantMessages = otherTenantResult.entities.map(e => e.message).sort();
+				expect(otherTenantMessages).toEqual(["old-other-tenant", "recent-other-tenant"]);
+
+				await logging.stop();
+			});
 		});
 	});
 });

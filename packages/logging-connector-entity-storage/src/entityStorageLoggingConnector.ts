@@ -471,56 +471,60 @@ export class EntityStorageLoggingConnector implements ILoggingConnector {
 	private async runRetention(): Promise<void> {
 		this.stopRetentionTimer();
 
-		try {
-			if (!Is.empty(this._retainForMs)) {
-				const epoch = Date.now() - this._retainForMs;
-				const ageCondition: EntityCondition<LogEntry> = {
-					property: "ts",
-					value: epoch,
-					comparison: ComparisonOperator.LessThan
-				};
-				const allIds: string[] = [];
-				let cursor: string | undefined;
-				do {
-					const result = await this._logEntryStorage.query(
-						ageCondition,
-						undefined,
-						["id"],
-						cursor,
-						this._retentionBatchSize
-					);
-					allIds.push(...result.entities.map(e => e.id as string));
-					cursor = result.cursor;
-				} while (!Is.empty(cursor));
-				if (allIds.length > 0) {
-					await this._logEntryStorage.removeBatch(allIds);
-				}
-			}
-
-			if (!Is.empty(this._maxEntries)) {
-				const total = await this._logEntryStorage.count();
-				if (total > this._maxEntries) {
-					const excess = total - this._maxEntries;
+		await this._platformComponent.execute(async () => {
+			try {
+				if (!Is.empty(this._retainForMs)) {
+					const epoch = Date.now() - this._retainForMs;
+					const ageCondition: EntityCondition<LogEntry> = {
+						property: "ts",
+						value: epoch,
+						comparison: ComparisonOperator.LessThan
+					};
 					const allIds: string[] = [];
 					let cursor: string | undefined;
 					do {
-						const batchLimit = Math.min(excess - allIds.length, this._retentionBatchSize);
 						const result = await this._logEntryStorage.query(
+							ageCondition,
 							undefined,
-							[{ property: "ts", sortDirection: SortDirection.Ascending }],
 							["id"],
 							cursor,
-							batchLimit
+							this._retentionBatchSize
 						);
 						allIds.push(...result.entities.map(e => e.id as string));
 						cursor = result.cursor;
-					} while (!Is.empty(cursor) && allIds.length < excess);
+					} while (!Is.empty(cursor));
 					if (allIds.length > 0) {
 						await this._logEntryStorage.removeBatch(allIds);
 					}
 				}
+
+				if (!Is.empty(this._maxEntries)) {
+					const total = await this._logEntryStorage.count();
+					if (total > this._maxEntries) {
+						const excess = total - this._maxEntries;
+						const allIds: string[] = [];
+						let cursor: string | undefined;
+						do {
+							const batchLimit = Math.min(excess - allIds.length, this._retentionBatchSize);
+							const result = await this._logEntryStorage.query(
+								undefined,
+								[{ property: "ts", sortDirection: SortDirection.Ascending }],
+								["id"],
+								cursor,
+								batchLimit
+							);
+							allIds.push(...result.entities.map(e => e.id as string));
+							cursor = result.cursor;
+						} while (!Is.empty(cursor) && allIds.length < excess);
+						if (allIds.length > 0) {
+							await this._logEntryStorage.removeBatch(allIds);
+						}
+					}
+				}
+			} catch {
+				// We don't want to log here as this is inside the logging connector, and we don't want to risk infinite recursion.
 			}
-		} catch {}
+		});
 
 		this.startRetentionTimer();
 	}
