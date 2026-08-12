@@ -1,6 +1,6 @@
 {
 	"name": "@twin.org/logging-rest-client",
-	"version": "0.9.2-next.4",
+	"version": "0.9.2-next.5",
 	"description": "Provides a client for interacting with logging service endpoints from applications and services.",
 	"repository": {
 		"type": "git",
@@ -36,7 +36,7 @@
 		"@twin.org/web": "next"
 	},
 	"devDependencies": {
-		"@twin.org/logging-models": "0.9.2-next.4",
+		"@twin.org/logging-models": "0.9.2-next.5",
 		"@twin.org/nameof-transformer": "next",
 		"@twin.org/nameof-vitest-plugin": "next",
 		"@twin.org/validate-locales": "next",

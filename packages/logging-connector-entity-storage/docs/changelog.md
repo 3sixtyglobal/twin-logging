@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.9.2-next.5](https://github.com/iotaledger/twin-logging/compare/logging-connector-entity-storage-v0.9.2-next.4...logging-connector-entity-storage-v0.9.2-next.5) (2026-08-12)
+
+
+### Bug Fixes
+
+* retention cleanup using tenancy ([#93](https://github.com/iotaledger/twin-logging/issues/93)) ([8afc6a3](https://github.com/iotaledger/twin-logging/commit/8afc6a3bbad8984885a58bc9c072e978686688b5))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @twin.org/logging-models bumped from 0.9.2-next.4 to 0.9.2-next.5
+
 ## [0.9.2-next.4](https://github.com/iotaledger/twin-logging/compare/logging-connector-entity-storage-v0.9.2-next.3...logging-connector-entity-storage-v0.9.2-next.4) (2026-08-07)
 
 
