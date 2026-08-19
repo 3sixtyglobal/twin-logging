@@ -14,7 +14,20 @@ inputs:
 runs:
   using: 'composite'
   steps:
-    - name: No setup
+    - name: Start Grafana LGTM (logging-connector-opentelemetry)
+      if: inputs.package == 'logging-connector-opentelemetry' || inputs.package == 'all'
       shell: bash
       run: |
-        echo "No setup required for this action. It is a placeholder for the testing environment setup."
+        docker run -d --name twin-opentelemetry \
+          -p 4317:4317 -p 4318:4318 \
+          -p 3123:3000 -p 3200:3200 \
+          grafana/otel-lgtm
+        echo "Waiting for OTLP HTTP endpoint..."
+        for i in $(seq 1 30); do
+          if curl -sf http://localhost:4318/ > /dev/null 2>&1; then
+            echo "OTLP endpoint ready"
+            break
+          fi
+          sleep 2
+        done
+        echo "Grafana LGTM ready"
