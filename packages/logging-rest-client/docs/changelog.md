@@ -1,5 +1,34 @@
 # Changelog
 
+## [0.9.2-next.7](https://github.com/iotaledger/twin-logging/compare/logging-rest-client-v0.9.2-next.6...logging-rest-client-v0.9.2-next.7) (2026-08-19)
+
+
+### Features
+
+* add context id features ([#33](https://github.com/iotaledger/twin-logging/issues/33)) ([38e982c](https://github.com/iotaledger/twin-logging/commit/38e982c9f009019fc02b67d919444b52657c9021))
+* add validate-locales ([df53f13](https://github.com/iotaledger/twin-logging/commit/df53f1331394f2f9333e91e4995a88dded90e484))
+* enhanced rest processing ([7546501](https://github.com/iotaledger/twin-logging/commit/754650136df89015a51915bfcdb76ee9b20dcdc7))
+* enhanced rest testing ([#63](https://github.com/iotaledger/twin-logging/issues/63)) ([6f20a7e](https://github.com/iotaledger/twin-logging/commit/6f20a7e9f6e04214a9f0e542cc92e00a71ef7235))
+* eslint migration to flat config ([1f9fdde](https://github.com/iotaledger/twin-logging/commit/1f9fddedfdcce9942afed431d9460a0f22092744))
+* linting and dependency update ([b91cb86](https://github.com/iotaledger/twin-logging/commit/b91cb8642ee499aea7d5335cca3ce8884550793d))
+* typescript 6 update ([cb28b05](https://github.com/iotaledger/twin-logging/commit/cb28b0557595d5ba9b25fab2d9f1222590787f5a))
+* update dependencies ([ed1e652](https://github.com/iotaledger/twin-logging/commit/ed1e652c4ba32c854d06e9def2f7f6db0bf9a7bd))
+* update dependencies ([976fc06](https://github.com/iotaledger/twin-logging/commit/976fc06976c4899769486b7cb2e827c407d7fc89))
+* update framework core ([aac823c](https://github.com/iotaledger/twin-logging/commit/aac823c2ead88843618b8a82b308d5a793411764))
+* use shared store mechanism ([#20](https://github.com/iotaledger/twin-logging/issues/20)) ([bbacd31](https://github.com/iotaledger/twin-logging/commit/bbacd31af991d82d84294ad432a40830692880ca))
+
+
+### Bug Fixes
+
+* api data types ([8d37cab](https://github.com/iotaledger/twin-logging/commit/8d37cab7ec759f079b6480bcc27d739357dbc392))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * devDependencies
+    * @twin.org/logging-models bumped from 0.9.2-next.6 to 0.9.2-next.7
+
 ## [0.9.2-next.6](https://github.com/iotaledger/twin-logging/compare/logging-rest-client-v0.9.2-next.5...logging-rest-client-v0.9.2-next.6) (2026-08-19)
 
 

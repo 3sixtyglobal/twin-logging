@@ -1,5 +1,25 @@
 # Changelog
 
+## [0.9.2-next.7](https://github.com/iotaledger/twin-logging/compare/logging-connector-file-v0.9.2-next.6...logging-connector-file-v0.9.2-next.7) (2026-08-19)
+
+
+### Features
+
+* add file logging connector with rotation and retention ([#67](https://github.com/iotaledger/twin-logging/issues/67)) ([d3ede7e](https://github.com/iotaledger/twin-logging/commit/d3ede7e7e12c765c4f8a3b5758252104ee0fe0d6))
+* linting and dependency update ([b91cb86](https://github.com/iotaledger/twin-logging/commit/b91cb8642ee499aea7d5335cca3ce8884550793d))
+
+
+### Bug Fixes
+
+* add context to logs ([#86](https://github.com/iotaledger/twin-logging/issues/86)) ([4f98bce](https://github.com/iotaledger/twin-logging/commit/4f98bce3bb9b41704334b14aa92fbd6bebef2838))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @twin.org/logging-models bumped from 0.9.2-next.6 to 0.9.2-next.7
+
 ## [0.9.2-next.6](https://github.com/iotaledger/twin-logging/compare/logging-connector-file-v0.9.2-next.5...logging-connector-file-v0.9.2-next.6) (2026-08-19)
 
 
