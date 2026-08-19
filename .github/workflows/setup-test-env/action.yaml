@@ -15,7 +15,7 @@ runs:
   using: 'composite'
   steps:
     - name: Start Grafana LGTM (logging-connector-opentelemetry)
-      if: inputs.package == 'logging-connector-opentelemetry' || inputs.package == 'all'
+      if: inputs.package == 'packages/logging-connector-opentelemetry' || inputs.package == 'all'
       shell: bash
       run: |
         docker run -d --name twin-opentelemetry \
