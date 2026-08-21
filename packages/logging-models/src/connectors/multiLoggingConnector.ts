@@ -109,9 +109,9 @@ export class MultiLoggingConnector implements ILoggingConnector {
 		// See if we can find a connector that supports querying.
 		// If it throws anything other than not implemented, we should throw it.
 		for (const loggingConnector of this._loggingConnectors) {
-			// eslint-disable-next-line @typescript-eslint/unbound-method
-			if (Is.function(loggingConnector.query)) {
-				return loggingConnector.query(conditions, sortProperties, properties, cursor, limit);
+			const queryBoundMethod = loggingConnector.query?.bind(loggingConnector);
+			if (Is.function(queryBoundMethod)) {
+				return queryBoundMethod(conditions, sortProperties, properties, cursor, limit);
 			}
 		}
 
