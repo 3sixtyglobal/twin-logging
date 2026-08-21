@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0.
 import type { IPlatformComponent } from "@twin.org/api-models";
 import { ContextIdKeys, ContextIdStore } from "@twin.org/context";
-import { ComponentFactory } from "@twin.org/core";
+import { ComponentFactory, Is } from "@twin.org/core";
 import { MemoryEntityStorageConnector } from "@twin.org/entity-storage-connector-memory";
 import { EntityStorageConnectorFactory } from "@twin.org/entity-storage-models";
 import { type ILogEntry, LogLevel } from "@twin.org/logging-models";
@@ -566,7 +566,7 @@ describe("EntityStorageLoggingConnector", () => {
 				const getCurrentTenant = async (): Promise<string> => {
 					const contextIds = (await ContextIdStore.getContextIds()) ?? {};
 					const tenantId = contextIds[ContextIdKeys.Tenant];
-					return typeof tenantId === "string" && tenantId.length > 0 ? tenantId : "default";
+					return Is.string(tenantId) && tenantId.length > 0 ? tenantId : "default";
 				};
 
 				const getTenantEntries = (tenant: string): LogEntry[] => {
@@ -598,7 +598,7 @@ describe("EntityStorageLoggingConnector", () => {
 					const tenant = await getCurrentTenant();
 					let result = [...getTenantEntries(tenant)];
 
-					if (conditions?.property === "ts" && typeof conditions.value === "number") {
+					if (conditions?.property === "ts" && Is.number(conditions.value)) {
 						const maxTs = conditions.value;
 						result = result.filter(entry => entry.ts < maxTs);
 					}
@@ -610,7 +610,7 @@ describe("EntityStorageLoggingConnector", () => {
 						}
 					}
 
-					if (typeof limit === "number") {
+					if (Is.number(limit)) {
 						result = result.slice(0, limit);
 					}
 

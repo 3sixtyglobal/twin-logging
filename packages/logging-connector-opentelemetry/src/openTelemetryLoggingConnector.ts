@@ -301,12 +301,16 @@ export class OpenTelemetryLoggingConnector implements ILoggingConnector {
 			for (const [key, val] of Object.entries(logEntry.data)) {
 				if (Is.string(val) || Is.number(val) || Is.boolean(val)) {
 					attributes[key] = val;
-				} else if (
-					Is.arrayValue(val) &&
-					(Is.string(val[0]) || Is.number(val[0]) || Is.boolean(val[0])) &&
-					val.every(el => typeof el === typeof val[0])
-				) {
-					attributes[key] = val as string[] | number[] | boolean[];
+				} else if (Is.arrayValue(val)) {
+					if (Is.string(val[0]) && val.every(el => Is.string(el))) {
+						attributes[key] = val;
+					} else if (Is.number(val[0]) && val.every(el => Is.number(el))) {
+						attributes[key] = val;
+					} else if (Is.boolean(val[0]) && val.every(el => Is.boolean(el))) {
+						attributes[key] = val;
+					} else {
+						attributes[key] = JSON.stringify(val);
+					}
 				} else if (!Is.undefined(val)) {
 					attributes[key] = JSON.stringify(val);
 				}
