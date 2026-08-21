@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.9.2-next.8](https://github.com/iotaledger/twin-logging/compare/logging-models-v0.9.2-next.7...logging-models-v0.9.2-next.8) (2026-08-21)
+
+
+### Features
+
+* correct query binding ([bbded79](https://github.com/iotaledger/twin-logging/commit/bbded795e2bdea8d48e6683ab548de0fb5561e7a))
+
 ## [0.9.2-next.7](https://github.com/iotaledger/twin-logging/compare/logging-models-v0.9.2-next.6...logging-models-v0.9.2-next.7) (2026-08-19)
 
 
