@@ -5,4 +5,5 @@ export * from "./models/IOpenTelemetryLoggingConnectorConfig.js";
 export * from "./models/IOpenTelemetryLoggingConnectorConstructorOptions.js";
 export * from "./models/IOpenTelemetryOtlpExporterConfig.js";
 export * from "./models/openTelemetryExporterTypes.js";
+export * from "./models/openTelemetryProcessorTypes.js";
 export * from "./openTelemetryLoggingConnector.js";

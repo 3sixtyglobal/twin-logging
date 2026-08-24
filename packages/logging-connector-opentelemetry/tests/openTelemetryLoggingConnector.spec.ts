@@ -1,38 +1,13 @@
 // Copyright 2026 IOTA Stiftung.
 // SPDX-License-Identifier: Apache-2.0.
 import { type LogRecord, SeverityNumber } from "@opentelemetry/api-logs";
+import * as opentelemetryResources from "@opentelemetry/resources";
 import { LoggerProvider } from "@opentelemetry/sdk-logs";
+import { ContextIdKeys, ContextIdStore } from "@twin.org/context";
 import { LogLevel } from "@twin.org/logging-models";
+import { TEST_OTLP_ENDPOINT_LOGS, TEST_OTLP_GRAFANA } from "./setupTestEnv.js";
 import { OpenTelemetryLoggingConnector } from "../src/openTelemetryLoggingConnector.js";
 
-/**
- * Records captured from the OTEL logger between tests.
- */
-let emitted: LogRecord[];
-
-/**
- * Replace the LoggerProvider's getLogger with a stub that captures emitted records,
- * so the ILogEntry -> LogRecord mapping can be asserted without any exporter or network.
- */
-beforeEach(() => {
-	emitted = [];
-	vi.spyOn(LoggerProvider.prototype, "getLogger").mockReturnValue({
-		emit: (logRecord: LogRecord): void => {
-			emitted.push(logRecord);
-		},
-		enabled: (): boolean => true
-	});
-});
-
-afterEach(() => {
-	vi.restoreAllMocks();
-});
-
-/**
- * Create a connector with no exporters (no-op provider) and start it.
- * @param config Optional additional config merged with the empty exporters map.
- * @returns A started connector instance.
- */
 async function makeConnector(
 	config: { [key: string]: unknown } = {}
 ): Promise<OpenTelemetryLoggingConnector> {
@@ -44,6 +19,22 @@ async function makeConnector(
 }
 
 describe("OpenTelemetryLoggingConnector", () => {
+	let emitted: LogRecord[];
+
+	beforeEach(() => {
+		emitted = [];
+		vi.spyOn(LoggerProvider.prototype, "getLogger").mockReturnValue({
+			emit: (logRecord: LogRecord): void => {
+				emitted.push(logRecord);
+			},
+			enabled: (): boolean => true
+		});
+	});
+
+	afterEach(() => {
+		vi.restoreAllMocks();
+	});
+
 	test("can construct", async () => {
 		const connector = new OpenTelemetryLoggingConnector();
 		expect(connector).toBeDefined();
@@ -67,6 +58,23 @@ describe("OpenTelemetryLoggingConnector", () => {
 		await expect(connector.stop()).resolves.toBeUndefined();
 	});
 
+	test("can fail to construct with an unknown processor type", () => {
+		expect(
+			() =>
+				new OpenTelemetryLoggingConnector({
+					config: {
+						exporters: {
+							collector: {
+								type: "otlp",
+								endpoint: TEST_OTLP_ENDPOINT_LOGS,
+								processor: "unknown" as never
+							}
+						}
+					}
+				})
+		).toThrow("guard.arrayOneOf");
+	});
+
 	test("can fail to start with an unknown exporter type", async () => {
 		const connector = new OpenTelemetryLoggingConnector({
 			config: { exporters: { bad: { type: "type1" } } } as never
@@ -81,7 +89,7 @@ describe("OpenTelemetryLoggingConnector", () => {
 		const connector = new OpenTelemetryLoggingConnector({
 			config: {
 				exporters: {
-					collector: { type: "otlp", endpoint: "http://localhost:4318/v1/logs" }
+					collector: { type: "otlp", endpoint: TEST_OTLP_ENDPOINT_LOGS }
 				}
 			}
 		});
@@ -95,7 +103,7 @@ describe("OpenTelemetryLoggingConnector", () => {
 				exporters: {
 					collector: {
 						type: "otlp",
-						endpoint: "http://localhost:4318/v1/logs",
+						endpoint: TEST_OTLP_ENDPOINT_LOGS,
 						processor: "simple"
 					}
 				}
@@ -296,5 +304,138 @@ describe("OpenTelemetryLoggingConnector", () => {
 		expect(ts).toBeGreaterThanOrEqual(before);
 		expect(ts).toBeLessThanOrEqual(after);
 		await connector.stop();
+	});
+
+	test("creates a separate provider for each unique tenant context", async () => {
+		const connector = await makeConnector();
+
+		await ContextIdStore.run({ [ContextIdKeys.Tenant]: "tenant-a" }, async () =>
+			connector.log({ level: "info", source: "Test", message: "from-a" })
+		);
+		await ContextIdStore.run({ [ContextIdKeys.Tenant]: "tenant-b" }, async () =>
+			connector.log({ level: "info", source: "Test", message: "from-b" })
+		);
+
+		// One provider per unique context → getLogger called once per context.
+		expect(LoggerProvider.prototype.getLogger).toHaveBeenCalledTimes(2);
+		expect(emitted).toHaveLength(2);
+		await connector.stop();
+	});
+
+	test("reuses the same logger for repeated calls within the same tenant context", async () => {
+		const connector = await makeConnector();
+
+		await ContextIdStore.run({ [ContextIdKeys.Tenant]: "tenant-a" }, async () => {
+			await connector.log({ level: "info", source: "Test", message: "first" });
+			await connector.log({ level: "info", source: "Test", message: "second" });
+		});
+
+		// Same context → same provider → getLogger called only once.
+		expect(LoggerProvider.prototype.getLogger).toHaveBeenCalledTimes(1);
+		expect(emitted).toHaveLength(2);
+		await connector.stop();
+	});
+
+	test("maps tenant and node context IDs to semantic service resource attributes", async () => {
+		const resourceSpy = vi.spyOn(opentelemetryResources, "resourceFromAttributes");
+		const connector = await makeConnector({
+			resourceAttributes: { "service.name": "my-service" }
+		});
+
+		await ContextIdStore.run(
+			{ [ContextIdKeys.Tenant]: "tenant-a", [ContextIdKeys.Node]: "node-1" },
+			async () => connector.log({ level: "info", source: "Test", message: "hello" })
+		);
+
+		expect(resourceSpy).toHaveBeenCalledWith(
+			expect.objectContaining({
+				"service.name": "my-service",
+				"service.namespace": "tenant-a",
+				"service.instance.id": "node-1"
+			})
+		);
+		await connector.stop();
+	});
+
+	test("emits without error when there is no active context", async () => {
+		const connector = await makeConnector();
+		// No ContextIdStore.run() wrapper - simulates a background task with no tenant context.
+		await connector.log({ level: "info", source: "Test", message: "no-context" });
+		expect(emitted).toHaveLength(1);
+		await connector.stop();
+	});
+});
+
+describe("OpenTelemetryLoggingConnector (live OTLP)", () => {
+	const SERVICE_NAME = "otel-connector-integration-test";
+	const LOKI_TIMEOUT_MS = 15_000;
+
+	function liveConnector(): OpenTelemetryLoggingConnector {
+		return new OpenTelemetryLoggingConnector({
+			config: {
+				exporters: { collector: { type: "otlp", endpoint: TEST_OTLP_ENDPOINT_LOGS } },
+				resourceAttributes: { "service.name": SERVICE_NAME }
+			}
+		});
+	}
+
+	async function findInLoki(message: string): Promise<boolean> {
+		const query = `{service_name="${SERVICE_NAME}"} |= "${message}"`;
+		const deadline = Date.now() + LOKI_TIMEOUT_MS;
+		do {
+			const nowMs = Date.now();
+			const url = new URL(
+				`${TEST_OTLP_GRAFANA}/api/datasources/proxy/uid/loki/loki/api/v1/query_range`
+			);
+			url.searchParams.set("query", query);
+			url.searchParams.set("start", `${nowMs - 60_000}000000`);
+			url.searchParams.set("end", `${nowMs}000000`);
+			url.searchParams.set("limit", "1");
+			const resp = await fetch(url.toString(), {
+				headers: { Authorization: `Basic ${btoa("admin:admin")}` }
+			}).catch(() => null);
+			if (resp?.ok) {
+				const body = (await resp.json()) as { data?: { result?: { values?: unknown[] }[] } };
+				if (body.data?.result?.some(s => (s.values?.length ?? 0) > 0)) {
+					return true;
+				}
+			}
+			await new Promise<void>(resolve => setTimeout(resolve, 500));
+		} while (Date.now() < deadline);
+		return false;
+	}
+
+	test("delivers a log record to Loki via the OTLP endpoint", async () => {
+		const message = `live-test-${Date.now()}`;
+		const connector = liveConnector();
+		await connector.start();
+		await connector.log({ level: "info", source: "IntegrationTest", message });
+		await connector.stop();
+		expect(await findInLoki(message)).toBe(true);
+	});
+
+	test("delivers log records with tenant context to Loki", async () => {
+		const message = `tenant-test-${Date.now()}`;
+		const connector = liveConnector();
+		await connector.start();
+		await ContextIdStore.run({ [ContextIdKeys.Tenant]: "integration-tenant" }, async () => {
+			await connector.log({ level: "info", source: "IntegrationTest", message });
+		});
+		await connector.stop();
+		expect(await findInLoki(message)).toBe(true);
+	});
+
+	test("delivers all log levels to Loki", async () => {
+		const marker = `all-levels-${Date.now()}`;
+		const logLevels = Object.values(LogLevel) as LogLevel[];
+		const connector = liveConnector();
+		await connector.start();
+		for (const level of logLevels) {
+			await connector.log({ level, source: "IntegrationTest", message: `${marker}-${level}` });
+		}
+		await connector.stop();
+		for (const level of logLevels) {
+			expect(await findInLoki(`${marker}-${level}`)).toBe(true);
+		}
 	});
 });

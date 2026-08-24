@@ -4,7 +4,10 @@ description: 'Stop and remove test environment services after workflow completio
 runs:
   using: 'composite'
   steps:
-    - name: No Docker teardown required
+    - name: Teardown Docker Test Environment
       shell: bash
       run: |
-        echo "No Docker test resources are created by setup-test-env in this repository."
+        docker ps -aq | xargs -r docker stop
+        docker ps -aq | xargs -r docker rm
+        docker images -aq | xargs -r docker rmi -f
+        docker system prune -a --volumes -f || true

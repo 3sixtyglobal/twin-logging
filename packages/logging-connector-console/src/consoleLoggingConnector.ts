@@ -1,6 +1,6 @@
 // Copyright 2024 IOTA Stiftung.
 // SPDX-License-Identifier: Apache-2.0.
-import { Guards, Is } from "@twin.org/core";
+import { Guards, I18n, Is, ObjectHelper } from "@twin.org/core";
 import {
 	LogEntryHelper,
 	LogLevel,
@@ -104,10 +104,10 @@ export class ConsoleLoggingConnector implements ILoggingConnector {
 			let data = logEntry.data;
 
 			if (this._translateMessages) {
-				const translatedMessage = LogEntryHelper.translate(logEntry);
-				if (Is.stringValue(translatedMessage)) {
-					message = translatedMessage;
-					data = undefined;
+				const messageKey = LogEntryHelper.getMessageKey(logEntry);
+				if (Is.stringValue(messageKey)) {
+					message = I18n.formatMessage(messageKey, logEntry.data);
+					data = this.reduceTranslatedData(messageKey, logEntry.data);
 				}
 			}
 
@@ -126,6 +126,28 @@ export class ConsoleLoggingConnector implements ILoggingConnector {
 			}
 
 			globalThis.console[logEntry.level](...params);
+		}
+	}
+
+	/**
+	 * Removes the data properties consumed by the translated message placeholders.
+	 * @param messageKey The dictionary key the message was translated with.
+	 * @param data The log entry data.
+	 * @returns The remaining data properties, or undefined when none remain.
+	 * @internal
+	 */
+	private reduceTranslatedData(
+		messageKey: string,
+		data?: { [key: string]: unknown }
+	): { [key: string]: unknown } | undefined {
+		if (Is.objectValue(data)) {
+			const template = I18n.getDictionary(I18n.getLocale())?.[messageKey];
+			if (Is.stringValue(template)) {
+				const remaining = ObjectHelper.omit(data, I18n.getPropertyNames(template));
+				if (Is.objectValue(remaining)) {
+					return remaining;
+				}
+			}
 		}
 	}
 

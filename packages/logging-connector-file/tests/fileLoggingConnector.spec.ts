@@ -3,6 +3,7 @@
 import { mkdtemp, readdir, readFile, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import path from "node:path";
+import { ContextIdKeys, ContextIdStore } from "@twin.org/context";
 import { LoggingConnectorFactory, LogLevel, MultiLoggingConnector } from "@twin.org/logging-models";
 import { FileLoggingConnector } from "../src/fileLoggingConnector.js";
 
@@ -195,6 +196,45 @@ describe("FileLoggingConnector", () => {
 		expect(Array.isArray(error)).toEqual(true);
 		expect(error[0].name).toEqual("GeneralError");
 		expect(error[0].message).toEqual("something.failed");
+	});
+
+	test("stamps the node and tenant of the active context onto the written entry", async () => {
+		const connector = createConnector({ directory: testDir });
+
+		await ContextIdStore.run(
+			{ [ContextIdKeys.Tenant]: "tenant-a", [ContextIdKeys.Node]: "node-1" },
+			async () => connector.log({ level: "info", source: "Test", message: "in-context" })
+		);
+
+		const entries = await readEntries();
+		expect(entries[0].node).toEqual("node-1");
+		expect(entries[0].tenant).toEqual("tenant-a");
+	});
+
+	test("attributes each entry to the context it was logged under", async () => {
+		const connector = createConnector({ directory: testDir });
+
+		await ContextIdStore.run({ [ContextIdKeys.Tenant]: "tenant-a" }, async () =>
+			connector.log({ level: "info", source: "Test", message: "from-a" })
+		);
+		await ContextIdStore.run({ [ContextIdKeys.Tenant]: "tenant-b" }, async () =>
+			connector.log({ level: "info", source: "Test", message: "from-b" })
+		);
+
+		const entries = await readEntries();
+		expect(entries.map(entry => [entry.message, entry.tenant])).toEqual([
+			["from-a", "tenant-a"],
+			["from-b", "tenant-b"]
+		]);
+	});
+
+	test("omits the context fields when there is no active context", async () => {
+		const connector = createConnector({ directory: testDir });
+		await connector.log({ level: "info", source: "Test", message: "no-context" });
+
+		const entries = await readEntries();
+		expect(entries[0]).not.toHaveProperty("node");
+		expect(entries[0]).not.toHaveProperty("tenant");
 	});
 
 	test("throws when maxFileSizeBytes is a positive value below the minimum", () => {

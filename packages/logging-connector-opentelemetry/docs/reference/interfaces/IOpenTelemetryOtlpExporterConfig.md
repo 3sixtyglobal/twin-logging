@@ -36,7 +36,7 @@ Additional headers to attach to each export request, e.g. for authentication.
 
 ### processor? {#processor}
 
-> `optional` **processor?**: `"batch"` \| `"simple"`
+> `optional` **processor?**: [`OpenTelemetryProcessorTypes`](../type-aliases/OpenTelemetryProcessorTypes.md)
 
 Which log record processor to wrap the exporter with.
 "batch" accumulates records and flushes on a schedule or when the buffer fills.

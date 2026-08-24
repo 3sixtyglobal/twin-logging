@@ -14,6 +14,7 @@ import {
 	ATTR_EXCEPTION_STACKTRACE,
 	ATTR_EXCEPTION_TYPE
 } from "@opentelemetry/semantic-conventions";
+import { ContextIdKeys, ContextIdStore, type IContextIds } from "@twin.org/context";
 import { BaseError, ComponentFactory, GeneralError, Guards, type IError, Is } from "@twin.org/core";
 import {
 	type ILogEntry,
@@ -25,6 +26,7 @@ import { nameof } from "@twin.org/nameof";
 import type { IOpenTelemetryLoggingConnectorConfig } from "./models/IOpenTelemetryLoggingConnectorConfig.js";
 import type { IOpenTelemetryLoggingConnectorConstructorOptions } from "./models/IOpenTelemetryLoggingConnectorConstructorOptions.js";
 import { OpenTelemetryExporterTypes } from "./models/openTelemetryExporterTypes.js";
+import { OpenTelemetryProcessorTypes } from "./models/openTelemetryProcessorTypes.js";
 
 /**
  * Class for performing logging operations using OpenTelemetry.
@@ -33,7 +35,7 @@ export class OpenTelemetryLoggingConnector implements ILoggingConnector {
 	/**
 	 * The namespace for the logging connector.
 	 */
-	public static readonly NAMESPACE: string = "opentelemetry";
+	public static readonly NAMESPACE: string = "open-telemetry";
 
 	/**
 	 * Runtime name for the class.
@@ -65,16 +67,22 @@ export class OpenTelemetryLoggingConnector implements ILoggingConnector {
 	private readonly _levels: LogLevel[];
 
 	/**
-	 * The LoggerProvider that owns the exporters. Set by start(), cleared by stop().
+	 * Per-context-key Logger instances, created lazily on the first log() call in each context.
 	 * @internal
 	 */
-	private _loggerProvider?: LoggerProvider;
+	private _loggers: { [key: string]: Logger };
 
 	/**
-	 * The Logger used to emit records. Set by start(), cleared by stop().
+	 * All LoggerProvider instances created, tracked so stop() can shut them all down.
 	 * @internal
 	 */
-	private _logger?: Logger;
+	private _providers: LoggerProvider[];
+
+	/**
+	 * True between start() and stop().
+	 * @internal
+	 */
+	private _started: boolean;
 
 	/**
 	 * Create a new instance of OpenTelemetryLoggingConnector.
@@ -83,6 +91,20 @@ export class OpenTelemetryLoggingConnector implements ILoggingConnector {
 	constructor(options?: IOpenTelemetryLoggingConnectorConstructorOptions) {
 		this._config = options?.config ?? {};
 		this._levels = this._config.levels ?? Object.values(LogLevel);
+		this._loggers = {};
+		this._providers = [];
+		this._started = false;
+
+		for (const [, config] of Object.entries(this._config.exporters ?? {})) {
+			if (!Is.undefined(config.processor)) {
+				Guards.arrayOneOf(
+					OpenTelemetryLoggingConnector.CLASS_NAME,
+					nameof(config.processor),
+					config.processor,
+					Object.values(OpenTelemetryProcessorTypes)
+				);
+			}
+		}
 	}
 
 	/**
@@ -94,17 +116,19 @@ export class OpenTelemetryLoggingConnector implements ILoggingConnector {
 	}
 
 	/**
-	 * Initialise the LoggerProvider and configured exporters.
+	 * Validate the configured exporters and mark the connector as running.
+	 * LoggerProvider instances are created lazily on the first log() call per tenant context.
 	 * Calling start() on a connector that has already been started is a no-op.
 	 * @param nodeLoggingComponentType The node logging component type.
-	 * @returns A promise that resolves when the LoggerProvider is running.
+	 * @returns A promise that resolves when the connector is ready to receive log entries.
 	 */
 	public async start(nodeLoggingComponentType?: string): Promise<void> {
-		if (!Is.undefined(this._loggerProvider)) {
+		if (this._started) {
 			return;
 		}
 
-		const processors: LogRecordProcessor[] = [];
+		// Validate exporter configs up-front so callers get a synchronous throw during startup
+		// rather than on the first log() call.
 		for (const [, config] of Object.entries(this._config.exporters ?? {})) {
 			if (config.type === OpenTelemetryExporterTypes.Otlp) {
 				Guards.stringValue(
@@ -112,27 +136,6 @@ export class OpenTelemetryLoggingConnector implements ILoggingConnector {
 					nameof(config.endpoint),
 					config.endpoint
 				);
-
-				const exporter = new OTLPLogExporter({
-					url: config.endpoint,
-					headers: config.headers,
-					concurrencyLimit: config.concurrencyLimit,
-					timeoutMillis: config.timeoutMs
-				});
-
-				if (config.processor === "simple") {
-					processors.push(new SimpleLogRecordProcessor({ exporter }));
-				} else {
-					processors.push(
-						new BatchLogRecordProcessor({
-							exporter,
-							scheduledDelayMillis: config.scheduledDelayMs,
-							maxExportBatchSize: config.maxExportBatchSize,
-							maxQueueSize: config.maxQueueSize,
-							exportTimeoutMillis: config.exportTimeoutMs
-						})
-					);
-				}
 			} else {
 				throw new GeneralError(OpenTelemetryLoggingConnector.CLASS_NAME, "unknownExporterType", {
 					type: (config as { type: string }).type
@@ -140,15 +143,7 @@ export class OpenTelemetryLoggingConnector implements ILoggingConnector {
 			}
 		}
 
-		const resource = Is.empty(this._config.resourceAttributes)
-			? undefined
-			: resourceFromAttributes(this._config.resourceAttributes);
-
-		this._loggerProvider = new LoggerProvider({ processors, resource });
-		this._logger = this._loggerProvider.getLogger(
-			this._config.loggerName ?? "twin-logging",
-			this._config.loggerVersion ?? "1.0.0"
-		);
+		this._started = true;
 
 		const nodeLogging = ComponentFactory.getIfExists<ILoggingComponent>(nodeLoggingComponentType);
 		await nodeLogging?.log({
@@ -160,18 +155,18 @@ export class OpenTelemetryLoggingConnector implements ILoggingConnector {
 	}
 
 	/**
-	 * Shut down the LoggerProvider and release resources.
-	 * shutdown() flushes any buffered records before tearing down, so records held by a
-	 * batch processor are exported before the process exits.
+	 * Shut down all LoggerProvider instances and release resources.
+	 * Each provider flushes its buffered records before tearing down.
 	 * Calling stop() on a connector that has not been started is a no-op.
 	 * @param nodeLoggingComponentType The node logging component type.
-	 * @returns A promise that resolves when the LoggerProvider has shut down.
+	 * @returns A promise that resolves when all LoggerProviders have shut down.
 	 */
 	public async stop(nodeLoggingComponentType?: string): Promise<void> {
-		if (!Is.undefined(this._loggerProvider)) {
-			await this._loggerProvider.shutdown();
-			this._loggerProvider = undefined;
-			this._logger = undefined;
+		if (this._started) {
+			await Promise.all(this._providers.map(async p => p.shutdown()));
+			this._providers = [];
+			this._loggers = {};
+			this._started = false;
 
 			const nodeLogging = ComponentFactory.getIfExists<ILoggingComponent>(nodeLoggingComponentType);
 			await nodeLogging?.log({
@@ -185,21 +180,24 @@ export class OpenTelemetryLoggingConnector implements ILoggingConnector {
 
 	/**
 	 * Log an entry to the connector.
-	 * The entry is mapped to an OpenTelemetry LogRecord and emitted to the LoggerProvider,
-	 * which buffers and exports it via the configured exporters. Entries whose level is not
-	 * in the configured levels are skipped, as are entries received before start() (or after
-	 * stop()) since there is no provider to forward them to.
+	 * The current ContextIdStore context is read on every call. A dedicated Logger backed by a
+	 * LoggerProvider whose Resource carries the context IDs (tenant, node, etc.) is resolved or
+	 * created for that context, ensuring every emitted OTel log record is stamped with the
+	 * correct tenant attributes automatically.
 	 * @param logEntry The entry to log.
 	 * @returns A promise that resolves when the entry has been emitted.
 	 */
 	public async log(logEntry: ILogEntry): Promise<void> {
 		Guards.object<ILogEntry>(OpenTelemetryLoggingConnector.CLASS_NAME, nameof(logEntry), logEntry);
 
-		if (!this._levels.includes(logEntry.level) || Is.undefined(this._logger)) {
+		if (!this._levels.includes(logEntry.level) || !this._started) {
 			return;
 		}
 
-		this._logger.emit({
+		const contextIds = (await ContextIdStore.getContextIds()) ?? {};
+		const logger = this.getOrCreateLogger(contextIds);
+
+		logger.emit({
 			timestamp: logEntry.ts ?? Date.now(),
 			severityNumber:
 				OpenTelemetryLoggingConnector._SEVERITY[logEntry.level] ?? SeverityNumber.UNSPECIFIED,
@@ -207,6 +205,84 @@ export class OpenTelemetryLoggingConnector implements ILoggingConnector {
 			body: logEntry.message,
 			attributes: this.toAttributes(logEntry)
 		});
+	}
+
+	/**
+	 * Returns the cached Logger for the given context, creating a dedicated LoggerProvider if
+	 * this context has not been seen before.  Each unique context key gets its own provider
+	 * so that per-tenant resource attributes are stamped onto every record automatically by
+	 * the OTel SDK rather than being injected per-record.
+	 * @param contextIds The current execution context IDs.
+	 * @returns The Logger for this context.
+	 * @internal
+	 */
+	private getOrCreateLogger(contextIds: IContextIds): Logger {
+		const node = contextIds[ContextIdKeys.Node];
+		const tenant = contextIds[ContextIdKeys.Tenant];
+
+		const key = `${node ?? ""}/${tenant ?? ""}`;
+
+		const cached = this._loggers[key];
+		if (!Is.undefined(cached)) {
+			return cached;
+		}
+
+		const scopedContextIds: { [key: string]: string } = {};
+		const resourcePrefix = "service";
+		if (Is.stringValue(node)) {
+			scopedContextIds[`${resourcePrefix}.instance.id`] = node;
+		}
+		if (Is.stringValue(tenant)) {
+			scopedContextIds[`${resourcePrefix}.namespace`] = tenant;
+		}
+		const resourceAttrs = { ...this._config.resourceAttributes, ...scopedContextIds };
+		const resource = Is.empty(resourceAttrs) ? undefined : resourceFromAttributes(resourceAttrs);
+
+		const provider = new LoggerProvider({ processors: this.buildProcessors(), resource });
+		this._providers.push(provider);
+
+		const logger = provider.getLogger(
+			this._config.loggerName ?? "twin-logging",
+			this._config.loggerVersion ?? "1.0.0"
+		);
+		this._loggers[key] = logger;
+		return logger;
+	}
+
+	/**
+	 * Builds a fresh set of log record processors from the configured exporters.
+	 * Each LoggerProvider receives its own processor instances so that providers can
+	 * be shut down independently.
+	 * @returns An array of processors.
+	 * @internal
+	 */
+	private buildProcessors(): LogRecordProcessor[] {
+		const processors: LogRecordProcessor[] = [];
+		for (const [, config] of Object.entries(this._config.exporters ?? {})) {
+			if (config.type === OpenTelemetryExporterTypes.Otlp) {
+				const exporter = new OTLPLogExporter({
+					url: config.endpoint,
+					headers: config.headers,
+					concurrencyLimit: config.concurrencyLimit,
+					timeoutMillis: config.timeoutMs
+				});
+
+				if (config.processor === OpenTelemetryProcessorTypes.Simple) {
+					processors.push(new SimpleLogRecordProcessor({ exporter }));
+				} else {
+					processors.push(
+						new BatchLogRecordProcessor({
+							exporter,
+							scheduledDelayMillis: config.scheduledDelayMs,
+							maxExportBatchSize: config.maxExportBatchSize,
+							maxQueueSize: config.maxQueueSize,
+							exportTimeoutMillis: config.exportTimeoutMs
+						})
+					);
+				}
+			}
+		}
+		return processors;
 	}
 
 	/**
@@ -225,12 +301,16 @@ export class OpenTelemetryLoggingConnector implements ILoggingConnector {
 			for (const [key, val] of Object.entries(logEntry.data)) {
 				if (Is.string(val) || Is.number(val) || Is.boolean(val)) {
 					attributes[key] = val;
-				} else if (
-					Is.arrayValue(val) &&
-					(Is.string(val[0]) || Is.number(val[0]) || Is.boolean(val[0])) &&
-					val.every(el => typeof el === typeof val[0])
-				) {
-					attributes[key] = val as string[] | number[] | boolean[];
+				} else if (Is.arrayValue(val)) {
+					if (Is.string(val[0]) && val.every(el => Is.string(el))) {
+						attributes[key] = val;
+					} else if (Is.number(val[0]) && val.every(el => Is.number(el))) {
+						attributes[key] = val;
+					} else if (Is.boolean(val[0]) && val.every(el => Is.boolean(el))) {
+						attributes[key] = val;
+					} else {
+						attributes[key] = JSON.stringify(val);
+					}
 				} else if (!Is.undefined(val)) {
 					attributes[key] = JSON.stringify(val);
 				}

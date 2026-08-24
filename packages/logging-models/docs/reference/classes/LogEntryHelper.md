@@ -33,3 +33,25 @@ The log entry whose message should be translated.
 `string` \| `undefined`
 
 The translated message string, or undefined if no matching translation key exists.
+
+***
+
+### getMessageKey() {#getmessagekey}
+
+> `static` **getMessageKey**(`logEntry`): `string` \| `undefined`
+
+Gets the dictionary key that would be used to translate the log entry message.
+
+#### Parameters
+
+##### logEntry
+
+[`ILogEntry`](../interfaces/ILogEntry.md)
+
+The log entry to find the translation key for.
+
+#### Returns
+
+`string` \| `undefined`
+
+The matching dictionary key, or undefined if no matching translation key exists.

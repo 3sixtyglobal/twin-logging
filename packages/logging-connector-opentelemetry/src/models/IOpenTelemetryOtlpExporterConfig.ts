@@ -1,6 +1,7 @@
 // Copyright 2026 IOTA Stiftung.
 // SPDX-License-Identifier: Apache-2.0.
 import type { OpenTelemetryExporterTypes } from "./openTelemetryExporterTypes.js";
+import type { OpenTelemetryProcessorTypes } from "./openTelemetryProcessorTypes.js";
 
 /**
  * Configuration for an OTLP-over-HTTP log record exporter.
@@ -29,7 +30,7 @@ export interface IOpenTelemetryOtlpExporterConfig {
 	 * "simple" exports each record as it is emitted (useful for tests and local development).
 	 * @default batch
 	 */
-	processor?: "batch" | "simple";
+	processor?: OpenTelemetryProcessorTypes;
 
 	/**
 	 * The delay interval in milliseconds between two consecutive batch exports.

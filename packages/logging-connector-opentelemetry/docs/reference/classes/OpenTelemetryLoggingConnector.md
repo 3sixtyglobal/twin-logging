@@ -30,7 +30,7 @@ The options for the logging connector.
 
 ### NAMESPACE {#namespace}
 
-> `readonly` `static` **NAMESPACE**: `string` = `"opentelemetry"`
+> `readonly` `static` **NAMESPACE**: `string` = `"open-telemetry"`
 
 The namespace for the logging connector.
 
@@ -66,7 +66,8 @@ The class name of the component.
 
 > **start**(`nodeLoggingComponentType?`): `Promise`\<`void`\>
 
-Initialise the LoggerProvider and configured exporters.
+Validate the configured exporters and mark the connector as running.
+LoggerProvider instances are created lazily on the first log() call per tenant context.
 Calling start() on a connector that has already been started is a no-op.
 
 #### Parameters
@@ -81,7 +82,7 @@ The node logging component type.
 
 `Promise`\<`void`\>
 
-A promise that resolves when the LoggerProvider is running.
+A promise that resolves when the connector is ready to receive log entries.
 
 #### Implementation of
 
@@ -93,9 +94,8 @@ A promise that resolves when the LoggerProvider is running.
 
 > **stop**(`nodeLoggingComponentType?`): `Promise`\<`void`\>
 
-Shut down the LoggerProvider and release resources.
-shutdown() flushes any buffered records before tearing down, so records held by a
-batch processor are exported before the process exits.
+Shut down all LoggerProvider instances and release resources.
+Each provider flushes its buffered records before tearing down.
 Calling stop() on a connector that has not been started is a no-op.
 
 #### Parameters
@@ -110,7 +110,7 @@ The node logging component type.
 
 `Promise`\<`void`\>
 
-A promise that resolves when the LoggerProvider has shut down.
+A promise that resolves when all LoggerProviders have shut down.
 
 #### Implementation of
 
@@ -123,10 +123,10 @@ A promise that resolves when the LoggerProvider has shut down.
 > **log**(`logEntry`): `Promise`\<`void`\>
 
 Log an entry to the connector.
-The entry is mapped to an OpenTelemetry LogRecord and emitted to the LoggerProvider,
-which buffers and exports it via the configured exporters. Entries whose level is not
-in the configured levels are skipped, as are entries received before start() (or after
-stop()) since there is no provider to forward them to.
+The current ContextIdStore context is read on every call. A dedicated Logger backed by a
+LoggerProvider whose Resource carries the context IDs (tenant, node, etc.) is resolved or
+created for that context, ensuring every emitted OTel log record is stamped with the
+correct tenant attributes automatically.
 
 #### Parameters
 
