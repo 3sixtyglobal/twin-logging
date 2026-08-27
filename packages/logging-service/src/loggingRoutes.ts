@@ -1,6 +1,7 @@
 // Copyright 2024 IOTA Stiftung.
 // SPDX-License-Identifier: Apache-2.0.
 import type {
+	IRouteAuthorization,
 	IHttpRequestContext,
 	INoContentResponse,
 	IRestRoute,
@@ -30,6 +31,20 @@ export const tagsLogging: ITag[] = [
 		description: "Endpoints which are modelled to access a logging contract."
 	}
 ];
+
+/**
+ * The default authorization for the routes, used to seed authorization rules.
+ */
+const DEFAULT_AUTHORIZATION_READER: IRouteAuthorization = {
+	permission: "logging:read",
+	role: "devops"
+};
+
+const DEFAULT_AUTHORIZATION_WRITER: IRouteAuthorization = {
+	permission: "logging:write",
+	role: "devops",
+	inherits: [DEFAULT_AUTHORIZATION_READER.permission]
+};
 
 /**
  * The REST routes for logging.
@@ -87,7 +102,8 @@ export function generateRestRoutesLogging(
 			{
 				type: nameof<INoContentResponse>()
 			}
-		]
+		],
+		defaultAuthorization: DEFAULT_AUTHORIZATION_WRITER
 	};
 
 	const listRoute: IRestRoute<ILoggingListRequest, ILoggingListResponse> = {
@@ -133,7 +149,8 @@ export function generateRestRoutesLogging(
 					}
 				]
 			}
-		]
+		],
+		defaultAuthorization: DEFAULT_AUTHORIZATION_READER
 	};
 
 	return [createRoute, listRoute];
