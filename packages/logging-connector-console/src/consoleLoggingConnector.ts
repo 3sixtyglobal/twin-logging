@@ -125,6 +125,7 @@ export class ConsoleLoggingConnector implements ILoggingConnector {
 				params.push(logEntry.error);
 			}
 
+			// eslint-disable-next-line no-restricted-syntax
 			globalThis.console[logEntry.level](...params);
 		}
 	}
@@ -187,9 +188,11 @@ export class ConsoleLoggingConnector implements ILoggingConnector {
 		if (this._lastGroup !== group) {
 			this._lastGroup = group;
 			if (this._lastGroup) {
+				// eslint-disable-next-line no-restricted-syntax
 				globalThis.console.groupEnd();
 			}
 			if (group.length > 0) {
+				// eslint-disable-next-line no-restricted-syntax
 				globalThis.console.group(
 					`%c${group}`,
 					`color: #ffffff; background: ${this.stringToColor(
