@@ -24,16 +24,12 @@ export interface IEntityStorageLoggingConnectorConfig extends ILoggingLevelsConf
 
 	/**
 	 * Maximum number of entries to hold in the in-memory cache.
-	 * When a flush fails, re-queued entries are trimmed to this limit by dropping the oldest first.
+	 * When the limit is exceeded the oldest entries are dropped, whether they were newly
+	 * logged or put back by a failed flush.
 	 * Set to 0 to disable the limit.
 	 * @default 1000
 	 */
 	maxCacheSize?: number;
-
-	/**
-	 * Maximum number of milliseconds to wait when acquiring a mutex lock before timing out.
-	 */
-	mutexTimeoutMs?: number;
 
 	/**
 	 * Delete log entries older than this many milliseconds.

@@ -45,7 +45,8 @@ When combined with batchSize, whichever threshold is reached first triggers the 
 > `optional` **maxCacheSize?**: `number`
 
 Maximum number of entries to hold in the in-memory cache.
-When a flush fails, re-queued entries are trimmed to this limit by dropping the oldest first.
+When the limit is exceeded the oldest entries are dropped, whether they were newly
+logged or put back by a failed flush.
 Set to 0 to disable the limit.
 
 #### Default
@@ -53,14 +54,6 @@ Set to 0 to disable the limit.
 ```ts
 1000
 ```
-
-***
-
-### mutexTimeoutMs? {#mutextimeoutms}
-
-> `optional` **mutexTimeoutMs?**: `number`
-
-Maximum number of milliseconds to wait when acquiring a mutex lock before timing out.
 
 ***
 
