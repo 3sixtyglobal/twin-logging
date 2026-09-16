@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.10.0](https://github.com/iotaledger/twin-logging/compare/logging-rest-client-v0.10.0...logging-rest-client-v0.10.0) (2026-09-16)
+
+
+### Features
+
+* release to production ([3458161](https://github.com/iotaledger/twin-logging/commit/3458161b4bb530f86e4d1fe06123d885cdcb114d))
+* release to production ([#101](https://github.com/iotaledger/twin-logging/issues/101)) ([5da8c67](https://github.com/iotaledger/twin-logging/commit/5da8c677571f3ecff6f760342b79995c92e183b6))
+* release to production ([#58](https://github.com/iotaledger/twin-logging/issues/58)) ([fba59e5](https://github.com/iotaledger/twin-logging/commit/fba59e5d15fc94514a430e6180fb5301c91acb95))
+* release to production ([#75](https://github.com/iotaledger/twin-logging/issues/75)) ([5caae59](https://github.com/iotaledger/twin-logging/commit/5caae59b49f8c18e20ccc7f55dfad818fec373ee))
+* release to production [skip ci] ([#110](https://github.com/iotaledger/twin-logging/issues/110)) ([8729be6](https://github.com/iotaledger/twin-logging/commit/8729be61718844ced351d538be6980a93d1ba4ac))
+
 ## [0.9.3-next.1](https://github.com/iotaledger/twin-logging/compare/logging-rest-client-v0.9.3-next.0...logging-rest-client-v0.9.3-next.1) (2026-09-11)
 
 
