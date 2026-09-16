@@ -162,6 +162,7 @@ Log an entry to the connector.
 
 When batching is active the entry is held in memory until a flush is triggered
 by the size threshold or the interval timer; otherwise it is written immediately.
+A size triggered flush runs detached, so this call never waits on a storage write.
 
 #### Parameters
 
@@ -239,13 +240,12 @@ and a cursor which can be used to request more entities.
 
 > **flush**(): `Promise`\<`void`\>
 
-Write all cached entries to storage and clear the cache.
-Entries sharing the same tenant context are grouped into a single setBatch call.
-If the mutex cannot be acquired the call returns without writing.
-On a storage write failure the entries are returned to the head of the cache for the next attempt.
+Write the cached entries to storage, grouping entries that share a tenant context into a
+single setBatch call. On return every entry cached when this was called has been written,
+or put back in the cache after a failed write.
 
 #### Returns
 
 `Promise`\<`void`\>
 
-A promise that resolves when all cached entries have been written to storage.
+A promise that resolves when those entries have been written.
