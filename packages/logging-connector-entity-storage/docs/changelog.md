@@ -1,5 +1,46 @@
 # Changelog
 
+## [0.10.1-next.1](https://github.com/iotaledger/twin-logging/compare/logging-connector-entity-storage-v0.10.1-next.0...logging-connector-entity-storage-v0.10.1-next.1) (2026-09-17)
+
+
+### Features
+
+* add context id features ([#33](https://github.com/iotaledger/twin-logging/issues/33)) ([38e982c](https://github.com/iotaledger/twin-logging/commit/38e982c9f009019fc02b67d919444b52657c9021))
+* add validate-locales ([df53f13](https://github.com/iotaledger/twin-logging/commit/df53f1331394f2f9333e91e4995a88dded90e484))
+* configurable timeout for mutex ([1a9925d](https://github.com/iotaledger/twin-logging/commit/1a9925dc9eee4497283d31f7b02dc28f49e3ee89))
+* entity storage batching ([#45](https://github.com/iotaledger/twin-logging/issues/45)) ([4b3e97a](https://github.com/iotaledger/twin-logging/commit/4b3e97a79b4089ce1ada9d90ad1687c9404acf87))
+* entity-storage retentions limits ([#70](https://github.com/iotaledger/twin-logging/issues/70)) ([e82f819](https://github.com/iotaledger/twin-logging/commit/e82f819e7e1e7f6a522a4cc43d886340316743be))
+* eslint migration to flat config ([1f9fdde](https://github.com/iotaledger/twin-logging/commit/1f9fddedfdcce9942afed431d9460a0f22092744))
+* linting and dependency update ([b91cb86](https://github.com/iotaledger/twin-logging/commit/b91cb8642ee499aea7d5335cca3ce8884550793d))
+* organization identifiers ([#48](https://github.com/iotaledger/twin-logging/issues/48)) ([eb28785](https://github.com/iotaledger/twin-logging/commit/eb28785377e71d88e79c2bc0a58343fd02cd5390))
+* tenant spread entity storage ([#42](https://github.com/iotaledger/twin-logging/issues/42)) ([f2da111](https://github.com/iotaledger/twin-logging/commit/f2da11160beb33337c8055083f7951a34062fb58))
+* typescript 6 update ([cb28b05](https://github.com/iotaledger/twin-logging/commit/cb28b0557595d5ba9b25fab2d9f1222590787f5a))
+* update components ([08e9a14](https://github.com/iotaledger/twin-logging/commit/08e9a14e36772833fc7e2716d1de0798dde649d6))
+* update dependencies ([ed1e652](https://github.com/iotaledger/twin-logging/commit/ed1e652c4ba32c854d06e9def2f7f6db0bf9a7bd))
+* update dependencies ([976fc06](https://github.com/iotaledger/twin-logging/commit/976fc06976c4899769486b7cb2e827c407d7fc89))
+* update framework core ([aac823c](https://github.com/iotaledger/twin-logging/commit/aac823c2ead88843618b8a82b308d5a793411764))
+* use shared store mechanism ([#20](https://github.com/iotaledger/twin-logging/issues/20)) ([bbacd31](https://github.com/iotaledger/twin-logging/commit/bbacd31af991d82d84294ad432a40830692880ca))
+
+
+### Bug Fixes
+
+* Adding format to the LogEntry ts number ([#18](https://github.com/iotaledger/twin-logging/issues/18)) ([d914b8f](https://github.com/iotaledger/twin-logging/commit/d914b8f58e382a44cc9dbdac2c4f607342f3a49c))
+* batch flush state machine ([0fa2a90](https://github.com/iotaledger/twin-logging/commit/0fa2a9041ee4004be78e9f3daefb3ba34cc1f5c7))
+* bound log entry id so the retention sweep pages an index range ([#114](https://github.com/iotaledger/twin-logging/issues/114)) ([196cb3e](https://github.com/iotaledger/twin-logging/commit/196cb3eba7c4036ec8ebdade7fdbebfce1c6f57f))
+* overloading connector ([#106](https://github.com/iotaledger/twin-logging/issues/106)) ([d4d9f39](https://github.com/iotaledger/twin-logging/commit/d4d9f39d9d3d68ef655f485a88432ddf9d2bca92))
+* peer dependencies ([5a53d7d](https://github.com/iotaledger/twin-logging/commit/5a53d7ddc1bf749705ef6f64abc46728b3f2be26))
+* retention cleanup using tenancy ([#93](https://github.com/iotaledger/twin-logging/issues/93)) ([8afc6a3](https://github.com/iotaledger/twin-logging/commit/8afc6a3bbad8984885a58bc9c072e978686688b5))
+* test mocks ([0c6b387](https://github.com/iotaledger/twin-logging/commit/0c6b3879720b248728ec4534efee37adfab22244))
+* use async getStore in tests ([48b6253](https://github.com/iotaledger/twin-logging/commit/48b62531de81a3b63685dfa955e1b510c702fee3))
+* use async getStore in tests ([ad74cad](https://github.com/iotaledger/twin-logging/commit/ad74cad157746c75b1ca82869edaab45b66a7da7))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @twin.org/logging-models bumped from 0.10.1-next.0 to 0.10.1-next.1
+
 ## [0.10.0](https://github.com/iotaledger/twin-logging/compare/logging-connector-entity-storage-v0.10.0...logging-connector-entity-storage-v0.10.0) (2026-09-16)
 
 
