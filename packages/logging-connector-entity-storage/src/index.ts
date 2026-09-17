@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0.
 export * from "./entities/logEntry.js";
 export * from "./entities/logEntryError.js";
+export * from "./entities/logEntryV0.js";
 export * from "./entityStorageLoggingConnector.js";
 export * from "./models/IBatchEntry.js";
 export * from "./models/IEntityStorageLoggingConnectorConfig.js";

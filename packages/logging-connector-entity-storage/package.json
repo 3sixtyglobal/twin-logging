@@ -38,6 +38,7 @@
 	},
 	"devDependencies": {
 		"@twin.org/entity-storage-connector-memory": "next",
+		"@twin.org/entity-storage-service": "next",
 		"@twin.org/nameof-transformer": "next",
 		"@twin.org/nameof-vitest-plugin": "next",
 		"@twin.org/validate-locales": "next",

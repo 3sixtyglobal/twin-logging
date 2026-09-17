@@ -3,11 +3,12 @@
 import type { IPlatformComponent } from "@twin.org/api-models";
 import { ContextIdKeys, ContextIdStore } from "@twin.org/context";
 import { ComponentFactory, Is } from "@twin.org/core";
+import { EntitySchemaHelper } from "@twin.org/entity";
 import { MemoryEntityStorageConnector } from "@twin.org/entity-storage-connector-memory";
 import { EntityStorageConnectorFactory } from "@twin.org/entity-storage-models";
 import { type ILogEntry, LogLevel } from "@twin.org/logging-models";
 import { nameof } from "@twin.org/nameof";
-import type { LogEntry } from "../src/entities/logEntry.js";
+import { LogEntry } from "../src/entities/logEntry.js";
 import { EntityStorageLoggingConnector } from "../src/entityStorageLoggingConnector.js";
 import { initSchema } from "../src/schema.js";
 
@@ -49,6 +50,30 @@ describe("EntityStorageLoggingConnector", () => {
 		ComponentFactory.register("platform", () => makePlatformComponent(false));
 		const logging = new EntityStorageLoggingConnector();
 		expect(logging).toBeDefined();
+	});
+
+	test("log entry schema bounds the id so the storage layer can index it in full", () => {
+		const schema = EntitySchemaHelper.getSchema(LogEntry);
+		const idProperty = schema.properties?.find(property => property.property === "id");
+
+		expect(idProperty?.isPrimary).toEqual(true);
+		expect(idProperty?.maxLength).toEqual(255);
+	});
+
+	test("generated log entry ids fit within the storage bound", async () => {
+		ComponentFactory.register("platform", () => makePlatformComponent(false));
+		const logging = new EntityStorageLoggingConnector({
+			config: { batchSize: 0, batchIntervalMs: 0 }
+		});
+
+		await logging.log({ level: LogLevel.Info, source: "test", message: "bounded" });
+
+		const stored = await storage.query(undefined, undefined, undefined, undefined, 1);
+		expect(stored.entities).toHaveLength(1);
+
+		const generatedId = stored.entities[0]?.id ?? "";
+		expect(generatedId).toHaveLength(64);
+		expect(generatedId.length).toBeLessThanOrEqual(255);
 	});
 
 	/**

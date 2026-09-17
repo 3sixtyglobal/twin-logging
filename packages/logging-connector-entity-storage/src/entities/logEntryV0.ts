@@ -1,19 +1,18 @@
-// Copyright 2024 IOTA Stiftung.
+// Copyright 2026 IOTA Stiftung.
 // SPDX-License-Identifier: Apache-2.0.
 import { SortDirection, entity, property } from "@twin.org/entity";
 import type { LogLevel } from "@twin.org/logging-models";
 import type { LogEntryError } from "./logEntryError.js";
 
 /**
- * Entity representing a persisted log entry.
+ * Entity representing a persisted log entry, version 0.
  */
-@entity({ version: 1 })
-export class LogEntry {
+@entity({ version: 0 })
+export class LogEntryV0 {
 	/**
 	 * The id.
-	 * Bounded so storage backends index it in full rather than by prefix.
 	 */
-	@property({ type: "string", isPrimary: true, maxLength: 255 })
+	@property({ type: "string", isPrimary: true })
 	public id!: string;
 
 	/**
