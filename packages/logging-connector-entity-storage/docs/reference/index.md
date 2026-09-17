@@ -4,6 +4,7 @@
 
 - [LogEntry](classes/LogEntry.md)
 - [LogEntryError](classes/LogEntryError.md)
+- [LogEntryV0](classes/LogEntryV0.md)
 - [EntityStorageLoggingConnector](classes/EntityStorageLoggingConnector.md)
 
 ## Interfaces

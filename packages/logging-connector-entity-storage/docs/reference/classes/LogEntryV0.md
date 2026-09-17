@@ -1,16 +1,16 @@
-# Class: LogEntry
+# Class: LogEntryV0
 
-Entity representing a persisted log entry.
+Entity representing a persisted log entry, version 0.
 
 ## Constructors
 
 ### Constructor
 
-> **new LogEntry**(): `LogEntry`
+> **new LogEntryV0**(): `LogEntryV0`
 
 #### Returns
 
-`LogEntry`
+`LogEntryV0`
 
 ## Properties
 
@@ -19,7 +19,6 @@ Entity representing a persisted log entry.
 > **id**: `string`
 
 The id.
-Bounded so storage backends index it in full rather than by prefix.
 
 ***
 
