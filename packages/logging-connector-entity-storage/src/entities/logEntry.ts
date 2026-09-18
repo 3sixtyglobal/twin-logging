@@ -7,7 +7,7 @@ import type { LogEntryError } from "./logEntryError.js";
 /**
  * Entity representing a persisted log entry.
  */
-@entity({ version: 1 })
+@entity()
 export class LogEntry {
 	/**
 	 * The id.
@@ -19,13 +19,13 @@ export class LogEntry {
 	/**
 	 * The level of the error being logged.
 	 */
-	@property({ type: "string" })
+	@property({ type: "string", maxLength: 16 })
 	public level!: LogLevel;
 
 	/**
 	 * The source of the log entry.
 	 */
-	@property({ type: "string" })
+	@property({ type: "string", maxLength: 256 })
 	public source!: string;
 
 	/**
@@ -37,7 +37,7 @@ export class LogEntry {
 	/**
 	 * The message.
 	 */
-	@property({ type: "string" })
+	@property({ type: "string", maxLength: 2048 })
 	public message!: string;
 
 	/**
