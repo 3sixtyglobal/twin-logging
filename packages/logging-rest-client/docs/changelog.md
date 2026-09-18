@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.10.1-next.2](https://github.com/iotaledger/twin-logging/compare/logging-rest-client-v0.10.1-next.1...logging-rest-client-v0.10.1-next.2) (2026-09-18)
+
+
+### Miscellaneous Chores
+
+* **logging-rest-client:** Synchronize repo versions
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * devDependencies
+    * @twin.org/logging-models bumped from 0.10.1-next.1 to 0.10.1-next.2
+
 ## [0.10.1-next.1](https://github.com/iotaledger/twin-logging/compare/logging-rest-client-v0.10.1-next.0...logging-rest-client-v0.10.1-next.1) (2026-09-17)
 
 

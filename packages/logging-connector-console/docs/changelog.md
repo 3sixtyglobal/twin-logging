@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.10.1-next.2](https://github.com/iotaledger/twin-logging/compare/logging-connector-console-v0.10.1-next.1...logging-connector-console-v0.10.1-next.2) (2026-09-18)
+
+
+### Miscellaneous Chores
+
+* **logging-connector-console:** Synchronize repo versions
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @twin.org/logging-models bumped from 0.10.1-next.1 to 0.10.1-next.2
+
 ## [0.10.1-next.1](https://github.com/iotaledger/twin-logging/compare/logging-connector-console-v0.10.1-next.0...logging-connector-console-v0.10.1-next.1) (2026-09-17)
 
 
