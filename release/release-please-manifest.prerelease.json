@@ -4,6 +4,7 @@
 	"packages/logging-connector-entity-storage": "0.10.1-next.2",
 	"packages/logging-connector-opentelemetry": "0.10.1-next.2",
 	"packages/logging-connector-file": "0.10.1-next.2",
+	"packages/logging-connector-elk": "0.10.1-next.2",
 	"packages/logging-service": "0.10.1-next.2",
 	"packages/logging-rest-client": "0.10.1-next.2"
 }

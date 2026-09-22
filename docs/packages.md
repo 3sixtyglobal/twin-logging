@@ -40,6 +40,14 @@ This package provides a file-backed logging connector that persists logs to size
 - [Examples](../packages/logging-connector-file/docs/examples.md)
 - [Changelog](../packages/logging-connector-file/docs/changelog.md)
 
+## logging-connector-elk
+
+This package provides an Elasticsearch-backed logging connector that delivers log events through the bulk API for ELK-based observability pipelines.
+
+- [README](../packages/logging-connector-elk/README.md)
+- [Examples](../packages/logging-connector-elk/docs/examples.md)
+- [Changelog](../packages/logging-connector-elk/docs/changelog.md)
+
 ## logging-service
 
 This package provides service-side logging routes and API contract implementations so other components can submit and manage log events through consistent endpoints. It acts as the integration layer between logging clients and logging providers.

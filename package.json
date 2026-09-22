@@ -60,6 +60,7 @@
 		"packages/logging-connector-entity-storage",
 		"packages/logging-connector-opentelemetry",
 		"packages/logging-connector-file",
+		"packages/logging-connector-elk",
 		"packages/logging-service",
 		"packages/logging-rest-client"
 	],
