@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.10.1-next.3](https://github.com/iotaledger/twin-logging/compare/logging-service-v0.10.1-next.2...logging-service-v0.10.1-next.3) (2026-09-23)
+
+
+### Bug Fixes
+
+* entry validation ([#123](https://github.com/iotaledger/twin-logging/issues/123)) ([6a07335](https://github.com/iotaledger/twin-logging/commit/6a073353e4dcb9672702f74b062b00cb1a9ada3d))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @twin.org/logging-models bumped from 0.10.1-next.2 to 0.10.1-next.3
+
 ## [0.10.1-next.2](https://github.com/iotaledger/twin-logging/compare/logging-service-v0.10.1-next.1...logging-service-v0.10.1-next.2) (2026-09-18)
 
 
