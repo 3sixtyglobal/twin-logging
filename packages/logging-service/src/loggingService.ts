@@ -9,10 +9,10 @@ import {
 } from "@twin.org/entity";
 import {
 	LoggingConnectorFactory,
+	LogLevel,
 	type ILogEntry,
 	type ILoggingComponent,
-	type ILoggingConnector,
-	type LogLevel
+	type ILoggingConnector
 } from "@twin.org/logging-models";
 import { nameof } from "@twin.org/nameof";
 import type { ILoggingServiceConstructorOptions } from "./models/ILoggingServiceConstructorOptions.js";
@@ -57,6 +57,14 @@ export class LoggingService implements ILoggingComponent {
 	 */
 	public async log(logEntry: ILogEntry): Promise<void> {
 		Guards.object<ILogEntry>(LoggingService.CLASS_NAME, nameof(logEntry), logEntry);
+		Guards.arrayOneOf(
+			LoggingService.CLASS_NAME,
+			nameof(logEntry.level),
+			logEntry.level,
+			Object.values(LogLevel)
+		);
+		Guards.string(LoggingService.CLASS_NAME, nameof(logEntry.source), logEntry.source);
+		Guards.string(LoggingService.CLASS_NAME, nameof(logEntry.message), logEntry.message);
 
 		await this._loggingConnector.log(logEntry);
 	}

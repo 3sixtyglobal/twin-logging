@@ -85,6 +85,14 @@ export class ConsoleLoggingConnector implements ILoggingConnector {
 	 */
 	public async log(logEntry: ILogEntry): Promise<void> {
 		Guards.object<ILogEntry>(ConsoleLoggingConnector.CLASS_NAME, nameof(logEntry), logEntry);
+		Guards.arrayOneOf(
+			ConsoleLoggingConnector.CLASS_NAME,
+			nameof(logEntry.level),
+			logEntry.level,
+			Object.values(LogLevel)
+		);
+		Guards.string(ConsoleLoggingConnector.CLASS_NAME, nameof(logEntry.source), logEntry.source);
+		Guards.string(ConsoleLoggingConnector.CLASS_NAME, nameof(logEntry.message), logEntry.message);
 
 		if (this._levels.includes(logEntry.level)) {
 			logEntry.ts ??= Date.now();

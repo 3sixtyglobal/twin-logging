@@ -32,11 +32,11 @@
 		"@twin.org/api-models": "next",
 		"@twin.org/core": "next",
 		"@twin.org/entity": "next",
+		"@twin.org/logging-models": "0.10.1-next.2",
 		"@twin.org/nameof": "next",
 		"@twin.org/web": "next"
 	},
 	"devDependencies": {
-		"@twin.org/logging-models": "0.10.1-next.2",
 		"@twin.org/nameof-transformer": "next",
 		"@twin.org/nameof-vitest-plugin": "next",
 		"@twin.org/validate-locales": "next",

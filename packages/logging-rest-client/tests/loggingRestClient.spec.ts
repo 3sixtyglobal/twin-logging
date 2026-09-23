@@ -93,6 +93,39 @@ describe("LoggingRestClient", () => {
 
 			await expect(client.log(TEST_LOG_ENTRY)).resolves.toBeUndefined();
 		});
+
+		test("rejects an entry with no message without sending a request", async () => {
+			await expect(
+				client.log({ level: LogLevel.Info, source: "client" } as never)
+			).rejects.toMatchObject({
+				name: GuardError.CLASS_NAME,
+				message: "guard.string",
+				properties: { property: "logEntry.message" }
+			});
+			expect(fetchMock).not.toHaveBeenCalled();
+		});
+
+		test("rejects an entry with a non-string source without sending a request", async () => {
+			await expect(
+				client.log({ level: LogLevel.Info, source: 42, message: "hello" } as never)
+			).rejects.toMatchObject({
+				name: GuardError.CLASS_NAME,
+				message: "guard.string",
+				properties: { property: "logEntry.source" }
+			});
+			expect(fetchMock).not.toHaveBeenCalled();
+		});
+
+		test("rejects an entry with an unknown level without sending a request", async () => {
+			await expect(
+				client.log({ level: "critical", source: "client", message: "hello" } as never)
+			).rejects.toMatchObject({
+				name: GuardError.CLASS_NAME,
+				message: "guard.arrayOneOf",
+				properties: { property: "logEntry.level" }
+			});
+			expect(fetchMock).not.toHaveBeenCalled();
+		});
 	});
 
 	describe("query", () => {

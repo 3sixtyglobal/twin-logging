@@ -16,7 +16,7 @@ export class LogEntryError {
 	/**
 	 * The message for the error.
 	 */
-	@property({ type: "string", maxLength: 2048 })
+	@property({ type: "string", maxLength: 4096 })
 	public message!: string;
 
 	/**

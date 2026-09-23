@@ -16,6 +16,7 @@ import {
 import {
 	ComparisonOperator,
 	type EntityCondition,
+	EntitySchemaHelper,
 	LogicalOperator,
 	SortDirection
 } from "@twin.org/entity";
@@ -25,7 +26,7 @@ import {
 } from "@twin.org/entity-storage-models";
 import { type ILogEntry, type ILoggingConnector, LogLevel } from "@twin.org/logging-models";
 import { nameof } from "@twin.org/nameof";
-import type { LogEntry } from "./entities/logEntry.js";
+import { LogEntry } from "./entities/logEntry.js";
 import type { LogEntryError } from "./entities/logEntryError.js";
 import type { IBatchEntry } from "./models/IBatchEntry.js";
 import type { IEntityStorageLoggingConnectorConstructorOptions } from "./models/IEntityStorageLoggingConnectorConstructorOptions.js";
@@ -174,6 +175,25 @@ export class EntityStorageLoggingConnector implements ILoggingConnector {
 	private _activeFlush?: Promise<void>;
 
 	/**
+	 * The pass queued behind the active one, shared by every caller that arrived while it was
+	 * writing, so they need only one follow-up pass between them.
+	 * @internal
+	 */
+	private _queuedFlush?: Promise<void>;
+
+	/**
+	 * Maximum length of a log source.
+	 * @internal
+	 */
+	private readonly _maxSourceLength?: number;
+
+	/**
+	 * Maximum length of a log message.
+	 * @internal
+	 */
+	private readonly _maxMessageLength?: number;
+
+	/**
 	 * Create a new instance of EntityStorageLoggingConnector.
 	 * @param options The options for the connector.
 	 */
@@ -226,6 +246,12 @@ export class EntityStorageLoggingConnector implements ILoggingConnector {
 		this._platformComponent = ComponentFactory.get<IPlatformComponent>(
 			options?.platformComponentType ?? "platform"
 		);
+
+		const schema = EntitySchemaHelper.getSchema(LogEntry);
+		const entitySchemaPropertySource = schema.properties?.find(p => p.property === "source");
+		this._maxSourceLength = entitySchemaPropertySource?.maxLength;
+		const entitySchemaPropertyMessage = schema.properties?.find(p => p.property === "message");
+		this._maxMessageLength = entitySchemaPropertyMessage?.maxLength;
 	}
 
 	/**
@@ -272,6 +298,22 @@ export class EntityStorageLoggingConnector implements ILoggingConnector {
 	 */
 	public async log(logEntry: ILogEntry): Promise<void> {
 		Guards.object<ILogEntry>(EntityStorageLoggingConnector.CLASS_NAME, nameof(logEntry), logEntry);
+		Guards.arrayOneOf(
+			EntityStorageLoggingConnector.CLASS_NAME,
+			nameof(logEntry.level),
+			logEntry.level,
+			Object.values(LogLevel)
+		);
+		Guards.string(
+			EntityStorageLoggingConnector.CLASS_NAME,
+			nameof(logEntry.source),
+			logEntry.source
+		);
+		Guards.string(
+			EntityStorageLoggingConnector.CLASS_NAME,
+			nameof(logEntry.message),
+			logEntry.message
+		);
 
 		if (this._levels.includes(logEntry.level)) {
 			const id = Converter.bytesToHex(RandomHelper.generate(32));
@@ -279,10 +321,24 @@ export class EntityStorageLoggingConnector implements ILoggingConnector {
 			const entity: LogEntry = {
 				id,
 				level: logEntry.level,
-				source: logEntry.source,
+				source: !Is.empty(this._maxSourceLength)
+					? logEntry.source.slice(0, this._maxSourceLength)
+					: logEntry.source,
 				ts: logEntry.ts ?? Date.now(),
-				message: logEntry.message,
-				error: Is.object<IError>(logEntry.error) ? BaseError.flatten(logEntry.error) : undefined,
+				message: !Is.empty(this._maxMessageLength)
+					? logEntry.message.slice(0, this._maxMessageLength)
+					: logEntry.message,
+				error: Is.object<IError>(logEntry.error)
+					? BaseError.flatten(logEntry.error).map(l => ({
+							...l,
+							source: !Is.empty(this._maxSourceLength)
+								? l.source?.slice(0, this._maxSourceLength)
+								: l.source,
+							message: !Is.empty(this._maxMessageLength)
+								? l.message.slice(0, this._maxMessageLength)
+								: l.message
+						}))
+					: undefined,
 				data: logEntry.data
 			};
 
@@ -295,7 +351,14 @@ export class EntityStorageLoggingConnector implements ILoggingConnector {
 				this._platformComponent.isMultiTenant();
 
 			if (Is.empty(this._batchSize) && Is.empty(this._batchIntervalMs)) {
-				await this._platformComponent.execute(async () => this._logEntryStorage.set(entity));
+				// Only a tenant-less entry needs fanning out. Anything else is written in the
+				// caller's own context, which already holds the ids read above, so unlike a flush
+				// this write has no context to restore.
+				if (perTenant) {
+					await this._platformComponent.execute(async () => this._logEntryStorage.set(entity));
+				} else {
+					await this._logEntryStorage.set(entity);
+				}
 			} else {
 				this._batchCache.push({ entity, contextIds, perTenant });
 				// Bounds the cache when logging outruns the writes, discarding the oldest entries.
@@ -387,25 +450,53 @@ export class EntityStorageLoggingConnector implements ILoggingConnector {
 	 * @returns A promise that resolves when those entries have been written.
 	 */
 	public async flush(): Promise<void> {
-		// A pass writes only what it took when it started, so one already running does not
-		// cover the entries of this caller. Wait it out.
+		// A pass writes only what it took when it started, so one already running cannot cover
+		// the entries of this caller. Those callers all wait on the same follow-up pass rather
+		// than each queueing one of their own.
 		if (!Is.empty(this._activeFlush)) {
-			await this._activeFlush;
-		}
-
-		// Then join a pass that began after this call, whose snapshot therefore includes those
-		// entries. A peer resuming first may already have started one.
-		if (!Is.empty(this._activeFlush)) {
-			await this._activeFlush;
+			this._queuedFlush ??= this.runQueuedFlush(this._activeFlush);
+			await this._queuedFlush;
 			return;
 		}
 
+		await this.runActiveFlush();
+	}
+
+	/**
+	 * Wait for the pass that was already writing, then run one whose snapshot covers the entries
+	 * cached by the callers waiting on it.
+	 * @param active The pass to wait for.
+	 * @internal
+	 */
+	private async runQueuedFlush(active: Promise<void>): Promise<void> {
+		try {
+			await active;
+		} catch {
+			// Whether the earlier pass succeeded is its own callers' concern, and it has already
+			// put anything it failed to write back in the cache. This pass runs either way.
+		}
+
+		// Callers arriving from here on need a pass later than this one, so release the slot
+		// before the snapshot is taken. There is no await between the two.
+		this._queuedFlush = undefined;
+		await this.runActiveFlush();
+	}
+
+	/**
+	 * Run a pass and publish it while it writes, so a concurrent caller can see one is in flight.
+	 * @internal
+	 */
+	private async runActiveFlush(): Promise<void> {
 		const flushing = this.runFlush();
 		this._activeFlush = flushing;
 		try {
 			await flushing;
 		} finally {
-			this._activeFlush = undefined;
+			// Only clear the slot when a later pass has not already claimed it, so the result
+			// does not depend on which of the two resumes first.
+			if (this._activeFlush === flushing) {
+				this._activeFlush = undefined;
+			}
 		}
 	}
 

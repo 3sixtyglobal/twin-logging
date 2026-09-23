@@ -1,7 +1,7 @@
 // Copyright 2026 IOTA Stiftung.
 // SPDX-License-Identifier: Apache-2.0.
 import { ContextIdKeys, ContextIdStore } from "@twin.org/context";
-import { Converter } from "@twin.org/core";
+import { Converter, GuardError } from "@twin.org/core";
 import { LogLevel } from "@twin.org/logging-models";
 import { FetchHelper } from "@twin.org/web";
 import { ElkLoggingConnector } from "../src/elkLoggingConnector.js";
@@ -30,8 +30,14 @@ let response: {
 	payload: unknown;
 };
 
+/**
+ * How long a bulk request takes to respond, so a test can hold a delivery in flight.
+ */
+let responseDelayMs: number;
+
 beforeEach(() => {
 	requests = [];
+	responseDelayMs = 0;
 	response = {
 		ok: true,
 		status: 200,
@@ -49,6 +55,11 @@ beforeEach(() => {
 			retryCount: options?.retryCount,
 			retryDelayMs: options?.retryDelayMs
 		});
+		if (responseDelayMs > 0) {
+			await new Promise(resolve => {
+				setTimeout(resolve, responseDelayMs);
+			});
+		}
 		return {
 			ok: response.ok,
 			status: response.status,
@@ -622,5 +633,73 @@ describe("ElkLoggingConnector", () => {
 			"three"
 		]);
 		await connector.stop();
+	});
+
+	test("coalesces flush calls arriving during a delivery into a single follow-up pass", async () => {
+		const connector = await makeConnector({ batchSize: 100, batchIntervalMs: 0 });
+
+		await connector.log({ level: "info", source: "Test", message: "in-flight" });
+		responseDelayMs = 80;
+		const running = connector.flush();
+		await waitForRequests(1);
+
+		// None of these entries are in the running pass's snapshot, so one further pass has to
+		// cover them, and the waiters must share it rather than queue one each.
+		for (let i = 0; i < 5; i++) {
+			await connector.log({ level: "info", source: "Test", message: `queued-${i}` });
+		}
+		await Promise.all([running, ...Array.from({ length: 25 }, async () => connector.flush())]);
+
+		expect(requests).toHaveLength(2);
+		expect(documentsOf(requests[0].body).map(document => document.message)).toEqual(["in-flight"]);
+		expect(documentsOf(requests[1].body).map(document => document.message)).toEqual([
+			"queued-0",
+			"queued-1",
+			"queued-2",
+			"queued-3",
+			"queued-4"
+		]);
+		await connector.stop();
+	});
+
+	describe("log validation", () => {
+		test("rejects an entry with no message without sending a bulk request", async () => {
+			const connector = await makeConnector();
+			await expect(
+				connector.log({ level: LogLevel.Info, source: "Test" } as never)
+			).rejects.toMatchObject({
+				name: GuardError.CLASS_NAME,
+				message: "guard.string",
+				properties: { property: "logEntry.message" }
+			});
+			await connector.stop();
+			expect(requests).toEqual([]);
+		});
+
+		test("rejects an entry with a non-string source", async () => {
+			const connector = await makeConnector();
+			await expect(
+				connector.log({ level: LogLevel.Info, source: 42, message: "hello" } as never)
+			).rejects.toMatchObject({
+				name: GuardError.CLASS_NAME,
+				message: "guard.string",
+				properties: { property: "logEntry.source" }
+			});
+			await connector.stop();
+			expect(requests).toEqual([]);
+		});
+
+		test("rejects an entry with an unknown level", async () => {
+			const connector = await makeConnector();
+			await expect(
+				connector.log({ level: "critical", source: "Test", message: "hello" } as never)
+			).rejects.toMatchObject({
+				name: GuardError.CLASS_NAME,
+				message: "guard.arrayOneOf",
+				properties: { property: "logEntry.level" }
+			});
+			await connector.stop();
+			expect(requests).toEqual([]);
+		});
 	});
 });

@@ -1,6 +1,6 @@
 // Copyright 2024 IOTA Stiftung.
 // SPDX-License-Identifier: Apache-2.0.
-import { I18n } from "@twin.org/core";
+import { GuardError, I18n } from "@twin.org/core";
 import { LogLevel } from "@twin.org/logging-models";
 import { ConsoleLoggingConnector } from "../src/consoleLoggingConnector.js";
 
@@ -102,5 +102,43 @@ describe("ConsoleLoggingConnector", () => {
 			expect.stringContaining("untranslatedMessage"),
 			JSON.stringify({ statusCode: 400, url: "/foo" })
 		);
+	});
+
+	describe("log validation", () => {
+		test("rejects an entry with no message without writing to the console", async () => {
+			const logging = new ConsoleLoggingConnector();
+			await expect(
+				logging.log({ level: LogLevel.Info, source: "TestSource" } as never)
+			).rejects.toMatchObject({
+				name: GuardError.CLASS_NAME,
+				message: "guard.string",
+				properties: { property: "logEntry.message" }
+			});
+			expect(globalThis.console.info).not.toHaveBeenCalled();
+		});
+
+		test("rejects an entry with a non-string source", async () => {
+			const logging = new ConsoleLoggingConnector();
+			await expect(
+				logging.log({ level: LogLevel.Info, source: 42, message: "hello" } as never)
+			).rejects.toMatchObject({
+				name: GuardError.CLASS_NAME,
+				message: "guard.string",
+				properties: { property: "logEntry.source" }
+			});
+			expect(globalThis.console.info).not.toHaveBeenCalled();
+		});
+
+		test("rejects an entry with an unknown level", async () => {
+			const logging = new ConsoleLoggingConnector();
+			await expect(
+				logging.log({ level: "critical", source: "TestSource", message: "hello" } as never)
+			).rejects.toMatchObject({
+				name: GuardError.CLASS_NAME,
+				message: "guard.arrayOneOf",
+				properties: { property: "logEntry.level" }
+			});
+			expect(globalThis.console.info).not.toHaveBeenCalled();
+		});
 	});
 });

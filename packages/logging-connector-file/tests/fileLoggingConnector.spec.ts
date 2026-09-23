@@ -4,6 +4,7 @@ import { mkdtemp, readdir, readFile, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import { ContextIdKeys, ContextIdStore } from "@twin.org/context";
+import { GuardError } from "@twin.org/core";
 import { LoggingConnectorFactory, LogLevel, MultiLoggingConnector } from "@twin.org/logging-models";
 import { FileLoggingConnector } from "../src/fileLoggingConnector.js";
 
@@ -390,5 +391,42 @@ describe("FileLoggingConnector", () => {
 		} finally {
 			LoggingConnectorFactory.unregister(FileLoggingConnector.NAMESPACE);
 		}
+	});
+
+	describe("log validation", () => {
+		test("rejects an entry with no message without writing a file", async () => {
+			const connector = createConnector({ directory: testDir });
+			await expect(
+				connector.log({ level: LogLevel.Info, source: "Test" } as never)
+			).rejects.toMatchObject({
+				name: GuardError.CLASS_NAME,
+				message: "guard.string",
+				properties: { property: "logEntry.message" }
+			});
+			await connector.stop();
+			expect(await readdir(testDir)).toEqual([]);
+		});
+
+		test("rejects an entry with a non-string source", async () => {
+			const connector = createConnector({ directory: testDir });
+			await expect(
+				connector.log({ level: LogLevel.Info, source: 42, message: "hello" } as never)
+			).rejects.toMatchObject({
+				name: GuardError.CLASS_NAME,
+				message: "guard.string",
+				properties: { property: "logEntry.source" }
+			});
+		});
+
+		test("rejects an entry with an unknown level", async () => {
+			const connector = createConnector({ directory: testDir });
+			await expect(
+				connector.log({ level: "critical", source: "Test", message: "hello" } as never)
+			).rejects.toMatchObject({
+				name: GuardError.CLASS_NAME,
+				message: "guard.arrayOneOf",
+				properties: { property: "logEntry.level" }
+			});
+		});
 	});
 });

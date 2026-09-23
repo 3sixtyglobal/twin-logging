@@ -631,6 +631,9 @@ importers:
       '@twin.org/entity':
         specifier: next
         version: 0.10.1-next.10
+      '@twin.org/logging-models':
+        specifier: 0.10.1-next.2
+        version: link:../logging-models
       '@twin.org/nameof':
         specifier: next
         version: 0.10.1-next.10
@@ -638,9 +641,6 @@ importers:
         specifier: next
         version: 0.10.1-next.10
     devDependencies:
-      '@twin.org/logging-models':
-        specifier: 0.10.1-next.2
-        version: link:../logging-models
       '@twin.org/nameof-transformer':
         specifier: next
         version: 0.10.1-next.10

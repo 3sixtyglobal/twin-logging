@@ -161,6 +161,13 @@ export class ElkLoggingConnector implements ILoggingConnector {
 	private _activeFlush?: Promise<void>;
 
 	/**
+	 * The pass queued behind the active one, shared by every caller that arrived while it was
+	 * delivering, so they need only one follow-up pass between them.
+	 * @internal
+	 */
+	private _queuedFlush?: Promise<void>;
+
+	/**
 	 * Did the last delivery fail, in which case entries wait for the retry timer instead of
 	 * being pushed at the cluster again by every logging call.
 	 * @internal
@@ -273,6 +280,14 @@ export class ElkLoggingConnector implements ILoggingConnector {
 	 */
 	public async log(logEntry: ILogEntry): Promise<void> {
 		Guards.object<ILogEntry>(ElkLoggingConnector.CLASS_NAME, nameof(logEntry), logEntry);
+		Guards.arrayOneOf(
+			ElkLoggingConnector.CLASS_NAME,
+			nameof(logEntry.level),
+			logEntry.level,
+			Object.values(LogLevel)
+		);
+		Guards.string(ElkLoggingConnector.CLASS_NAME, nameof(logEntry.source), logEntry.source);
+		Guards.string(ElkLoggingConnector.CLASS_NAME, nameof(logEntry.message), logEntry.message);
 
 		if (this._levels.includes(logEntry.level)) {
 			const contextIds = (await ContextIdStore.getContextIds()) ?? {};
@@ -312,24 +327,53 @@ export class ElkLoggingConnector implements ILoggingConnector {
 	 * @returns A promise that resolves when those entries have been delivered.
 	 */
 	public async flush(): Promise<void> {
-		// A pass delivers only what it took when it started, so waiting for one already running.
+		// A pass delivers only what it took when it started, so one already running cannot cover
+		// the entries of this caller. Those callers all wait on the same follow-up pass rather
+		// than each queueing one of their own.
 		if (!Is.empty(this._activeFlush)) {
-			await this._activeFlush;
-		}
-
-		// A peer resuming first may already have started, so waiting and returning because
-		// it already has the entries.
-		if (!Is.empty(this._activeFlush)) {
-			await this._activeFlush;
+			this._queuedFlush ??= this.runQueuedFlush(this._activeFlush);
+			await this._queuedFlush;
 			return;
 		}
 
+		await this.runActiveFlush();
+	}
+
+	/**
+	 * Wait for the pass that was already delivering, then run one whose snapshot covers the
+	 * entries cached by the callers waiting on it.
+	 * @param active The pass to wait for.
+	 * @internal
+	 */
+	private async runQueuedFlush(active: Promise<void>): Promise<void> {
+		try {
+			await active;
+		} catch {
+			// Whether the earlier pass succeeded is its own callers' concern, and it has already
+			// put anything it failed to deliver back in the cache. This pass runs either way.
+		}
+
+		// Callers arriving from here on need a pass later than this one, so release the slot
+		// before the snapshot is taken. There is no await between the two.
+		this._queuedFlush = undefined;
+		await this.runActiveFlush();
+	}
+
+	/**
+	 * Run a pass and publish it while it delivers, so a concurrent caller can see one is in flight.
+	 * @internal
+	 */
+	private async runActiveFlush(): Promise<void> {
 		const flushing = this.runFlush();
 		this._activeFlush = flushing;
 		try {
 			await flushing;
 		} finally {
-			this._activeFlush = undefined;
+			// Only clear the slot when a later pass has not already claimed it, so the result
+			// does not depend on which of the two resumes first.
+			if (this._activeFlush === flushing) {
+				this._activeFlush = undefined;
+			}
 		}
 	}
 
