@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.10.1-next.4](https://github.com/iotaledger/twin-logging/compare/logging-connector-console-v0.10.1-next.3...logging-connector-console-v0.10.1-next.4) (2026-09-28)
+
+
+### Features
+
+* console disable colour option ([5fd80da](https://github.com/iotaledger/twin-logging/commit/5fd80dac65657cd4ed0e5ba4af7b13fde449e0fb))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @twin.org/logging-models bumped from 0.10.1-next.3 to 0.10.1-next.4
+
 ## [0.10.1-next.3](https://github.com/iotaledger/twin-logging/compare/logging-connector-console-v0.10.1-next.2...logging-connector-console-v0.10.1-next.3) (2026-09-23)
 
 

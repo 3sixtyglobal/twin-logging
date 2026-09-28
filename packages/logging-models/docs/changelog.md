@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.10.1-next.4](https://github.com/iotaledger/twin-logging/compare/logging-models-v0.10.1-next.3...logging-models-v0.10.1-next.4) (2026-09-28)
+
+
+### Miscellaneous Chores
+
+* **logging-models:** Synchronize repo versions
+
 ## [0.10.1-next.3](https://github.com/iotaledger/twin-logging/compare/logging-models-v0.10.1-next.2...logging-models-v0.10.1-next.3) (2026-09-23)
 
 
