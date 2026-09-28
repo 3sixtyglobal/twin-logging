@@ -15,4 +15,10 @@ export interface IConsoleLoggingConnectorConfig extends ILoggingLevelsConfig {
 	 * Hide the group display.
 	 */
 	hideGroups?: boolean;
+
+	/**
+	 * Disable colour in the output.
+	 * @default false
+	 */
+	disableColor?: boolean;
 }

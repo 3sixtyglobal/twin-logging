@@ -104,6 +104,58 @@ describe("ConsoleLoggingConnector", () => {
 		);
 	});
 
+	test("can log with colour by default", async () => {
+		const logging = new ConsoleLoggingConnector({ config: { hideGroups: true } });
+		await logging.log({
+			level: LogLevel.Info,
+			source: "TestSource",
+			message: "hello",
+			ts: 1719000000000
+		});
+		expect(globalThis.console.info).toHaveBeenCalledWith(
+			"\u001B[32mINFO\u001B[39m",
+			`\u001B[35m[${new Date(1719000000000).toISOString()}]\u001B[39m`,
+			"\u001B[34mTestSource\u001B[39m",
+			"\u001B[36mhello\u001B[39m"
+		);
+	});
+
+	test("can log without colour when disabled", async () => {
+		const logging = new ConsoleLoggingConnector({
+			config: { hideGroups: true, disableColor: true }
+		});
+		await logging.log({
+			level: LogLevel.Info,
+			source: "TestSource",
+			message: "hello",
+			ts: 1719000000000
+		});
+		expect(globalThis.console.info).toHaveBeenCalledWith(
+			"INFO",
+			`[${new Date(1719000000000).toISOString()}]`,
+			"TestSource",
+			"hello"
+		);
+	});
+
+	test("can display groups without styling when colour is disabled", async () => {
+		const groupSpy = vi.spyOn(globalThis.console, "group").mockImplementation(() => {});
+		vi.spyOn(globalThis.console, "groupEnd").mockImplementation(() => {});
+		const logging = new ConsoleLoggingConnector({ config: { disableColor: true } });
+		await logging.log({
+			level: LogLevel.Info,
+			source: "TestSource",
+			message: "hello",
+			ts: 1719000000000
+		});
+		expect(groupSpy).toHaveBeenCalledWith("TestSource");
+		expect(globalThis.console.info).toHaveBeenCalledWith(
+			"INFO",
+			`[${new Date(1719000000000).toISOString()}]`,
+			"hello"
+		);
+	});
+
 	describe("log validation", () => {
 		test("rejects an entry with no message without writing to the console", async () => {
 			const logging = new ConsoleLoggingConnector();
