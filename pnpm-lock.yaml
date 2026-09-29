@@ -245,7 +245,7 @@ importers:
         specifier: next
         version: 0.10.1-next.12
       '@twin.org/logging-models':
-        specifier: 0.10.1-next.4
+        specifier: 0.11.1-next.0
         version: link:../logging-models
       '@twin.org/nameof':
         specifier: next
@@ -303,7 +303,7 @@ importers:
         specifier: next
         version: 0.10.1-next.12
       '@twin.org/logging-models':
-        specifier: 0.10.1-next.4
+        specifier: 0.11.1-next.0
         version: link:../logging-models
       '@twin.org/nameof':
         specifier: next
@@ -373,7 +373,7 @@ importers:
         specifier: next
         version: 0.10.1-next.14
       '@twin.org/logging-models':
-        specifier: 0.10.1-next.4
+        specifier: 0.11.1-next.0
         version: link:../logging-models
       '@twin.org/nameof':
         specifier: next
@@ -437,7 +437,7 @@ importers:
         specifier: next
         version: 0.10.1-next.12
       '@twin.org/logging-models':
-        specifier: 0.10.1-next.4
+        specifier: 0.11.1-next.0
         version: link:../logging-models
       '@twin.org/nameof':
         specifier: next
@@ -513,7 +513,7 @@ importers:
         specifier: next
         version: 0.10.1-next.12
       '@twin.org/logging-models':
-        specifier: 0.10.1-next.4
+        specifier: 0.11.1-next.0
         version: link:../logging-models
       '@twin.org/nameof':
         specifier: next
@@ -632,7 +632,7 @@ importers:
         specifier: next
         version: 0.10.1-next.12
       '@twin.org/logging-models':
-        specifier: 0.10.1-next.4
+        specifier: 0.11.1-next.0
         version: link:../logging-models
       '@twin.org/nameof':
         specifier: next
@@ -693,7 +693,7 @@ importers:
         specifier: next
         version: 0.10.1-next.12
       '@twin.org/logging-models':
-        specifier: 0.10.1-next.4
+        specifier: 0.11.1-next.0
         version: link:../logging-models
       '@twin.org/nameof':
         specifier: next
@@ -1581,8 +1581,8 @@ packages:
     resolution: {integrity: sha512-PJn86ehg6YvqJE1lT4H+xMHB0g6TfKteqGjO+5WGMj2PMI9JNqZmixmUTyf3Jig6e1hr9qveChbLh4X68j9iRQ==}
     engines: {node: '>=24.0.0'}
 
-  '@twin.org/logging-models@0.10.1-next.3':
-    resolution: {integrity: sha512-UCy/SQCuHu5h+QwVXeeomSU1qJ86QoaPhAwdqaQQzNNfDgj121AEzGv/pY5p9uVRr+2lEdi3z+s+nAD5U7ynTQ==}
+  '@twin.org/logging-models@0.10.1-next.4':
+    resolution: {integrity: sha512-+zvOA0s1cs0IMWHZbCX8T3Q68nNBqmlcqq49k4YnEpURx+8xm7+B/b08dowc+oc+KzV3o6CYxFHxJy1kiGcO/w==}
     engines: {node: '>=24.0.0'}
 
   '@twin.org/nameof-transformer@0.10.1-next.12':
@@ -4777,7 +4777,7 @@ snapshots:
       '@twin.org/core': 0.10.1-next.12
       '@twin.org/entity': 0.10.1-next.12
       '@twin.org/entity-storage-models': 0.10.1-next.14
-      '@twin.org/logging-models': 0.10.1-next.3
+      '@twin.org/logging-models': 0.10.1-next.4
       '@twin.org/nameof': 0.10.1-next.12
 
   '@twin.org/entity-storage-models@0.10.1-next.14':
@@ -4786,7 +4786,7 @@ snapshots:
       '@twin.org/core': 0.10.1-next.12
       '@twin.org/crypto': 0.10.1-next.12
       '@twin.org/entity': 0.10.1-next.12
-      '@twin.org/logging-models': 0.10.1-next.3
+      '@twin.org/logging-models': 0.10.1-next.4
       '@twin.org/nameof': 0.10.1-next.12
 
   '@twin.org/entity-storage-service@0.10.1-next.14':
@@ -4796,7 +4796,7 @@ snapshots:
       '@twin.org/core': 0.10.1-next.12
       '@twin.org/entity': 0.10.1-next.12
       '@twin.org/entity-storage-models': 0.10.1-next.14
-      '@twin.org/logging-models': 0.10.1-next.3
+      '@twin.org/logging-models': 0.10.1-next.4
       '@twin.org/nameof': 0.10.1-next.12
       '@twin.org/web': 0.10.1-next.12
 
@@ -4807,7 +4807,7 @@ snapshots:
       reflect-metadata: 0.2.2
       tslib: 2.8.1
 
-  '@twin.org/logging-models@0.10.1-next.3':
+  '@twin.org/logging-models@0.10.1-next.4':
     dependencies:
       '@twin.org/core': 0.10.1-next.12
       '@twin.org/entity': 0.10.1-next.12

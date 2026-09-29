@@ -1,6 +1,6 @@
 {
 	"name": "@twin.org/logging-connector-entity-storage",
-	"version": "0.10.1-next.4",
+	"version": "0.11.1-next.0",
 	"description": "Persists log events to entity storage for durable retention, querying, and downstream processing.",
 	"repository": {
 		"type": "git",
@@ -33,7 +33,7 @@
 		"@twin.org/core": "next",
 		"@twin.org/entity": "next",
 		"@twin.org/entity-storage-models": "next",
-		"@twin.org/logging-models": "0.10.1-next.4",
+		"@twin.org/logging-models": "0.11.1-next.0",
 		"@twin.org/nameof": "next"
 	},
 	"devDependencies": {
