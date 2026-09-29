@@ -209,6 +209,14 @@ export class FileLoggingConnector implements ILoggingConnector {
 	 */
 	public async log(logEntry: ILogEntry): Promise<void> {
 		Guards.object<ILogEntry>(FileLoggingConnector.CLASS_NAME, nameof(logEntry), logEntry);
+		Guards.arrayOneOf(
+			FileLoggingConnector.CLASS_NAME,
+			nameof(logEntry.level),
+			logEntry.level,
+			Object.values(LogLevel)
+		);
+		Guards.string(FileLoggingConnector.CLASS_NAME, nameof(logEntry.source), logEntry.source);
+		Guards.string(FileLoggingConnector.CLASS_NAME, nameof(logEntry.message), logEntry.message);
 
 		if (!this._levels.includes(logEntry.level)) {
 			return;

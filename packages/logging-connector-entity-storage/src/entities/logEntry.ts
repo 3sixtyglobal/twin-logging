@@ -11,20 +11,21 @@ import type { LogEntryError } from "./logEntryError.js";
 export class LogEntry {
 	/**
 	 * The id.
+	 * Bounded so storage backends index it in full rather than by prefix.
 	 */
-	@property({ type: "string", isPrimary: true })
+	@property({ type: "string", isPrimary: true, maxLength: 255 })
 	public id!: string;
 
 	/**
 	 * The level of the error being logged.
 	 */
-	@property({ type: "string" })
+	@property({ type: "string", maxLength: 16 })
 	public level!: LogLevel;
 
 	/**
 	 * The source of the log entry.
 	 */
-	@property({ type: "string" })
+	@property({ type: "string", maxLength: 256 })
 	public source!: string;
 
 	/**
@@ -36,7 +37,7 @@ export class LogEntry {
 	/**
 	 * The message.
 	 */
-	@property({ type: "string" })
+	@property({ type: "string", maxLength: 4096 })
 	public message!: string;
 
 	/**

@@ -19,6 +19,7 @@ Entity representing a persisted log entry.
 > **id**: `string`
 
 The id.
+Bounded so storage backends index it in full rather than by prefix.
 
 ***
 

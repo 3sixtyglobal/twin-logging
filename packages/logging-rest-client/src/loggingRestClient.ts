@@ -3,12 +3,12 @@
 import { BaseRestClient } from "@twin.org/api-core";
 import type { IBaseRestClientConfig, IOkResponse } from "@twin.org/api-models";
 import { Coerce, Guards } from "@twin.org/core";
-import type {
-	ILogEntry,
-	ILoggingComponent,
-	ILoggingCreateRequest,
-	ILoggingListRequest,
-	ILoggingListResponse,
+import {
+	type ILogEntry,
+	type ILoggingComponent,
+	type ILoggingCreateRequest,
+	type ILoggingListRequest,
+	type ILoggingListResponse,
 	LogLevel
 } from "@twin.org/logging-models";
 import { nameof } from "@twin.org/nameof";
@@ -46,6 +46,14 @@ export class LoggingRestClient extends BaseRestClient implements ILoggingCompone
 	 */
 	public async log(logEntry: ILogEntry): Promise<void> {
 		Guards.object<ILogEntry>(LoggingRestClient.CLASS_NAME, nameof(logEntry), logEntry);
+		Guards.arrayOneOf(
+			LoggingRestClient.CLASS_NAME,
+			nameof(logEntry.level),
+			logEntry.level,
+			Object.values(LogLevel)
+		);
+		Guards.string(LoggingRestClient.CLASS_NAME, nameof(logEntry.source), logEntry.source);
+		Guards.string(LoggingRestClient.CLASS_NAME, nameof(logEntry.message), logEntry.message);
 
 		await this.fetch<ILoggingCreateRequest, IOkResponse>("/", HttpMethod.POST, {
 			body: logEntry

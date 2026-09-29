@@ -24,6 +24,20 @@ Hide the group display.
 
 ***
 
+### disableColor? {#disablecolor}
+
+> `optional` **disableColor?**: `boolean`
+
+Disable colour in the output.
+
+#### Default
+
+```ts
+false
+```
+
+***
+
 ### levels? {#levels}
 
 > `optional` **levels?**: `LogLevel`[]

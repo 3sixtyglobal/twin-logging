@@ -31,6 +31,10 @@
 			"package-name": "logging-connector-file",
 			"changelog-path": "docs/changelog.md"
 		},
+		"packages/logging-connector-elk": {
+			"package-name": "logging-connector-elk",
+			"changelog-path": "docs/changelog.md"
+		},
 		"packages/logging-service": {
 			"package-name": "logging-service",
 			"changelog-path": "docs/changelog.md"
@@ -51,6 +55,7 @@
 				"logging-connector-entity-storage",
 				"logging-connector-opentelemetry",
 				"logging-connector-file",
+				"logging-connector-elk",
 				"logging-service",
 				"logging-rest-client"
 			]

@@ -31,3 +31,24 @@ runs:
           sleep 2
         done
         echo "Grafana LGTM ready"
+
+    # Start Elasticsearch only for the ELK logging connector package
+    - name: Start Elasticsearch
+      if: inputs.package == 'packages/logging-connector-elk' || inputs.package == 'all'
+      shell: bash
+      run: |
+        docker run -d --name twin-logging-elasticsearch \
+          -p 9200:9200 \
+          -e "discovery.type=single-node" \
+          -e "xpack.security.enabled=false" \
+          docker.elastic.co/elasticsearch/elasticsearch:9.4.3
+
+    - name: Wait for Elasticsearch
+      if: inputs.package == 'packages/logging-connector-elk' || inputs.package == 'all'
+      shell: bash
+      run: |
+        for i in $(seq 1 30); do
+          curl -sf http://localhost:9200/_cluster/health && break
+          echo "Attempt $i: waiting for Elasticsearch..."
+          sleep 5
+        done

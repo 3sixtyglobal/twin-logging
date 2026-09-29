@@ -2,12 +2,13 @@
 // SPDX-License-Identifier: Apache-2.0.
 import type { IPlatformComponent } from "@twin.org/api-models";
 import { ContextIdKeys, ContextIdStore } from "@twin.org/context";
-import { ComponentFactory, Is } from "@twin.org/core";
+import { ComponentFactory, GuardError, Is } from "@twin.org/core";
+import { EntitySchemaHelper } from "@twin.org/entity";
 import { MemoryEntityStorageConnector } from "@twin.org/entity-storage-connector-memory";
 import { EntityStorageConnectorFactory } from "@twin.org/entity-storage-models";
 import { type ILogEntry, LogLevel } from "@twin.org/logging-models";
 import { nameof } from "@twin.org/nameof";
-import type { LogEntry } from "../src/entities/logEntry.js";
+import { LogEntry } from "../src/entities/logEntry.js";
 import { EntityStorageLoggingConnector } from "../src/entityStorageLoggingConnector.js";
 import { initSchema } from "../src/schema.js";
 
@@ -49,6 +50,30 @@ describe("EntityStorageLoggingConnector", () => {
 		ComponentFactory.register("platform", () => makePlatformComponent(false));
 		const logging = new EntityStorageLoggingConnector();
 		expect(logging).toBeDefined();
+	});
+
+	test("log entry schema bounds the id so the storage layer can index it in full", () => {
+		const schema = EntitySchemaHelper.getSchema(LogEntry);
+		const idProperty = schema.properties?.find(property => property.property === "id");
+
+		expect(idProperty?.isPrimary).toEqual(true);
+		expect(idProperty?.maxLength).toEqual(255);
+	});
+
+	test("generated log entry ids fit within the storage bound", async () => {
+		ComponentFactory.register("platform", () => makePlatformComponent(false));
+		const logging = new EntityStorageLoggingConnector({
+			config: { batchSize: 0, batchIntervalMs: 0 }
+		});
+
+		await logging.log({ level: LogLevel.Info, source: "test", message: "bounded" });
+
+		const stored = await storage.query(undefined, undefined, undefined, undefined, 1);
+		expect(stored.entities).toHaveLength(1);
+
+		const generatedId = stored.entities[0]?.id ?? "";
+		expect(generatedId).toHaveLength(64);
+		expect(generatedId.length).toBeLessThanOrEqual(255);
 	});
 
 	/**
@@ -98,12 +123,20 @@ describe("EntityStorageLoggingConnector", () => {
 				expect(result.entities[0].message).toBe("hello");
 			});
 
-			test("routes immediate writes through platformComponent.execute", async () => {
+			// An immediate write is routed exactly as a batched flush would route it; only an
+			// entry logged with no tenant context goes through platformComponent.execute() to be
+			// broadcast across every tenant.
+			test("routes immediate writes through platformComponent.execute only when no tenant context", async () => {
 				const logging = new EntityStorageLoggingConnector({
 					config: { batchSize: 0, batchIntervalMs: 0 }
 				});
 				await logInContext(logging, { level: LogLevel.Info, source: "test", message: "hello" });
-				expect(executeSpy).toHaveBeenCalledTimes(1);
+
+				if (multiTenant && !inTenantContext) {
+					expect(executeSpy).toHaveBeenCalledTimes(1);
+				} else {
+					expect(executeSpy).not.toHaveBeenCalled();
+				}
 			});
 
 			test("filters entries by configured log level", async () => {
@@ -414,6 +447,26 @@ describe("EntityStorageLoggingConnector", () => {
 				await logging.stop();
 				expect(await storedCount()).toBe(2);
 				expect(stats.maxConcurrent).toBe(1);
+			});
+
+			test("coalesces flush calls arriving during a write into a single follow-up pass", async () => {
+				const stats = instrumentWrites(80);
+				const logging = new EntityStorageLoggingConnector({
+					config: { batchSize: 100, batchIntervalMs: 0 }
+				});
+
+				await logMany(logging, 1, "in-flight");
+				const running = logging.flush();
+				await startPendingFlush();
+
+				// None of these entries are in the running pass's snapshot, so one further pass has
+				// to cover them, and the waiters must share it rather than queue one each.
+				await logMany(logging, 5, "queued");
+				await Promise.all([running, ...Array.from({ length: 25 }, async () => logging.flush())]);
+
+				expect(stats.calls).toBe(2);
+				expect(stats.batchSizes).toEqual([1, 5]);
+				expect(await storedCount()).toBe(6);
 			});
 
 			test("keeps log calls fast while the storage writes are slow", async () => {
@@ -1152,6 +1205,160 @@ describe("EntityStorageLoggingConnector", () => {
 
 				await logging.stop();
 			});
+		});
+	});
+
+	// A real multi-tenant platform component fans execute() across every tenant, so routing a
+	// tenant scoped entry through it leaks that entry into the other tenants' partitions.
+	describe("multi-tenant partitioning", () => {
+		const tenants = ["tenant-a", "tenant-b"];
+		let partitionedStorage: MemoryEntityStorageConnector<LogEntry>;
+
+		beforeEach(() => {
+			partitionedStorage = new MemoryEntityStorageConnector<LogEntry>({
+				entitySchema: nameof<LogEntry>(),
+				partitionContextIds: [ContextIdKeys.Tenant],
+				config: { storageKey: "log-entry" }
+			});
+			EntityStorageConnectorFactory.register("log-entry", () => partitionedStorage);
+
+			ComponentFactory.register("platform", () => ({
+				className: () => "FanOutPlatformComponent",
+				isMultiTenant: () => true,
+				execute: async (method: () => Promise<undefined | boolean> | Promise<void>) => {
+					for (const tenant of tenants) {
+						await ContextIdStore.run({ [ContextIdKeys.Tenant]: tenant }, method);
+					}
+				},
+				getLocalOriginContext: async () => undefined
+			}));
+		});
+
+		afterEach(async () => {
+			await partitionedStorage.teardown();
+		});
+
+		async function queryAsTenant(tenant: string): Promise<Partial<LogEntry>[]> {
+			const result = await ContextIdStore.run({ [ContextIdKeys.Tenant]: tenant }, async () =>
+				partitionedStorage.query(undefined, undefined, undefined, undefined, 100)
+			);
+			return result.entities;
+		}
+
+		describe.each([
+			{ label: "batching disabled", config: { batchSize: 0, batchIntervalMs: 0 } },
+			{ label: "batching enabled", config: { batchSize: 1000, batchIntervalMs: 0 } }
+		])("$label", ({ config }) => {
+			test("writes an entry logged in a tenant context to that tenant only", async () => {
+				const logging = new EntityStorageLoggingConnector({ config });
+
+				await ContextIdStore.run({ [ContextIdKeys.Tenant]: "tenant-a" }, async () =>
+					logging.log({ level: LogLevel.Info, source: "test", message: "tenant-a-only" })
+				);
+				await logging.flush();
+
+				const tenantA = await queryAsTenant("tenant-a");
+				expect(tenantA.map(entity => entity.message)).toEqual(["tenant-a-only"]);
+				expect(await queryAsTenant("tenant-b")).toHaveLength(0);
+			});
+
+			test("fans an entry logged without a tenant context out to every tenant", async () => {
+				const logging = new EntityStorageLoggingConnector({ config });
+
+				await logging.log({ level: LogLevel.Info, source: "test", message: "all-tenants" });
+				await logging.flush();
+
+				for (const tenant of tenants) {
+					const entities = await queryAsTenant(tenant);
+					expect(entities.map(entity => entity.message)).toEqual(["all-tenants"]);
+				}
+			});
+		});
+	});
+
+	describe("log validation", () => {
+		let logging: EntityStorageLoggingConnector;
+
+		beforeEach(() => {
+			ComponentFactory.register("platform", () => makePlatformComponent(false));
+			logging = new EntityStorageLoggingConnector({
+				config: { batchSize: 0, batchIntervalMs: 0 }
+			});
+		});
+
+		test("rejects an entry with no message without storing anything", async () => {
+			await expect(
+				logging.log({ level: LogLevel.Info, source: "test" } as never)
+			).rejects.toMatchObject({
+				name: GuardError.CLASS_NAME,
+				message: "guard.string",
+				properties: { property: "logEntry.message" }
+			});
+
+			const stored = await storage.query();
+			expect(stored.entities).toHaveLength(0);
+		});
+
+		test("rejects an entry with a non-string source", async () => {
+			await expect(
+				logging.log({ level: LogLevel.Info, source: 42, message: "hello" } as never)
+			).rejects.toMatchObject({
+				name: GuardError.CLASS_NAME,
+				message: "guard.string",
+				properties: { property: "logEntry.source" }
+			});
+		});
+
+		test("rejects an entry with an unknown level", async () => {
+			await expect(
+				logging.log({ level: "critical", source: "test", message: "hello" } as never)
+			).rejects.toMatchObject({
+				name: GuardError.CLASS_NAME,
+				message: "guard.arrayOneOf",
+				properties: { property: "logEntry.level" }
+			});
+		});
+
+		test("truncates a source and message that exceed the schema bounds", async () => {
+			const schema = EntitySchemaHelper.getSchema(LogEntry);
+			const maxSource = schema.properties?.find(p => p.property === "source")?.maxLength as number;
+			const maxMessage = schema.properties?.find(p => p.property === "message")
+				?.maxLength as number;
+
+			await logging.log({
+				level: LogLevel.Info,
+				source: "s".repeat(maxSource + 100),
+				message: "m".repeat(maxMessage + 100)
+			});
+
+			const stored = await storage.query();
+			expect(stored.entities).toHaveLength(1);
+			expect(stored.entities[0].source).toHaveLength(maxSource);
+			expect(stored.entities[0].message).toHaveLength(maxMessage);
+		});
+
+		test("truncates an over-long source and message on a flattened error", async () => {
+			const schema = EntitySchemaHelper.getSchema(LogEntry);
+			const maxSource = schema.properties?.find(p => p.property === "source")?.maxLength as number;
+			const maxMessage = schema.properties?.find(p => p.property === "message")
+				?.maxLength as number;
+
+			await logging.log({
+				level: LogLevel.Error,
+				source: "test",
+				message: "failed",
+				error: {
+					name: "TestError",
+					source: "e".repeat(maxSource + 100),
+					message: "x".repeat(maxMessage + 100)
+				}
+			});
+
+			const stored = await storage.query();
+			expect(stored.entities).toHaveLength(1);
+			const errors = stored.entities[0].error as { source?: string; message: string }[];
+			expect(errors[0].source).toHaveLength(maxSource);
+			expect(errors[0].message).toHaveLength(maxMessage);
 		});
 	});
 });

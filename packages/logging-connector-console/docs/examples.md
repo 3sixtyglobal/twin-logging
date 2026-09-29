@@ -34,7 +34,8 @@ import { ConsoleLoggingConnector } from '@twin.org/logging-connector-console';
 const connector = new ConsoleLoggingConnector({
   config: {
     levels: ['error'],
-    hideGroups: true
+    hideGroups: true,
+    disableColor: true
   }
 });
 

@@ -1,9 +1,10 @@
 {
-	"packages/logging-models": "0.9.3-next.1",
-	"packages/logging-connector-console": "0.9.3-next.1",
-	"packages/logging-connector-entity-storage": "0.9.3-next.1",
-	"packages/logging-connector-opentelemetry": "0.9.3-next.1",
-	"packages/logging-connector-file": "0.9.3-next.1",
-	"packages/logging-service": "0.9.3-next.1",
-	"packages/logging-rest-client": "0.9.3-next.1"
+	"packages/logging-models": "0.10.1-next.4",
+	"packages/logging-connector-console": "0.10.1-next.4",
+	"packages/logging-connector-entity-storage": "0.10.1-next.4",
+	"packages/logging-connector-opentelemetry": "0.10.1-next.4",
+	"packages/logging-connector-file": "0.10.1-next.4",
+	"packages/logging-connector-elk": "0.10.1-next.4",
+	"packages/logging-service": "0.10.1-next.4",
+	"packages/logging-rest-client": "0.10.1-next.4"
 }

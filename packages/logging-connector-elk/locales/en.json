@@ -1,0 +1,9 @@
+{
+	"error": {
+		"elkLoggingConnector": {
+			"bulkRequestFailed": "The bulk request to index {index} failed with status {status} {statusText}, the entries have been returned to the cache",
+			"bulkResponseErrors": "The bulk request to index {index} reported {failedCount} of {totalCount} documents as failed, first reason {reason}",
+			"conflictingAuth": "Configure either an apiKey or a username and password, not both"
+		}
+	}
+}

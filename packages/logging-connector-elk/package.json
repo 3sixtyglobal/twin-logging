@@ -1,0 +1,88 @@
+{
+	"name": "@twin.org/logging-connector-elk",
+	"version": "0.10.1-next.4",
+	"description": "Delivers log events to an Elasticsearch endpoint using the bulk API for ELK-based observability pipelines.",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/iotaledger/twin-logging.git",
+		"directory": "packages/logging-connector-elk"
+	},
+	"author": "vitaliy@iota.org",
+	"license": "Apache-2.0",
+	"type": "module",
+	"engines": {
+		"node": ">=24.0.0"
+	},
+	"scripts": {
+		"clean": "rimraf dist coverage",
+		"build": "tspc",
+		"dev": "nodemon --watch src --ext ts --exec \"npm run build\"",
+		"test": "vitest --run --config ./vitest.config.ts --no-cache",
+		"test:build": "tspc -p ./tests/tsconfig.json --noEmit",
+		"validate-locales": "validate-locales",
+		"test:coverage": "vitest --run --coverage --config ./vitest.config.ts --no-cache",
+		"docs:clean": "rimraf docs/reference",
+		"docs:generate": "typedoc --options typedoc.config.mjs",
+		"docs": "npm run docs:clean && npm run docs:generate",
+		"dist": "npm run clean && npm run build && npm run validate-locales && npm run test:build && npm run test",
+		"dist:no-test": "npm run clean && npm run build && npm run test:build"
+	},
+	"dependencies": {
+		"@twin.org/context": "next",
+		"@twin.org/core": "next",
+		"@twin.org/logging-models": "0.10.1-next.4",
+		"@twin.org/nameof": "next",
+		"@twin.org/web": "next"
+	},
+	"devDependencies": {
+		"@twin.org/nameof-transformer": "next",
+		"@twin.org/nameof-vitest-plugin": "next",
+		"@twin.org/validate-locales": "next",
+		"@types/node": "26.6.2",
+		"@vitest/coverage-v8": "5.0.1",
+		"copyfiles": "2.4.1",
+		"dotenv": "18.0.2",
+		"nodemon": "3.1.14",
+		"rimraf": "6.1.3",
+		"ts-patch": "4.0.1",
+		"typedoc": "0.28.20",
+		"typedoc-plugin-markdown": "4.13.1",
+		"typescript": "6.0.3",
+		"vitest": "5.0.1"
+	},
+	"main": "./dist/es/index.js",
+	"types": "./dist/types/index.d.ts",
+	"exports": {
+		".": {
+			"types": "./dist/types/index.d.ts",
+			"import": "./dist/es/index.js",
+			"default": "./dist/es/index.js"
+		},
+		"./locales/*.json": "./locales/*.json"
+	},
+	"files": [
+		"dist/es",
+		"dist/types",
+		"locales",
+		"docs"
+	],
+	"keywords": [
+		"twin",
+		"trade",
+		"iota",
+		"framework",
+		"blockchain",
+		"logging",
+		"elk",
+		"elasticsearch",
+		"kibana",
+		"logstash",
+		"connector",
+		"adapter",
+		"integration"
+	],
+	"bugs": {
+		"url": "git+https://github.com/iotaledger/twin-logging/issues"
+	},
+	"homepage": "https://twindev.org"
+}

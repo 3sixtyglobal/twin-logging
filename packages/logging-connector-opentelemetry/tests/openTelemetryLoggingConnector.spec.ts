@@ -4,6 +4,7 @@ import { type LogRecord, SeverityNumber } from "@opentelemetry/api-logs";
 import * as opentelemetryResources from "@opentelemetry/resources";
 import { LoggerProvider } from "@opentelemetry/sdk-logs";
 import { ContextIdKeys, ContextIdStore } from "@twin.org/context";
+import { GuardError } from "@twin.org/core";
 import { LogLevel } from "@twin.org/logging-models";
 import { TEST_OTLP_ENDPOINT_LOGS, TEST_OTLP_GRAFANA } from "./setupTestEnv.js";
 import { OpenTelemetryLoggingConnector } from "../src/openTelemetryLoggingConnector.js";
@@ -363,6 +364,47 @@ describe("OpenTelemetryLoggingConnector", () => {
 		await connector.log({ level: "info", source: "Test", message: "no-context" });
 		expect(emitted).toHaveLength(1);
 		await connector.stop();
+	});
+
+	describe("log validation", () => {
+		test("rejects an entry with no message without emitting a record", async () => {
+			const connector = await makeConnector();
+			await expect(
+				connector.log({ level: LogLevel.Info, source: "Test" } as never)
+			).rejects.toMatchObject({
+				name: GuardError.CLASS_NAME,
+				message: "guard.string",
+				properties: { property: "logEntry.message" }
+			});
+			expect(emitted).toHaveLength(0);
+			await connector.stop();
+		});
+
+		test("rejects an entry with a non-string source", async () => {
+			const connector = await makeConnector();
+			await expect(
+				connector.log({ level: LogLevel.Info, source: 42, message: "hello" } as never)
+			).rejects.toMatchObject({
+				name: GuardError.CLASS_NAME,
+				message: "guard.string",
+				properties: { property: "logEntry.source" }
+			});
+			expect(emitted).toHaveLength(0);
+			await connector.stop();
+		});
+
+		test("rejects an entry with an unknown level", async () => {
+			const connector = await makeConnector();
+			await expect(
+				connector.log({ level: "critical", source: "Test", message: "hello" } as never)
+			).rejects.toMatchObject({
+				name: GuardError.CLASS_NAME,
+				message: "guard.arrayOneOf",
+				properties: { property: "logEntry.level" }
+			});
+			expect(emitted).toHaveLength(0);
+			await connector.stop();
+		});
 	});
 });
 
