@@ -4,7 +4,7 @@
 	"description": "Forwards log events to OpenTelemetry-compatible observability pipelines via OTLP.",
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/iotaledger/twin-logging.git",
+		"url": "git+https://github.com/3sixtyglobal/twin-logging.git",
 		"directory": "packages/logging-connector-opentelemetry"
 	},
 	"author": "martyn.janes@iota.org",
@@ -88,7 +88,7 @@
 		"integration"
 	],
 	"bugs": {
-		"url": "git+https://github.com/iotaledger/twin-logging/issues"
+		"url": "git+https://github.com/3sixtyglobal/twin-logging/issues"
 	},
 	"homepage": "https://twindev.org"
 }

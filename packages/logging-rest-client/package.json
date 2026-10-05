@@ -4,7 +4,7 @@
 	"description": "Provides a client for interacting with logging service endpoints from applications and services.",
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/iotaledger/twin-logging.git",
+		"url": "git+https://github.com/3sixtyglobal/twin-logging.git",
 		"directory": "packages/logging-rest-client"
 	},
 	"author": "martyn.janes@iota.org",
@@ -76,7 +76,7 @@
 		"logging"
 	],
 	"bugs": {
-		"url": "git+https://github.com/iotaledger/twin-logging/issues"
+		"url": "git+https://github.com/3sixtyglobal/twin-logging/issues"
 	},
 	"homepage": "https://twindev.org"
 }

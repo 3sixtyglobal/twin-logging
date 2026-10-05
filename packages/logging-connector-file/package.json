@@ -4,7 +4,7 @@
 	"description": "Writes log events to size-limited files on disk with rotation and retention for local log persistence.",
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/iotaledger/twin-logging.git",
+		"url": "git+https://github.com/3sixtyglobal/twin-logging.git",
 		"directory": "packages/logging-connector-file"
 	},
 	"author": "vitaliy@iota.org",
@@ -81,7 +81,7 @@
 		"integration"
 	],
 	"bugs": {
-		"url": "git+https://github.com/iotaledger/twin-logging/issues"
+		"url": "git+https://github.com/3sixtyglobal/twin-logging/issues"
 	},
 	"homepage": "https://twindev.org"
 }
