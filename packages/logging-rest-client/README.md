@@ -1,11 +1,11 @@
-# TWIN Logging REST Client
+# 3Sixty Logging REST Client
 
 Provides a client for interacting with logging service endpoints from applications and services.
 
 ## Installation
 
 ```shell
-npm install @twin.org/logging-rest-client
+npm install @3sixty/logging-rest-client
 ```
 
 ## Examples

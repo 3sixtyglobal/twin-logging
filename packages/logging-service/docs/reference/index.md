@@ -1,4 +1,4 @@
-# @twin.org/logging-service
+# @3sixty/logging-service
 
 ## Classes
 

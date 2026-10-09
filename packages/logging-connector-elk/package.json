@@ -1,10 +1,10 @@
 {
-	"name": "@twin.org/logging-connector-elk",
-	"version": "0.11.1-next.0",
+	"name": "@3sixty/logging-connector-elk",
+	"version": "0.20.0-next.0",
 	"description": "Delivers log events to an Elasticsearch endpoint using the bulk API for ELK-based observability pipelines.",
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/3sixtyglobal/twin-logging.git",
+		"url": "git+https://github.com/3sixtyglobal/logging.git",
 		"directory": "packages/logging-connector-elk"
 	},
 	"author": "vitaliy@iota.org",
@@ -28,16 +28,16 @@
 		"dist:no-test": "npm run clean && npm run build && npm run test:build"
 	},
 	"dependencies": {
-		"@twin.org/context": "next",
-		"@twin.org/core": "next",
-		"@twin.org/logging-models": "0.11.1-next.0",
-		"@twin.org/nameof": "next",
-		"@twin.org/web": "next"
+		"@3sixty/context": "next",
+		"@3sixty/core": "next",
+		"@3sixty/logging-models": "0.20.0-next.0",
+		"@3sixty/nameof": "next",
+		"@3sixty/web": "next"
 	},
 	"devDependencies": {
-		"@twin.org/nameof-transformer": "next",
-		"@twin.org/nameof-vitest-plugin": "next",
-		"@twin.org/validate-locales": "next",
+		"@3sixty/nameof-transformer": "next",
+		"@3sixty/nameof-vitest-plugin": "next",
+		"@3sixty/validate-locales": "next",
 		"@types/node": "26.6.2",
 		"@vitest/coverage-v8": "5.0.1",
 		"copyfiles": "2.4.1",
@@ -82,7 +82,7 @@
 		"integration"
 	],
 	"bugs": {
-		"url": "git+https://github.com/3sixtyglobal/twin-logging/issues"
+		"url": "git+https://github.com/3sixtyglobal/logging/issues"
 	},
-	"homepage": "https://twindev.org"
+	"homepage": "https://3sixty.global"
 }

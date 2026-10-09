@@ -5,14 +5,14 @@ These examples show how to persist log entries, query them back, and shape the s
 ## EntityStorageLoggingConnector
 
 ```typescript
-import { MemoryEntityStorageConnector } from '@twin.org/entity-storage-connector-memory';
-import { EntityStorageConnectorFactory } from '@twin.org/entity-storage-models';
-import { nameof } from '@twin.org/nameof';
+import { MemoryEntityStorageConnector } from '@3sixty/entity-storage-connector-memory';
+import { EntityStorageConnectorFactory } from '@3sixty/entity-storage-models';
+import { nameof } from '@3sixty/nameof';
 import {
   EntityStorageLoggingConnector,
   initSchema,
   type LogEntry
-} from '@twin.org/logging-connector-entity-storage';
+} from '@3sixty/logging-connector-entity-storage';
 
 initSchema();
 
@@ -51,9 +51,9 @@ import {
   LogicalOperator,
   SortDirection,
   type EntityCondition
-} from '@twin.org/entity';
-import type { ILogEntry } from '@twin.org/logging-models';
-import { EntityStorageLoggingConnector } from '@twin.org/logging-connector-entity-storage';
+} from '@3sixty/entity';
+import type { ILogEntry } from '@3sixty/logging-models';
+import { EntityStorageLoggingConnector } from '@3sixty/logging-connector-entity-storage';
 
 const connector = new EntityStorageLoggingConnector();
 
@@ -80,7 +80,7 @@ const queryResult = await connector.query(
 ## LogEntry
 
 ```typescript
-import type { LogEntry } from '@twin.org/logging-connector-entity-storage';
+import type { LogEntry } from '@3sixty/logging-connector-entity-storage';
 
 const logEntry: LogEntry = {
   id: '80f9b61a',
@@ -98,7 +98,7 @@ const logEntry: LogEntry = {
 ## LogEntryError
 
 ```typescript
-import type { LogEntryError } from '@twin.org/logging-connector-entity-storage';
+import type { LogEntryError } from '@3sixty/logging-connector-entity-storage';
 
 const logEntryError: LogEntryError = {
   name: 'ValidationError',

@@ -1,11 +1,11 @@
-# TWIN Logging Service
+# 3Sixty Logging Service
 
 Exposes logging operations through service routes and API contracts for server-side integration.
 
 ## Installation
 
 ```shell
-npm install @twin.org/logging-service
+npm install @3sixty/logging-service
 ```
 
 ## Examples

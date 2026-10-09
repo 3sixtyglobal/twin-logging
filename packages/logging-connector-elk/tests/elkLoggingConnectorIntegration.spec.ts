@@ -1,6 +1,6 @@
 // Copyright 2026 IOTA Stiftung.
 // SPDX-License-Identifier: Apache-2.0.
-import { ContextIdKeys, ContextIdStore } from "@twin.org/context";
+import { ContextIdKeys, ContextIdStore } from "@3sixty/context";
 import { TEST_ELASTICSEARCH_ENDPOINT, TEST_ELASTICSEARCH_INDEX } from "./setupTestEnv.js";
 import { ElkLoggingConnector } from "../src/elkLoggingConnector.js";
 

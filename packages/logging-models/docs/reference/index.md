@@ -1,4 +1,4 @@
-# @twin.org/logging-models
+# @3sixty/logging-models
 
 ## Classes
 

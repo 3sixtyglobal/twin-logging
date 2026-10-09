@@ -11,7 +11,7 @@ Only `endpoint` is required. Elasticsearch is the direct ingestion target; a Log
 that accepts the same bulk payload can be used instead by pointing `endpoint` at it.
 
 ```typescript
-import { ElkLoggingConnector } from '@twin.org/logging-connector-elk';
+import { ElkLoggingConnector } from '@3sixty/logging-connector-elk';
 
 const connector = new ElkLoggingConnector({
   config: {
@@ -158,8 +158,8 @@ The connector composes through `MultiLoggingConnector` like any other, so entrie
 console during development while also being indexed.
 
 ```typescript
-import { ConsoleLoggingConnector } from '@twin.org/logging-connector-console';
-import { LoggingConnectorFactory, MultiLoggingConnector } from '@twin.org/logging-models';
+import { ConsoleLoggingConnector } from '@3sixty/logging-connector-console';
+import { LoggingConnectorFactory, MultiLoggingConnector } from '@3sixty/logging-models';
 
 LoggingConnectorFactory.register('console', () => new ConsoleLoggingConnector());
 LoggingConnectorFactory.register(

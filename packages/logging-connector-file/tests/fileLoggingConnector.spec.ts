@@ -3,9 +3,9 @@
 import { mkdtemp, readdir, readFile, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import path from "node:path";
-import { ContextIdKeys, ContextIdStore } from "@twin.org/context";
-import { GuardError } from "@twin.org/core";
-import { LoggingConnectorFactory, LogLevel, MultiLoggingConnector } from "@twin.org/logging-models";
+import { ContextIdKeys, ContextIdStore } from "@3sixty/context";
+import { GuardError } from "@3sixty/core";
+import { LoggingConnectorFactory, LogLevel, MultiLoggingConnector } from "@3sixty/logging-models";
 import { FileLoggingConnector } from "../src/fileLoggingConnector.js";
 
 /**

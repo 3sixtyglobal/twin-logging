@@ -1,6 +1,6 @@
 // Copyright 2024 IOTA Stiftung.
 // SPDX-License-Identifier: Apache-2.0.
-import { I18n, Is, StringHelper } from "@twin.org/core";
+import { I18n, Is, StringHelper } from "@3sixty/core";
 import type { ILogEntry } from "../models/ILogEntry.js";
 
 /**

@@ -1,4 +1,4 @@
-# TWIN Logging
+# 3Sixty Logging
 
 This repository provides reusable logging building blocks for applications and services across the TWIN ecosystem. The packages are designed to work together so teams can model log events consistently, route messages to different destinations, and expose or consume logging capabilities through service interfaces.
 

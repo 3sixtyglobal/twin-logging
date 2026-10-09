@@ -1,5 +1,14 @@
 // Copyright 2026 IOTA Stiftung.
 // SPDX-License-Identifier: Apache-2.0.
+import { ContextIdKeys, ContextIdStore, type IContextIds } from "@3sixty/context";
+import { BaseError, ComponentFactory, GeneralError, Guards, type IError, Is } from "@3sixty/core";
+import {
+	type ILogEntry,
+	type ILoggingComponent,
+	type ILoggingConnector,
+	LogLevel
+} from "@3sixty/logging-models";
+import { nameof } from "@3sixty/nameof";
 import { type LogAttributes, type Logger, SeverityNumber } from "@opentelemetry/api-logs";
 import { OTLPLogExporter } from "@opentelemetry/exporter-logs-otlp-http";
 import { resourceFromAttributes } from "@opentelemetry/resources";
@@ -14,15 +23,6 @@ import {
 	ATTR_EXCEPTION_STACKTRACE,
 	ATTR_EXCEPTION_TYPE
 } from "@opentelemetry/semantic-conventions";
-import { ContextIdKeys, ContextIdStore, type IContextIds } from "@twin.org/context";
-import { BaseError, ComponentFactory, GeneralError, Guards, type IError, Is } from "@twin.org/core";
-import {
-	type ILogEntry,
-	type ILoggingComponent,
-	type ILoggingConnector,
-	LogLevel
-} from "@twin.org/logging-models";
-import { nameof } from "@twin.org/nameof";
 import type { IOpenTelemetryLoggingConnectorConfig } from "./models/IOpenTelemetryLoggingConnectorConfig.js";
 import type { IOpenTelemetryLoggingConnectorConstructorOptions } from "./models/IOpenTelemetryLoggingConnectorConstructorOptions.js";
 import { OpenTelemetryExporterTypes } from "./models/openTelemetryExporterTypes.js";

@@ -1,4 +1,4 @@
-# TWIN Logging Connector File
+# 3Sixty Logging Connector File
 
 File connector for persisting TWIN log events to size-limited files on disk with rotation and retention.
 
@@ -7,7 +7,7 @@ Entries are written as newline delimited JSON through a persistent file handle. 
 ## Installation
 
 ```shell
-npm install @twin.org/logging-connector-file
+npm install @3sixty/logging-connector-file
 ```
 
 ## Examples

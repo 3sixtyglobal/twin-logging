@@ -1,9 +1,9 @@
 // Copyright 2026 IOTA Stiftung.
 // SPDX-License-Identifier: Apache-2.0.
-import { ContextIdKeys, ContextIdStore } from "@twin.org/context";
-import { Converter, GuardError } from "@twin.org/core";
-import { LogLevel } from "@twin.org/logging-models";
-import { FetchHelper } from "@twin.org/web";
+import { ContextIdKeys, ContextIdStore } from "@3sixty/context";
+import { Converter, GuardError } from "@3sixty/core";
+import { LogLevel } from "@3sixty/logging-models";
+import { FetchHelper } from "@3sixty/web";
 import { ElkLoggingConnector } from "../src/elkLoggingConnector.js";
 
 interface ICapturedRequest {

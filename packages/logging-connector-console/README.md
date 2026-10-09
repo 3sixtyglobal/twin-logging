@@ -1,11 +1,11 @@
-# TWIN Logging Connector Console
+# 3Sixty Logging Connector Console
 
 Sends log events to the console for local development, debugging, and lightweight runtime diagnostics.
 
 ## Installation
 
 ```shell
-npm install @twin.org/logging-connector-console
+npm install @3sixty/logging-connector-console
 ```
 
 ## Examples

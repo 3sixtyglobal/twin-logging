@@ -1,11 +1,11 @@
 // Copyright 2026 IOTA Stiftung.
 // SPDX-License-Identifier: Apache-2.0.
+import { ContextIdKeys, ContextIdStore } from "@3sixty/context";
+import { GuardError } from "@3sixty/core";
+import { LogLevel } from "@3sixty/logging-models";
 import { type LogRecord, SeverityNumber } from "@opentelemetry/api-logs";
 import * as opentelemetryResources from "@opentelemetry/resources";
 import { LoggerProvider } from "@opentelemetry/sdk-logs";
-import { ContextIdKeys, ContextIdStore } from "@twin.org/context";
-import { GuardError } from "@twin.org/core";
-import { LogLevel } from "@twin.org/logging-models";
 import { TEST_OTLP_ENDPOINT_LOGS, TEST_OTLP_GRAFANA } from "./setupTestEnv.js";
 import { OpenTelemetryLoggingConnector } from "../src/openTelemetryLoggingConnector.js";
 

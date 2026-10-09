@@ -1,11 +1,11 @@
-# TWIN Logging Connector Entity Storage
+# 3Sixty Logging Connector Entity Storage
 
 Persists log events to entity storage for durable retention, querying, and downstream processing.
 
 ## Installation
 
 ```shell
-npm install @twin.org/logging-connector-entity-storage
+npm install @3sixty/logging-connector-entity-storage
 ```
 
 ## Examples

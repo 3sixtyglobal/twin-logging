@@ -1,6 +1,6 @@
 // Copyright 2024 IOTA Stiftung.
 // SPDX-License-Identifier: Apache-2.0.
-import { entity, property } from "@twin.org/entity";
+import { entity, property } from "@3sixty/entity";
 
 /**
  * Entity representing a flattened error captured within a log entry.

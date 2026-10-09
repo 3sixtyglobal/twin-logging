@@ -5,7 +5,7 @@ Use these snippets to wire console logging quickly with practical level filterin
 ## ConsoleLoggingConnector
 
 ```typescript
-import { ConsoleLoggingConnector } from '@twin.org/logging-connector-console';
+import { ConsoleLoggingConnector } from '@3sixty/logging-connector-console';
 
 const connector = new ConsoleLoggingConnector({
   config: {
@@ -29,7 +29,7 @@ await connector.log({
 ```
 
 ```typescript
-import { ConsoleLoggingConnector } from '@twin.org/logging-connector-console';
+import { ConsoleLoggingConnector } from '@3sixty/logging-connector-console';
 
 const connector = new ConsoleLoggingConnector({
   config: {

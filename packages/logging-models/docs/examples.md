@@ -11,7 +11,7 @@ import {
   SilentLoggingConnector,
   type ILogEntry,
   type ILoggingConnector
-} from '@twin.org/logging-models';
+} from '@3sixty/logging-models';
 
 class CaptureConnector implements ILoggingConnector {
   public readonly entries: ILogEntry[] = [];
@@ -60,8 +60,8 @@ import {
   LogicalOperator,
   SortDirection,
   type EntityCondition
-} from '@twin.org/entity';
-import { MultiLoggingConnector, type ILogEntry } from '@twin.org/logging-models';
+} from '@3sixty/entity';
+import { MultiLoggingConnector, type ILogEntry } from '@3sixty/logging-models';
 
 const connector = new MultiLoggingConnector({
   loggingConnectorTypes: ['silent']
@@ -90,7 +90,7 @@ const queryResult = await connector.query(
 ## SilentLoggingConnector
 
 ```typescript
-import { SilentLoggingConnector } from '@twin.org/logging-models';
+import { SilentLoggingConnector } from '@3sixty/logging-models';
 
 const connector = new SilentLoggingConnector();
 
@@ -107,8 +107,8 @@ await connector.log({
 ```
 
 ```typescript
-import { SilentLoggingConnector } from '@twin.org/logging-models';
-import { ComparisonOperator, LogicalOperator, SortDirection } from '@twin.org/entity';
+import { SilentLoggingConnector } from '@3sixty/logging-models';
+import { ComparisonOperator, LogicalOperator, SortDirection } from '@3sixty/entity';
 
 const connector = new SilentLoggingConnector();
 
@@ -133,7 +133,7 @@ const queryResult = await connector.query(
 ## LogEntryHelper
 
 ```typescript
-import { LogEntryHelper, type ILogEntry } from '@twin.org/logging-models';
+import { LogEntryHelper, type ILogEntry } from '@3sixty/logging-models';
 
 const logEntry: ILogEntry = {
   level: 'info',

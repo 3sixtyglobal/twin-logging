@@ -1,4 +1,4 @@
-# TWIN Logging Connector ELK
+# 3Sixty Logging Connector ELK
 
 ELK connector for delivering TWIN log events to an Elasticsearch endpoint for centralised search, dashboards, and alerting.
 
@@ -7,7 +7,7 @@ Entries are converted to Elasticsearch documents and delivered through the bulk 
 ## Docker
 
 ```shell
-docker run -d --name twin-logging-elasticsearch -p 9200:9200 -e "discovery.type=single-node" -e "xpack.security.enabled=false" -e "ES_JAVA_OPTS=-Xms1g -Xmx1g" -m 2g docker.elastic.co/elasticsearch/elasticsearch:9.4.3
+docker run -d --name 3sixty-logging-elasticsearch -p 9200:9200 -e "discovery.type=single-node" -e "xpack.security.enabled=false" -e "ES_JAVA_OPTS=-Xms1g -Xmx1g" -m 2g docker.elastic.co/elasticsearch/elasticsearch:9.4.3
 ```
 
 Elasticsearch sizes its JVM heap from the memory it can see, which on a smaller Docker host overruns what the daemon will hand out and the container is killed during startup with exit code 137. Pinning the heap to 1g inside a 2g container leaves room for the off-heap usage. If the container is still killed, raise the memory available to Docker itself.
@@ -15,7 +15,7 @@ Elasticsearch sizes its JVM heap from the memory it can see, which on a smaller 
 ## Installation
 
 ```shell
-npm install @twin.org/logging-connector-elk
+npm install @3sixty/logging-connector-elk
 ```
 
 ## Examples

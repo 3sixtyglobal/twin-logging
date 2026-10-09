@@ -17,7 +17,7 @@ Pass a `directory` for the log files to the connector constructor. The directory
 if it does not already exist.
 
 ```typescript
-import { FileLoggingConnector } from '@twin.org/logging-connector-file';
+import { FileLoggingConnector } from '@3sixty/logging-connector-file';
 
 const connector = new FileLoggingConnector({
   config: {
@@ -119,9 +119,9 @@ The file connector can be combined with other connectors through `MultiLoggingCo
 for example to write to disk while also logging to the console:
 
 ```typescript
-import { LoggingConnectorFactory, MultiLoggingConnector } from '@twin.org/logging-models';
-import { ConsoleLoggingConnector } from '@twin.org/logging-connector-console';
-import { FileLoggingConnector } from '@twin.org/logging-connector-file';
+import { LoggingConnectorFactory, MultiLoggingConnector } from '@3sixty/logging-models';
+import { ConsoleLoggingConnector } from '@3sixty/logging-connector-console';
+import { FileLoggingConnector } from '@3sixty/logging-connector-file';
 
 LoggingConnectorFactory.register('console', () => new ConsoleLoggingConnector());
 LoggingConnectorFactory.register(

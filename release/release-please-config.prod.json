@@ -8,6 +8,7 @@
 	"release-type": "node",
 	"initial-version": "0.0.1",
 	"versioning": "default",
+	"last-release-sha": "49dc4f7af740af0c24c760b1c59f52c560ad25ac",
 	"packages": {
 		"packages/logging-models": {
 			"package-name": "logging-models",

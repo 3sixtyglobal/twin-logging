@@ -1,4 +1,4 @@
-# @twin.org/logging-connector-entity-storage
+# @3sixty/logging-connector-entity-storage
 
 ## Classes
 

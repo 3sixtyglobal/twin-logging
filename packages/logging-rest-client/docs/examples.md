@@ -5,7 +5,7 @@ These snippets show how to send entries to an HTTP endpoint and query filtered l
 ## LoggingRestClient
 
 ```typescript
-import { LoggingRestClient } from '@twin.org/logging-rest-client';
+import { LoggingRestClient } from '@3sixty/logging-rest-client';
 
 const client = new LoggingRestClient({
   endpoint: 'https://api.example.com'
@@ -26,7 +26,7 @@ await client.log({
 ```
 
 ```typescript
-import { LoggingRestClient } from '@twin.org/logging-rest-client';
+import { LoggingRestClient } from '@3sixty/logging-rest-client';
 
 const client = new LoggingRestClient({
   endpoint: 'https://api.example.com'

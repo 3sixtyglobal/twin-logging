@@ -10,6 +10,7 @@
 	"versioning": "prerelease",
 	"prerelease": true,
 	"prerelease-type": "next",
+	"last-release-sha": "00744cac368f088cdedbae6c3c01a18f74b90397",
 	"packages": {
 		"packages/logging-models": {
 			"package-name": "logging-models",

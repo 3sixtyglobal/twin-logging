@@ -18,7 +18,7 @@ runs:
       if: inputs.package == 'packages/logging-connector-opentelemetry' || inputs.package == 'all'
       shell: bash
       run: |
-        docker run -d --name twin-opentelemetry \
+        docker run -d --name 3sixty-opentelemetry \
           -p 4317:4317 -p 4318:4318 \
           -p 3123:3000 -p 3200:3200 \
           grafana/otel-lgtm
@@ -37,7 +37,7 @@ runs:
       if: inputs.package == 'packages/logging-connector-elk' || inputs.package == 'all'
       shell: bash
       run: |
-        docker run -d --name twin-logging-elasticsearch \
+        docker run -d --name 3sixty-logging-elasticsearch \
           -p 9200:9200 \
           -e "discovery.type=single-node" \
           -e "xpack.security.enabled=false" \

@@ -1,6 +1,6 @@
 // Copyright 2026 IOTA Stiftung.
 // SPDX-License-Identifier: Apache-2.0.
-import type { ILoggingLevelsConfig } from "@twin.org/logging-models";
+import type { ILoggingLevelsConfig } from "@3sixty/logging-models";
 import type { IOpenTelemetryExporterConfig } from "./IOpenTelemetryExporterConfig.js";
 
 /**

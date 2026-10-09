@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0.
 import nodePath from "node:path";
 import { fileURLToPath } from "node:url";
-import { Guards } from "@twin.org/core";
+import { Guards } from "@3sixty/core";
 import * as dotenv from "dotenv";
 
 const dir = nodePath.dirname(fileURLToPath(import.meta.url));

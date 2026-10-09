@@ -1,9 +1,9 @@
 // Copyright 2026 IOTA Stiftung.
 // SPDX-License-Identifier: Apache-2.0.
-import { GuardError } from "@twin.org/core";
-import type { ILogEntry } from "@twin.org/logging-models";
-import { LogLevel } from "@twin.org/logging-models";
-import { HttpMethod } from "@twin.org/web";
+import { GuardError } from "@3sixty/core";
+import type { ILogEntry } from "@3sixty/logging-models";
+import { LogLevel } from "@3sixty/logging-models";
+import { HttpMethod } from "@3sixty/web";
 import { LoggingRestClient } from "../src/loggingRestClient.js";
 import {
 	jsonResponse,

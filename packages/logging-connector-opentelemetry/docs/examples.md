@@ -16,7 +16,7 @@ the exporter internally when `start()` is called — no manual `LoggerProvider` 
 needed. The default batch processor accumulates records and flushes them on a schedule.
 
 ```typescript
-import { OpenTelemetryLoggingConnector } from '@twin.org/logging-connector-opentelemetry';
+import { OpenTelemetryLoggingConnector } from '@3sixty/logging-connector-opentelemetry';
 
 const connector = new OpenTelemetryLoggingConnector({
   config: {

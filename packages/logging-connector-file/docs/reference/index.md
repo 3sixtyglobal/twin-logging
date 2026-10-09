@@ -1,4 +1,4 @@
-# @twin.org/logging-connector-file
+# @3sixty/logging-connector-file
 
 ## Classes
 

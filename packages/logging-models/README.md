@@ -1,11 +1,11 @@
-# TWIN Logging Models
+# 3Sixty Logging Models
 
 Defines shared logging contracts, event shapes, and connector interfaces used across the repository.
 
 ## Installation
 
 ```shell
-npm install @twin.org/logging-models
+npm install @3sixty/logging-models
 ```
 
 ## Examples

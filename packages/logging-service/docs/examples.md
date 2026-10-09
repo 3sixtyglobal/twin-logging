@@ -9,8 +9,8 @@ import {
   LoggingConnectorFactory,
   type ILogEntry,
   type ILoggingConnector
-} from '@twin.org/logging-models';
-import { LoggingService } from '@twin.org/logging-service';
+} from '@3sixty/logging-models';
+import { LoggingService } from '@3sixty/logging-service';
 
 class MemoryLoggingConnector implements ILoggingConnector {
   private readonly entries: ILogEntry[] = [];
@@ -52,8 +52,8 @@ import {
   LoggingConnectorFactory,
   type ILogEntry,
   type ILoggingConnector
-} from '@twin.org/logging-models';
-import { LoggingService } from '@twin.org/logging-service';
+} from '@3sixty/logging-models';
+import { LoggingService } from '@3sixty/logging-service';
 
 class QueryableMemoryConnector implements ILoggingConnector {
   private readonly entries: ILogEntry[] = [

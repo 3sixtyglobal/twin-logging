@@ -1,4 +1,4 @@
-# @twin.org/logging-connector-elk
+# @3sixty/logging-connector-elk
 
 ## Classes
 

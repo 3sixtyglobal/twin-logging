@@ -1,4 +1,4 @@
-# @twin.org/logging-rest-client
+# @3sixty/logging-rest-client
 
 ## Classes
 
